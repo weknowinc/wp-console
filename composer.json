@@ -32,7 +32,10 @@
         "symfony/dependency-injection": "^3.2",
         "symfony/config": "^3.2",
         "symfony/yaml": "^3.2",
-        "symfony/event-dispatcher": "^3.2"
+        "symfony/event-dispatcher": "^3.2",
+        "dflydev/dot-access-configuration": "^1.0",
+        "symfony/translation": "^3.2",
+        "symfony/finder": "^3.2"
     },
     "bin": ["bin/drupal"],
     "config": {

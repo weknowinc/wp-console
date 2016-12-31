@@ -4,8 +4,8 @@ namespace WP\Console;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use WP\Console\Core\Style\DrupalStyle;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use WP\Console\Style\WPStyle;
 use WP\Console\Core\Application as BaseApplication;
 
 
@@ -27,7 +27,7 @@ class Application extends BaseApplication
      */
     const VERSION = '0.0.1';
 
-    public function __construct(ContainerBuilder $container)
+    public function __construct(ContainerInterface $container)
     {
         parent::__construct($container, $this::NAME, $this::VERSION);
     }
@@ -56,13 +56,13 @@ class Application extends BaseApplication
 
     private function registerGenerators()
     {
-        if ($this->container->hasParameter('drupal.generators')) {
+        if ($this->container->hasParameter('wordpress.generators')) {
             $consoleGenerators = $this->container->getParameter(
-                'drupal.generators'
+                'wordpress.generators'
             );
         } else {
             $consoleGenerators = array_keys(
-                $this->container->findTaggedServiceIds('drupal.generator')
+                $this->container->findTaggedServiceIds('wordpress.generator')
             );
         }
 
@@ -93,13 +93,13 @@ class Application extends BaseApplication
 
     private function registerCommands()
     {
-        if ($this->container->hasParameter('drupal.commands')) {
+        if ($this->container->hasParameter('wordpress.commands')) {
             $consoleCommands = $this->container->getParameter(
-                'drupal.commands'
+                'wordpress.commands'
             );
         } else {
             $consoleCommands = array_keys(
-                $this->container->findTaggedServiceIds('drupal.command')
+                $this->container->findTaggedServiceIds('wordpress.command')
             );
             $this->container->setParameter(
                 'console.warning',
@@ -112,39 +112,16 @@ class Application extends BaseApplication
         if ($this->container->hasParameter('console.service_definitions')) {
             $serviceDefinitions = $this->container
                 ->getParameter('console.service_definitions');
-
-            /**
-             * @var AnnotationValidator $annotationValidator
-             */
-            $annotationValidator = $this->container
-                ->get('console.annotation_validator');
         }
 
-//        $aliases = $this->container->get('console.configuration_manager')
-//            ->getConfiguration()
-//            ->get('application.commands.aliases')?:[];
+        $aliases = $this->container->get('console.configuration_manager')
+            ->getConfiguration()
+            ->get('application.commands.aliases')?:[];
 
         foreach ($consoleCommands as $name) {
-            AnnotationRegistry::reset();
-            AnnotationRegistry::registerLoader(
-                [
-                    $this->container->get('class_loader'),
-                    "loadClass"
-                ]
-            );
 
             if (!$this->container->has($name)) {
                 continue;
-            }
-
-            if ($annotationValidator) {
-                if (!$serviceDefinition = $serviceDefinitions[$name]) {
-                    continue;
-                }
-
-                if (!$annotationValidator->isValidCommand($serviceDefinition->getClass())) {
-                    continue;
-                }
             }
 
             try {
@@ -255,7 +232,6 @@ class Application extends BaseApplication
             'namespaces' => $namespaces,
             'options' => $options,
             'arguments' => $arguments,
-            'languages' => $languages,
             'messages' => [
                 'title' =>  $this->trans('commands.generate.doc.gitbook.messages.title'),
                 'note' =>  $this->trans('commands.generate.doc.gitbook.messages.note'),

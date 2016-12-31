@@ -1,6 +1,6 @@
 <?php
 
-namespace WP\Console\Core\Style;
+namespace WP\Console\Style;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Helper\Table;
-use WP\Console\Core\Helper\DrupalChoiceQuestionHelper;
+use WP\Console\Core\Helper\WordpressChoiceQuestionHelper;
 
 class WPStyle extends SymfonyStyle
 {
@@ -77,7 +77,7 @@ class WPStyle extends SymfonyStyle
      */
     public function askChoiceQuestion(ChoiceQuestion $question)
     {
-        $questionHelper = new WPChoiceQuestionHelper();
+        $questionHelper = new WordpressChoiceQuestionHelper();
         $answer = $questionHelper->ask($this->input, $this, $question);
 
         return $answer;

@@ -1,0 +1,9 @@
+application:
+  autowire:
+    commands:
+      forced: {}
+      name:
+        'develop:example':
+          class: '\WP\Console\Command\Develop\ExampleCommand'
+        'develop:example:container:aware':
+          class: '\WP\Console\Command\Develop\ExampleContainerAwareCommand'

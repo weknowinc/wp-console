@@ -1,0 +1,13 @@
+description: 'Display basic information about Wordprss Console project'
+messages:
+    welcome: 'The Wordprss Console is a suite of tools that you run on the CLI to:'
+    welcome-feature-generate: 'Generate boilerplate code.'
+    welcome-feature-interact: 'Interact with a Wordpress installation.'
+    welcome-feature-learn: 'Learn Wordpess.'
+    links: 'Project links'
+    landing: 'Landing page - "%s"'
+    change-log: 'Change log at - "%s"'
+    documentation: 'Documentation at - "%s"'
+    support: 'Support chat room - "%s"'
+    supporting-organizations: 'Supporting organizations'
+    version-supported: 'Wordpress supported version <info>"%s"</info>'

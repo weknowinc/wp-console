@@ -6,9 +6,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use WP\Console\Core\Style\WPStyle;
+use WP\Console\Style\WPStyle;
 
 /**
  * Class Application
@@ -17,7 +17,7 @@ use WP\Console\Core\Style\WPStyle;
 class Application extends BaseApplication
 {
     /**
-     * @var ContainerBuilder
+     * @var ContainerInterface
      */
     protected $container;
 
@@ -28,12 +28,12 @@ class Application extends BaseApplication
 
     /**
      * ConsoleApplication constructor.
-     * @param ContainerBuilder $container
+     * @param ContainerInterface $container
      * @param string             $name
      * @param string             $version
      */
     public function __construct(
-        ContainerBuilder $container,
+        ContainerInterface $container,
         $name,
         $version
     ) {
@@ -45,8 +45,7 @@ class Application extends BaseApplication
     public function getTranslator()
     {
         if ($this->container) {
-            return null;
-            //return $this->container->get('console.translator_manager');
+            return $this->container->get('console.translator_manager');
         }
 
         return null;
@@ -79,8 +78,8 @@ class Application extends BaseApplication
         /**
          * @var ConfigurationManager $configurationManager
          */
-       /* $configurationManager = $this->container
-            ->get('console.configuration_manager');*/
+        $configurationManager = $this->container
+            ->get('console.configuration_manager');
 
         if ($commandName && !$this->has($commandName)) {
             $io->error(

@@ -1,0 +1,16 @@
+services:
+  # WordpressConsoleCore Services
+  console.configuration_manager:
+    class: WP\Console\Utils\ConfigurationManager
+  console.translator_manager:
+    class: WP\Console\Utils\TranslatorManager
+  console.string_converter:
+        class: WP\Console\Utils\StringConverter
+  console.renderer:
+      class: WP\Console\Utils\TwigRenderer
+      arguments: ['@console.translator_manager', '@console.string_converter']
+  # WordpressConsole Commands
+  console.about:
+    class: WP\Console\Command\AboutCommand
+    tags:
+      - { name: wordpress.command }

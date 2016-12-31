@@ -6,7 +6,7 @@ use Symfony\Component\Console\Helper\SymfonyQuestionHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
-class WPChoiceQuestionHelper extends SymfonyQuestionHelper
+class WordpressChoiceQuestionHelper extends SymfonyQuestionHelper
 {
     /**
      * {@inheritdoc}
