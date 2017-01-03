@@ -46,12 +46,12 @@ class Application extends BaseApplication
 //            $output->write(sprintf("\033\143"));
 //        }
         parent::doRun($input, $output);
-        if ($this->getCommandName($input) == 'list' && $this->container->hasParameter('console.warning')) {
-            $io = new DrupalStyle($input, $output);
+        /*if ($this->getCommandName($input) == 'list' && $this->container->hasParameter('console.warning')) {
+            $io = new WPStyle($input, $output);
             $io->warning(
                 $this->trans($this->container->getParameter('console.warning'))
             );
-        }
+        }*/
     }
 
     private function registerGenerators()

@@ -3,7 +3,7 @@
 namespace WP\Console\Core\Bootstrap;
 
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use WP\Console\Core\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class WordpressConsoleCore
@@ -29,6 +29,9 @@ class WordpressConsoleCore
         $this->root  = $root;
     }
 
+    /**
+     * @return null|ContainerBuilder
+     */
     public function boot()
     {
 

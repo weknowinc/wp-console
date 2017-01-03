@@ -2,6 +2,21 @@ services:
   # WordpressConsoleCore Services
   console.configuration_manager:
     class: WP\Console\Utils\ConfigurationManager
+  console.chain:
+    class: Drupal\Console\Core\Command\Chain\ChainCommand
+    arguments: ['@console.chain_queue', '@console.chain_discovery']
+    tags:
+      - { name: wordpress.command }
+  console.chain_debug:
+      class: Drupal\Console\Core\Command\Chain\ChainDebugCommand
+      arguments: ['@console.chain_discovery']
+      tags:
+        - { name: wordpress.command }
+  console.chain_discovery:
+      class: Drupal\Console\Utils\ChainDiscovery
+      arguments: ['@console.root', '@console.configuration_manager']
+  console.chain_queue:
+      class: Drupal\Console\Utils\ChainQueue
   console.translator_manager:
     class: WP\Console\Utils\TranslatorManager
   console.string_converter:
