@@ -19,7 +19,7 @@ use WP\Console\Utils\ChainQueue;
 use WP\Console\Utils\ChainDiscovery;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\InputTrait;
-use WP\Console\Style\DrupalStyle;
+use WP\Console\Style\WPStyle;
 
 /**
  * Class ChainCommand
@@ -82,7 +82,7 @@ class ChainCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
+        $io = new WPStyle($input, $output);
         $file = $input->getOption('file');
 
         if (!$file) {
@@ -134,7 +134,7 @@ class ChainCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
+        $io = new WPStyle($input, $output);
 
         $interactive = false;
         $learning = $input->hasOption('learning')?$input->getOption('learning'):false;

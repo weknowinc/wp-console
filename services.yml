@@ -3,22 +3,30 @@ services:
   console.configuration_manager:
     class: WP\Console\Utils\ConfigurationManager
   console.chain:
-    class: Drupal\Console\Core\Command\Chain\ChainCommand
+    class: WP\Console\Core\Command\Chain\ChainCommand
     arguments: ['@console.chain_queue', '@console.chain_discovery']
     tags:
       - { name: wordpress.command }
   console.chain_debug:
-      class: Drupal\Console\Core\Command\Chain\ChainDebugCommand
+      class: WP\Console\Core\Command\Chain\ChainDebugCommand
       arguments: ['@console.chain_discovery']
       tags:
         - { name: wordpress.command }
   console.chain_discovery:
-      class: Drupal\Console\Utils\ChainDiscovery
+      class: WP\Console\Utils\ChainDiscovery
       arguments: ['@console.root', '@console.configuration_manager']
   console.chain_queue:
-      class: Drupal\Console\Utils\ChainQueue
+      class: WP\Console\Utils\ChainQueue
+  console.exec:
+      class: WP\Console\Core\Command\Exec\ExecCommand
+      arguments: ['@console.shell_process']
+      tags:
+        - { name: wordpress.command }
   console.translator_manager:
     class: WP\Console\Utils\TranslatorManager
+  console.shell_process:
+      class: WP\Console\Utils\ShellProcess
+      arguments: ['@app.root', '@console.translator_manager']
   console.string_converter:
         class: WP\Console\Utils\StringConverter
   console.renderer:

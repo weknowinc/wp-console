@@ -8,7 +8,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use WP\Console\Core\Command\Chain\ChainCustomCommand;
+use WP\Console\Core\EventSubscriber\ShowGenerateChainListener;
+use WP\Console\Core\EventSubscriber\ShowGenerateInlineListener;
 use WP\Console\Style\WPStyle;
+use WP\Console\Utils\ConfigurationManager;
+use WP\Console\Utils\ChainDiscovery;
+
 
 /**
  * Class Application
@@ -143,7 +149,7 @@ class Application extends BaseApplication
                 $this->container->get('console.file_queue'),
                 $this->container->get('console.show_file')
             )
-        );
+        ); */
         $dispatcher->addSubscriber(
             new ShowGenerateInlineListener(
                 $this->container->get('console.translator_manager')
@@ -153,7 +159,7 @@ class Application extends BaseApplication
             new ShowGenerateChainListener(
                 $this->container->get('console.translator_manager')
             )
-        );*/
+        );
 
         $this->setDispatcher($dispatcher);
     }
@@ -333,7 +339,7 @@ class Application extends BaseApplication
         /**
          * @var ChainDiscovery $chainDiscovery
          */
-       /* $chainDiscovery = $this->container->get('console.chain_discovery');
+        $chainDiscovery = $this->container->get('console.chain_discovery');
         $chainCommands = $chainDiscovery->getChainCommands();
 
         foreach ($chainCommands as $name => $chainCommand) {
@@ -345,7 +351,7 @@ class Application extends BaseApplication
             } catch (\Exception $e) {
                 echo $e->getMessage() . PHP_EOL;
             }
-        }*/
+        }
     }
 
     /**
