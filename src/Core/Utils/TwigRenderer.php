@@ -2,12 +2,12 @@
 
 /**
  * @file
- * Contains \WP\Console\Utils\TwigRenderer.
+ * Contains \WP\Console\Core\Utils\TwigRenderer.
  */
 
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
-use WP\Console\Utils\StringConverter;
+use WP\Console\Core\Utils\StringConverter;
 
 class TwigRenderer
 {

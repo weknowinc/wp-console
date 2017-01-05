@@ -10,10 +10,9 @@ namespace WP\Console\Core\Command\Chain;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
-use WP\Console\Utils\ChainDiscovery;
-use WP\Console\Style\WPStyle;
 use WP\Console\Command\Shared\CommandTrait;
-
+use WP\Console\Core\Utils\ChainDiscovery;
+use WP\Console\Core\Style\WPStyle;
 /**
  * Class ChainDebugCommand
  * @package Drupal\Console\Core\Command\Chain

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP\Console\Style;
+namespace WP\Console\Core\Style;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

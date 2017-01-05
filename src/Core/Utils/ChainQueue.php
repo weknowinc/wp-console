@@ -5,7 +5,7 @@
  * Contains WP\Console\Core\Utils\ChainQueue.
  */
 
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
 /**
  * Class ChainQueue

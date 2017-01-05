@@ -12,8 +12,8 @@ use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Console\Command\Command;
-use WP\Console\Utils\TranslatorManager;
-use WP\Console\Style\WPStyle;
+use WP\Console\Core\Utils\TranslatorManager;
+use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class ShowGenerateChainListener

@@ -1,11 +1,11 @@
 <?php
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use WP\Console\Style\WPStyle;
+use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class ShellProcess

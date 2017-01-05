@@ -2,8 +2,8 @@
 
 use WP\Console\Application;
 use WP\Console\Bootstrap\Wordpress;
+use WP\Console\Core\Utils\ArgvInputReader;
 use WP\Console\Helper\WordpressFinder;
-use WP\Console\Utils\ArgvInputReader;
 
 set_time_limit(0);
 
@@ -31,9 +31,45 @@ else {
     exit(1);
 }
 
+$argvInputReader = new ArgvInputReader();
+
+// Getting target
+$targetConfig = [];
+if ($target = $argvInputReader->get('target')) {
+    $targetConfig = $container->get('console.configuration_manager')
+        ->readTarget($target);
+    $argvInputReader->setOptionsFromTargetConfiguration($targetConfig);
+}
+
+$argvInputReader->setOptionsAsArgv();
+
+// Getting remote
+if ($argvInputReader->get('remote', false)) {
+    $commandInput = new ArgvInput();
+
+    /* @var Remote $remote */
+    $remote = $container->get('console.remote');
+    $commandName = $argvInputReader->get('command', false);
+
+    $remoteSuccess = $remote->executeCommand(
+        $io,
+        $commandName,
+        $target,
+        $targetConfig,
+        $commandInput->__toString(),
+        $configurationManager->getHomeDirectory()
+    );
+
+    exit($remoteSuccess?0:1);
+}
+
+$root = $argvInputReader->get('root');
+if (!$root) {
+    $root = getcwd();
+}
 
 $wordpressFinder = new WordpressFinder();
-$wordpressFinder->locateRoot(getcwd());
+$wordpressFinder->locateRoot($root);
 $wordpressRoot = $wordpressFinder->getWordpressRoot();
 $wordpressConsoleRoot = dirname(__DIR__);
 

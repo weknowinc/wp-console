@@ -4,7 +4,7 @@
  * Contains WP\Console\Core\Utils\Site.
  */
 
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;

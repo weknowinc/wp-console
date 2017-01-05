@@ -15,12 +15,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
-use WP\Console\Utils\ChainQueue;
-use WP\Console\Utils\ChainDiscovery;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\InputTrait;
-use WP\Console\Style\WPStyle;
-
+use WP\Console\Core\Style\WPStyle;
+use WP\Console\Core\Utils\ChainQueue;
+use WP\Console\Core\Utils\ChainDiscovery;
 /**
  * Class ChainCommand
  * @package WP\Console\Core\Command\Chain
@@ -149,6 +148,7 @@ class ChainCommand extends Command
         $fileSystem = new Filesystem();
         $file = calculateRealPath($file);
 
+
         if (!$fileSystem->exists($file)) {
             $io->error(
                 sprintf(
@@ -245,7 +245,6 @@ class ChainCommand extends Command
             $inlinePlaceHoldersReplacements,
             $chainContent
         );
-
         $inlinePlaceHolders = $inlinePlaceHoldersReplacements;
 
         $inlinePlaceHolderMap = [];

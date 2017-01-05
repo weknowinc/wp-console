@@ -14,8 +14,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use WP\Console\Command\Shared\CommandTrait;
-use WP\Console\Utils\ShellProcess;
-use WP\Console\Style\WPStyle;
+use WP\Console\Core\Style\WPStyle;
+use WP\Console\Core\Utils\ShellProcess;
 
 /**
  * Class ExecCommand

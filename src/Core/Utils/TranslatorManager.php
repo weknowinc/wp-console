@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Utils\Translator.
+ * Contains \WP\Console\Core\Utils\Translator.
  */
 
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\YamlFileLoader;

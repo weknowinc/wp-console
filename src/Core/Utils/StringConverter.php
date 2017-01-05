@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Utils\StringConverter
+ * Contains \WP\Console\Core\Utils\StringConverter
  */
 
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
 class StringConverter
 {

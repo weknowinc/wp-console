@@ -1,6 +1,6 @@
 <?php
 
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
 use Symfony\Component\Yaml\Yaml;
 use Dflydev\DotAccessConfiguration\YamlFileConfigurationBuilder;

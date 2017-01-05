@@ -1,7 +1,7 @@
 services:
   # WordpressConsoleCore Services
   console.configuration_manager:
-    class: WP\Console\Utils\ConfigurationManager
+    class: WP\Console\Core\Utils\ConfigurationManager
   console.chain:
     class: WP\Console\Core\Command\Chain\ChainCommand
     arguments: ['@console.chain_queue', '@console.chain_discovery']
@@ -13,24 +13,27 @@ services:
       tags:
         - { name: wordpress.command }
   console.chain_discovery:
-      class: WP\Console\Utils\ChainDiscovery
+      class: WP\Console\Core\Utils\ChainDiscovery
       arguments: ['@console.root', '@console.configuration_manager']
   console.chain_queue:
-      class: WP\Console\Utils\ChainQueue
+      class: WP\Console\Core\Utils\ChainQueue
   console.exec:
       class: WP\Console\Core\Command\Exec\ExecCommand
       arguments: ['@console.shell_process']
       tags:
         - { name: wordpress.command }
+  console.remote:
+      class: Drupal\Console\Core\Utils\Remote
+      arguments: ['@console.translator_manager']
   console.translator_manager:
-    class: WP\Console\Utils\TranslatorManager
+    class: WP\Console\Core\Utils\TranslatorManager
   console.shell_process:
-      class: WP\Console\Utils\ShellProcess
+      class: WP\Console\Core\Utils\ShellProcess
       arguments: ['@app.root', '@console.translator_manager']
   console.string_converter:
-        class: WP\Console\Utils\StringConverter
+        class: WP\Console\Core\Utils\StringConverter
   console.renderer:
-      class: WP\Console\Utils\TwigRenderer
+      class: WP\Console\Core\Utils\TwigRenderer
       arguments: ['@console.translator_manager', '@console.string_converter']
   # WordpressConsole Commands
   console.about:

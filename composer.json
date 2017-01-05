@@ -36,7 +36,8 @@
         "dflydev/dot-access-configuration": "^1.0",
         "symfony/translation": "^3.2",
         "symfony/finder": "^3.2",
-        "symfony/process": "^3.2"
+        "symfony/process": "^3.2",
+        "phpseclib/phpseclib": "^2.0"
     },
     "bin": ["bin/drupal"],
     "config": {

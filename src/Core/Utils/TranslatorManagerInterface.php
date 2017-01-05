@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Utils\TranslatorManagerInterface.
+ * Contains \WP\Console\Core\Utils\TranslatorManagerInterface.
  */
 
-namespace WP\Console\Utils;
+namespace WP\Console\Core\Utils;
 
 use Symfony\Component\Translation\Translator;
 
