@@ -3,7 +3,11 @@
 namespace WP\Console\Bootstrap;
 
 use WP\Console\Core\Bootstrap\WordpressConsoleCore;
-use  WP\Console\Bootstrap\WordpressServiceModifier;
+use WP\Console\Bootstrap\WordpressServiceModifier;
+use WP\Console\Core\Utils\StringConverter;
+use WP\Console\Core\Utils\TranslatorManager;
+use WP\Console\Utils\Site;
+
 
 class Wordpress
 {
@@ -12,28 +16,34 @@ class Wordpress
     protected $appRoot;
 
     /**
+     * @var Site
+     */
+    protected $site;
+
+    /**
      * Wordpress constructor.
      * @param $autoload
      * @param $appRoot
      */
     public function __construct($autoload, $root, $appRoot)
     {
+
         $this->autoload = $autoload;
         $this->root = $root;
         $this->appRoot = $appRoot;
+        $this->site = new Site($appRoot);
     }
 
     public function boot()
     {
-        $wordpress = new WordpressConsoleCore($this->root, $this->appRoot);
-
+        $wordpress = new WordpressConsoleCore($this->root, $this->appRoot, $this->site);
         $container = $wordpress->boot();
 
         $this->addServiceModifier(
             new WordpressServiceModifier(
                 $this->root,
-                'drupal.command',
-                'drupal.generator'
+                'wordpress.command',
+                'wordpress.generator'
             )
         );
 

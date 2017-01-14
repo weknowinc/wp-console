@@ -2,7 +2,7 @@
 
 namespace WP\Console\Extension;
 
-use WP\Console\Core\Utils\Site;
+use WP\Console\Utils\Site;
 
 /**
  * Class ExtensionManager

@@ -12,10 +12,28 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Style\WPStyle;
+use WP\Console\Utils\Site;
 
 class AboutCommand extends Command
 {
     use CommandTrait;
+
+    /**
+     * @var Site
+     */
+    protected $site;
+
+    /**
+     * AboutCommand constructor.
+     *
+     * @param Site                 $site
+     */
+    public function __construct(
+        Site $site
+    ) {
+        $this->site = $site;
+        parent::__construct();
+    }
 
     /**
      * {@inheritdoc}
@@ -50,17 +68,19 @@ class AboutCommand extends Command
                 $this->trans('commands.init.description'),
                 'wp-console init --override --no-interaction'
             ],
-            'site-install' => [
-                $this->trans('commands.site.install.description'),
-                sprintf(
-                    'wp-console site:install'
-                )
-            ],
             'links' => [
                 $this->trans('commands.list.description'),
                 'wp-console list',
             ]
         ];
+
+        if(!$this->site->isInstalled()) {
+            $commands['site-install'] = [
+                $this->trans('commands.site.install.description'),
+                sprintf(
+                    'wp-console site:install'
+                )];
+        }
 
         foreach ($commands as $command => $commandInfo) {
             $io->writeln($commandInfo[0]);

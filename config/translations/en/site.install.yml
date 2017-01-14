@@ -20,7 +20,7 @@ questions:
     account-pass: 'Provide your Wordpress administrator account password'
 messages:
     installing: 'Starting Wordpress 8 install process'
-    installed: 'Your Wordpress 8 installation was completed successfully'
+    installed: 'Your Wordpress installation was completed successfully'
     using-current-database: 'Using "%s" database with name "%s" and user "%s"'
     already-installed: 'Wordpress is already installed, try dropping your database executing database:drop or install executing site:install --force --no-interaction'
     sites-backup: 'The sites.php file has temporarily been renamed to backup.sites.php while Wordpress installs.'

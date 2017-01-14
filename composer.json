@@ -37,11 +37,14 @@
         "symfony/translation": "^3.2",
         "symfony/finder": "^3.2",
         "symfony/process": "^3.2",
-        "phpseclib/phpseclib": "^2.0"
+        "phpseclib/phpseclib": "^2.0",
+        "anolilab/wordpress-salt-generator": "^1.2",
+        "twig/twig": "^1.31"
     },
     "bin": ["bin/drupal"],
     "config": {
-        "bin-dir": "bin/"
+        "bin-dir": "bin/",
+        "generate-salts": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -51,5 +54,8 @@
             "src/Core/functions.php"
         ],
         "psr-4": {"WP\\Console\\": "src"}
+    },
+    "scripts": {
+        "post-root-package-install": ["Anolilab\\Wordpress\\SaltGenerator\\Generator::addSalts"]
     }
 }

@@ -3,8 +3,9 @@
 namespace WP\Console\Core\Bootstrap;
 
 use Symfony\Component\Config\FileLocator;
-use WP\Console\Core\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use WP\Console\Core\DependencyInjection\ContainerBuilder;
+use WP\Console\Utils\Site;
 
 class WordpressConsoleCore
 {
@@ -19,14 +20,20 @@ class WordpressConsoleCore
     protected $appRoot;
 
     /**
+     * @var Site
+     */
+    protected $site;
+
+    /**
      * Wordoress Console constructor.
      * @param $root
      * @param $appRoot
      */
-    public function __construct($root, $appRoot = null)
+    public function __construct($root, $appRoot = null, Site $site)
     {
         $this->appRoot = $appRoot;
         $this->root  = $root;
+        $this->site = $site;
     }
 
     /**
@@ -34,18 +41,33 @@ class WordpressConsoleCore
      */
     public function boot()
     {
-
-        // Validate that Wordpress load files is available
-        if (!empty($this->appRoot) && is_dir($this->appRoot) && file_exists($this->appRoot . '/wp-load.php')) {
-            // Load the WordPress library.
-            require_once($this->appRoot . '/wp-load.php');
-        } else {
-            return null;
-        }
-
         $container = new ContainerBuilder();
         $loader = new YamlFileLoader($container, new FileLocator($this->root));
-        $loader->load($this->root .'/services.yml');
+        $loader->load($this->root . '/services-core.yml');
+
+        // Validate that Wordpress load files is available
+        if ($config = $this->site->getConfig()) {
+            // Include files to define basic wordpress constants and variables,
+            $this->site->loadLegacyFile('wp-load.php');
+
+            $loader->load($this->root . '/services.yml');
+
+        } else {
+            // Include files to define basic wordpress constants and variables,
+            #define( 'ABSPATH', $this->appRoot . '/');
+//            define( 'ABSPATH', $this->appRoot . '/' );
+//            define( 'WPINC', 'wp-includes' );
+//
+//            $this->site->loadLegacyFile('wp-includes/load.php');
+//            $this->site->loadLegacyFile('wp-includes/functions.php');
+//            $this->site->loadLegacyFile('wp-includes/plugin.php');
+//            $this->site->loadLegacyFile('wp-includes/cache.php');
+//
+//            // Standardize $_SERVER variables across setups.
+//            wp_fix_server_vars();
+
+            $loader->load($this->root . '/services-wordpress-install.yml');
+        }
 
         $container->get('console.configuration_manager')
             ->loadConfiguration($this->root)
