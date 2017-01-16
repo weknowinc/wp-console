@@ -38,11 +38,11 @@ class ConfigurationManager
      */
     public function loadConfiguration($applicationDirectory)
     {
-        $this->applicationDirectory = $applicationDirectory;
+        $this->applicationDirectory = $applicationDirectory . "/";
         $input = new ArgvInput();
         $root = $input->getParameterOption(['--root'], null);
 
-        $configurationDirectories[] = $applicationDirectory;
+        $configurationDirectories[] = $this->applicationDirectory;
         $configurationDirectories[] = '/etc/console/wp/';
         $configurationDirectories[] = $this->getHomeDirectory() . '/.console/wp/';
         $configurationDirectories[] = getcwd().'/console/';
@@ -55,11 +55,10 @@ class ConfigurationManager
 
         $configurationFiles = [];
         foreach ($configurationDirectories as $configurationDirectory) {
-            $file =  $configurationDirectory . 'config.yml';
+            $file = $configurationDirectory . 'config.yml';
+            $this->configurationDirectories
+            [] = str_replace('//', '/', $configurationDirectory);
 
-            if (is_dir($configurationDirectory)) {
-                $this->configurationDirectories[] = str_replace('//', '/', $configurationDirectory);
-            }
 
             if (!file_exists($file)) {
                 $this->missingConfigurationFiles[] = $file;
@@ -70,7 +69,7 @@ class ConfigurationManager
                 continue;
             }
 
-            $configurationFiles[] = $file;
+            $configurationFiles[] = $configurationDirectory . 'config.yml';
         }
 
         $builder = new YamlFileConfigurationBuilder($configurationFiles);

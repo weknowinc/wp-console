@@ -7,9 +7,17 @@ services:
       arguments: ['@console.root', '@console.configuration_manager']
   console.configuration_manager:
     class: WP\Console\Core\Utils\ConfigurationManager
+  console.init:
+    class: WP\Console\Core\Command\InitCommand
+    arguments: ['@console.show_file', '@console.configuration_manager', '@console.init_generator', '@app.root', '@?console.root']
+    tags:
+      - { name: wordpress.command }
   console.renderer:
      class: WP\Console\Core\Utils\TwigRenderer
      arguments: ['@console.translator_manager', '@console.string_converter']
+  console.show_file:
+    class: WP\Console\Core\Utils\ShowFile
+    arguments: ['@app.root', '@console.translator_manager']
   console.string_converter:
      class: WP\Console\Core\Utils\StringConverter
   console.translator_manager:
@@ -20,3 +28,8 @@ services:
   console.extension_manager:
       class: WP\Console\Extension\Manager
       arguments: ['@console.site', '@app.root']
+  # WordpressConsoleCore Generators
+  console.init_generator:
+    class: WP\Console\Core\Generator\InitGenerator
+    tags:
+      - { name: wordpress.generator }

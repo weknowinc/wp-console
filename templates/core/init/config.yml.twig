@@ -1,10 +1,8 @@
 application:
   environment: 'prod'
-  language: 'en'
-  languages:
-    en: "English (United States)"
+  language: '{{language}}'
   editor: 'vim'
-  temp: '/tmp'
+  temp: '{{temp}}'
   develop: 'false'
   command: 'about'
   checked: 'false'
@@ -18,8 +16,8 @@ application:
 #      private: '~/.ssh/id_rsa'
 #      passphrase: '~/.ssh/passphrase.txt'
   options:
-    learning: true
+    learning: {{learning}}
 #    target: drupalvm.dev
 #    uri: miltisite.dev
-    generate-inline: false
-    generate-chain: false
+    generate-inline: {{generate_inline}}
+    generate-chain: {{generate_chain}}

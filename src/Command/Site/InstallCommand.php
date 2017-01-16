@@ -165,52 +165,32 @@ class InstallCommand extends Command
     /**
      * {@inheritdoc}
      */
-    /*protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
 
-        // --profile option
-        $profile = $input->getArgument('profile');
-        if (!$profile) {
-            $profiles = $this->extensionManager
-                ->discoverProfiles()
-                ->showCore()
-                ->showNoCore()
-                ->showInstalled()
-                ->showUninstalled()
-                ->getList(true);
+        $this->init($input);
+        $this->setupConfig();
 
-            $profiles = array_filter(
-                $profiles,
-                function ($profile) {
-                    return strpos($profile, 'testing') !== 0;
-                }
-            );
-
-            $profile = $io->choice(
-                $this->trans('commands.site.install.questions.profile'),
-                array_values($profiles)
-            );
-
-            $input->setArgument('profile', $profile);
-        }
 
         // --langcode option
         $langcode = $input->getOption('langcode');
         if (!$langcode) {
-            $languages = $this->site->getStandardLanguages();
+            $languages = $this->getLanguages();
+            //$defaultLanguage = 'en_GB';
             $defaultLanguage = $this->configurationManager
                 ->getConfiguration()
                 ->get('application.language');
 
             $langcode = $io->choiceNoList(
                 $this->trans('commands.site.install.questions.langcode'),
-                $languages,
+                array_values($languages),
                 $languages[$defaultLanguage]
             );
 
             $input->setOption('langcode', $langcode);
         }
+        exit();
 
         // Use default database setting if is available
         $database = Database::getConnectionInfo();
@@ -352,7 +332,7 @@ class InstallCommand extends Command
             );
             $input->setOption('account-mail', $accountMail);
         }
-    }*/
+    }
 
     /**
      * {@inheritdoc}
@@ -362,10 +342,8 @@ class InstallCommand extends Command
         $io = new WPStyle($input, $output);
         $saltGenerator = new SaltGenerator();
         $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'default'), PHP_URL_HOST);
-        $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'default'), PHP_URL_SCHEME);
 
-        $_SERVER['SERVER_NAME'] = $uri;
-        define( 'WP_SITEURL', $scheme . '://' . $uri);
+        $this->init($input);
 
         if($this->site->getConfig()) {
             $io->error(
@@ -426,7 +404,9 @@ class InstallCommand extends Command
 
     public function runInstaller($siteName, $accountName, $accountMail, $public, $accountPass) {
 
-        define('WP_INSTALLING', true);
+        if(!defined( 'WP_INSTALLING' ) ) {
+            define('WP_INSTALLING', true);
+        }
 
         $this->site->loadLegacyFile('wp-config.php');
         $this->site->loadLegacyFile('wp-admin/includes/upgrade.php' );
@@ -434,6 +414,56 @@ class InstallCommand extends Command
         $result = wp_install( $siteName, $accountName, $accountMail, $public, '', $accountPass );
 
         return !empty($result);
+    }
+
+    protected function getLanguages() {
+        $availableTranslations = wp_get_available_translations();
+        // Add default english language
+        $availableTranslations['en'] = ['native_name' => 'English (United States)'];
+
+        $languages = array_map(function($language) {
+            return $language['native_name'];
+        }, $availableTranslations);
+
+        return $languages;
+    }
+    protected function init(InputInterface $input) {
+        $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'default'), PHP_URL_HOST);
+        $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'default'), PHP_URL_SCHEME);
+
+        $_SERVER['SERVER_NAME'] = $uri;
+
+        if(!defined( 'WP_SITEURL' ) ) {
+            define('WP_SITEURL', $scheme . '://' . $uri);
+        }
+
+        if(!defined( 'WP_INSTALLING' ) ) {
+            define('WP_INSTALLING', true);
+        }
+    }
+
+    protected function setupConfig() {
+        define('WP_SETUP_CONFIG', true);
+        define( 'ABSPATH', $this->appRoot . '/' );
+        define('WPINC', 'wp-includes' );
+
+        $this->site->loadLegacyFile('wp-includes/functions.php' );
+        $this->site->loadLegacyFile('wp-includes/load.php' );
+        $this->site->loadLegacyFile('wp-includes/l10n.php');
+        $this->site->loadLegacyFile('wp-includes/general-template.php' );
+        $this->site->loadLegacyFile('wp-includes/link-template.php' );
+        $this->site->loadLegacyFile('wp-includes/class-wp-http-response.php' );
+        $this->site->loadLegacyFile('wp-includes/Requests/Hooker.php' );
+        $this->site->loadLegacyFile('wp-includes/Requests/Hooks.php' );
+        $this->site->loadLegacyFile('wp-includes/class-wp-http-requests-response.php' );
+        $this->site->loadLegacyFile('wp-includes/class-wp-http-requests-hooks.php' );
+        $this->site->loadLegacyFile('wp-includes/http.php' );
+        $this->site->loadLegacyFile('wp-includes/class-wp-http-curl.php' );
+        $this->site->loadLegacyFile('wp-includes/class-wp-http-proxy.php' );
+        $this->site->loadLegacyFile('wp-includes/class-http.php' );
+        $this->site->loadLegacyFile('wp-admin/includes/translation-install.php' );
+        $this->site->loadLegacyFile('wp-includes/plugin.php');
+
     }
 
 }

@@ -1,0 +1,7 @@
+# wp-console autocompletion
+
+function __complete_wordpress
+drupal complete |  command awk '{ print $1 }'
+end
+
+complete -x -c wp-console -a "(__complete_wordpress)"

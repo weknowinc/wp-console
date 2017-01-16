@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use WP\Console\Core\Command\Chain\ChainCustomCommand;
 use WP\Console\Core\EventSubscriber\CallCommandListener;
 use WP\Console\Core\EventSubscriber\ShowGenerateChainListener;
+use WP\Console\Core\EventSubscriber\ShowGeneratedFilesListener;
 use WP\Console\Core\EventSubscriber\ShowGenerateInlineListener;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\ConfigurationManager;
@@ -145,12 +146,12 @@ class Application extends BaseApplication
                 $this->container->get('console.chain_queue')
             )
         );
-        /*$dispatcher->addSubscriber(
+        $dispatcher->addSubscriber(
             new ShowGeneratedFilesListener(
                 $this->container->get('console.file_queue'),
                 $this->container->get('console.show_file')
             )
-        ); */
+        );
         $dispatcher->addSubscriber(
             new ShowGenerateInlineListener(
                 $this->container->get('console.translator_manager')

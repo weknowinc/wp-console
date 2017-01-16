@@ -1,10 +1,8 @@
 application:
   environment: 'prod'
-  language: 'en'
-  languages:
-    en: "English (United States)"
+  language: '{{language}}'
   editor: 'vim'
-  temp: '/tmp'
+  temp: '{{temp}}'
   develop: 'false'
   command: 'about'
   checked: 'false'
@@ -17,9 +15,18 @@ application:
 #      public: '~/.ssh/id_rsa.pub'
 #      private: '~/.ssh/id_rsa'
 #      passphrase: '~/.ssh/passphrase.txt'
+  disable:
+    modules:
+#      - module_name_one
+#      - module_name_two
+    commands:
+#      module:download: 'composer require drupal/project'
+    namespaces:
+#      - generate
+#      - create
   options:
-    learning: true
+    learning: {{learning}}
 #    target: drupalvm.dev
 #    uri: miltisite.dev
-    generate-inline: false
-    generate-chain: false
+    generate-inline: {{generate_inline}}
+    generate-chain: {{generate_chain}}

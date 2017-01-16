@@ -38,7 +38,7 @@ class Site
 
             return true;
         }
-        
+
         return false;
     }
 
