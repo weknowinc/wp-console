@@ -33,10 +33,11 @@
         "symfony/config": "^3.2",
         "symfony/yaml": "^3.2",
         "symfony/event-dispatcher": "^3.2",
-        "dflydev/dot-access-configuration": "dev-master",
         "symfony/translation": "^3.2",
         "symfony/finder": "^3.2",
         "symfony/process": "^3.2",
+        "dflydev/dot-access-configuration": "dev-master",
+        "guzzlehttp/guzzle": "~6.1",
         "phpseclib/phpseclib": "^2.0",
         "anolilab/wordpress-salt-generator": "^1.2",
         "twig/twig": "^1.31"

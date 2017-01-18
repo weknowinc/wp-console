@@ -2,27 +2,28 @@
 
 namespace WP\Console\Utils;
 
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Finder\Finder;
-use WP\Console\Core\DependencyInjection\ContainerBuilder;
-use WP\Console\Core\Utils\TwigRenderer;
-/*use WP\Console\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Language\LanguageManager;
-use Drupal\Core\Language\Language;
-use Drupal\Core\Site\Settings;*/
+use GuzzleHttp\Client;
 
 class Site
 {
     protected $appRoot;
 
     /**
+     * @var Client
+     */
+
+    protected $httpClient;
+
+    /**
      * Site constructor.
      *
      * @param $appRoot
+     * @param Client $httpClient
      */
-    public function __construct($appRoot)
+    public function __construct($appRoot, Client $httpClient)
     {
         $this->appRoot = $appRoot;
+        $this->httpClient = $httpClient;
     }
 
     public function loadLegacyFile($legacyFile, $relative = true)
@@ -65,6 +66,31 @@ class Site
         } else {
             return false;
         }
+    }
+
+    public function getLanguages() {
+
+        $languages['en'] = 'English (United States)';
+
+        $availableTranslationsResponse = $this->httpClient->request('GET', 'http://api.wordpress.org/translations/core/1.0/');
+
+        if ($availableTranslationsResponse->getStatusCode() != 200) {
+            throw new \Exception('Invalid path.');
+        }
+
+        try {
+            $availableTranslations = json_decode(
+                $availableTranslationsResponse->getBody()->getContents()
+            );
+        } catch (\Exception $e) {
+            return $languages;
+        }
+
+        foreach($availableTranslations->translations as $translation) {
+            $languages[$translation->language] = $translation->native_name;
+        }
+
+        return $languages;
     }
 
     /**

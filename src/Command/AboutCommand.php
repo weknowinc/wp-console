@@ -74,7 +74,7 @@ class AboutCommand extends Command
             ]
         ];
 
-        if(!$this->site->isInstalled()) {
+        if(!$this->isInstalled()) {
             $commands['site-install'] = [
                 $this->trans('commands.site.install.description'),
                 sprintf(

@@ -24,10 +24,13 @@ services:
     class: WP\Console\Core\Utils\TranslatorManager
   console.site:
     class: WP\Console\Utils\Site
-    arguments: ['@app.root', '@console.renderer']
+    arguments: ['@app.root', '@http_client']
   console.extension_manager:
       class: WP\Console\Extension\Manager
       arguments: ['@console.site', '@app.root']
+  # WodpressConsole Services
+  http_client:
+    class: GuzzleHttp\Client
   # WordpressConsoleCore Generators
   console.init_generator:
     class: WP\Console\Core\Generator\InitGenerator

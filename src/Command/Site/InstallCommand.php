@@ -27,7 +27,7 @@ use WP\Console\Utils\Site;
 use WP\Console\Helper\WordpressFinder;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\DatabaseTrait;
-
+use WP\Console\Core\Utils\ArgvInputReader;
 
 class InstallCommand extends Command
 {
@@ -98,37 +98,37 @@ class InstallCommand extends Command
                 'db-host',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.migrate.execute.options.db-host')
+                $this->trans('commands.site.install.options.db-host')
             )
             ->addOption(
                 'db-name',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.migrate.execute.options.db-name')
+                $this->trans('commands.site.install.options.db-name')
             )
             ->addOption(
                 'db-user',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.migrate.execute.options.db-user')
+                $this->trans('commands.site.install.options.db-user')
             )
             ->addOption(
                 'db-pass',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.migrate.execute.options.db-pass')
+                $this->trans('commands.site.install.options.db-pass')
             )
             ->addOption(
                 'db-prefix',
                 'wp_',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.migrate.execute.options.db-prefix')
+                $this->trans('commands.site.install.options.db-prefix')
             )
             ->addOption(
                 'db-port',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.migrate.execute.options.db-port')
+                $this->trans('commands.site.install.options.db-port')
             )
             ->addOption(
                 'site-name',
@@ -168,16 +168,29 @@ class InstallCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
+        $argvInputReader = new ArgvInputReader();
 
-        $this->init($input);
-        $this->setupConfig();
+        // --uri parameter
+        $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_HOST);
+        $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_SCHEME);
+        if($uri == 'default') {
+            $siteUri = $io->ask(
+                $this->trans('commands.site.install.questions.site-url'),
+                'http://wordpress.local'
+            );
+            if($siteUri != 'default') {
+                $uri =  parse_url($siteUri, PHP_URL_HOST);
+                $scheme =  parse_url($siteUri, PHP_URL_SCHEME);
+                $argvInputReader->setOptionsFromConfiguration(['--uri'=>$siteUri]);
+            }
+        }
 
+        $this->setSiteURL($scheme, $uri);
 
         // --langcode option
         $langcode = $input->getOption('langcode');
         if (!$langcode) {
-            $languages = $this->getLanguages();
-            //$defaultLanguage = 'en_GB';
+            $languages = $this->site->getLanguages();
             $defaultLanguage = $this->configurationManager
                 ->getConfiguration()
                 ->get('application.language');
@@ -190,98 +203,48 @@ class InstallCommand extends Command
 
             $input->setOption('langcode', $langcode);
         }
-        exit();
 
-        // Use default database setting if is available
-        $database = Database::getConnectionInfo();
-        if (empty($database['default'])) {
-            // --db-type option
-            $dbType = $input->getOption('db-type');
-            if (!$dbType) {
-                $databases = $this->site->getDatabaseTypes();
-                $dbType = $io->choice(
-                    $this->trans('commands.migrate.setup.questions.db-type'),
-                    array_column($databases, 'name')
-                );
+        // --db-host option
+        $dbHost = $input->getOption('db-host');
+        if (!$dbHost) {
+            $dbHost = $this->dbHostQuestion($io);
+            $input->setOption('db-host', $dbHost);
+        }
 
-                foreach ($databases as $dbIndex => $database) {
-                    if ($database['name'] == $dbType) {
-                        $dbType = $dbIndex;
-                    }
-                }
+        // --db-name option
+        $dbName = $input->getOption('db-name');
+        if (!$dbName) {
+            $dbName = $this->dbNameQuestion($io);
+            $input->setOption('db-name', $dbName);
+        }
 
-                $input->setOption('db-type', $dbType);
-            }
+        // --db-user option
+        $dbUser = $input->getOption('db-user');
+        if (!$dbUser) {
+            $dbUser = $this->dbUserQuestion($io);
+            $input->setOption('db-user', $dbUser);
+        }
 
-            if ($dbType === 'sqlite') {
-                // --db-file option
-                $dbFile = $input->getOption('db-file');
-                if (!$dbFile) {
-                    $dbFile = $io->ask(
-                        $this->trans('commands.migrate.execute.questions.db-file'),
-                        'sites/default/files/.ht.sqlite'
-                    );
-                    $input->setOption('db-file', $dbFile);
-                }
-            } else {
-                // --db-host option
-                $dbHost = $input->getOption('db-host');
-                if (!$dbHost) {
-                    $dbHost = $this->dbHostQuestion($io);
-                    $input->setOption('db-host', $dbHost);
-                }
+        // --db-pass option
+        $dbPass = $input->getOption('db-pass');
+        if (!$dbPass) {
+            $dbPass = $this->dbPassQuestion($io);
+            $input->setOption('db-pass', $dbPass);
+        }
 
-                // --db-name option
-                $dbName = $input->getOption('db-name');
-                if (!$dbName) {
-                    $dbName = $this->dbNameQuestion($io);
-                    $input->setOption('db-name', $dbName);
-                }
+        // --db-port option
+        $dbPort = $input->getOption('db-port');
+        if (!$dbPort) {
+            $dbPort = $this->dbPortQuestion($io);
+            $input->setOption('db-port', $dbPort);
+        }
 
-                // --db-user option
-                $dbUser = $input->getOption('db-user');
-                if (!$dbUser) {
-                    $dbUser = $this->dbUserQuestion($io);
-                    $input->setOption('db-user', $dbUser);
-                }
 
-                // --db-pass option
-                $dbPass = $input->getOption('db-pass');
-                if (!$dbPass) {
-                    $dbPass = $this->dbPassQuestion($io);
-                    $input->setOption('db-pass', $dbPass);
-                }
-
-                // --db-port prefix
-                $dbPort = $input->getOption('db-port');
-                if (!$dbPort) {
-                    $dbPort = $this->dbPortQuestion($io);
-                    $input->setOption('db-port', $dbPort);
-                }
-            }
-
-            // --db-prefix
-            $dbPrefix = $input->getOption('db-prefix');
-            if (!$dbPrefix) {
-                $dbPrefix = $this->dbPrefixQuestion($io);
-                $input->setOption('db-prefix', $dbPrefix);
-            }
-        } else {
-            $input->setOption('db-type', $database['default']['driver']);
-            $input->setOption('db-host', $database['default']['host']);
-            $input->setOption('db-name', $database['default']['database']);
-            $input->setOption('db-user', $database['default']['username']);
-            $input->setOption('db-pass', $database['default']['password']);
-            $input->setOption('db-port', $database['default']['port']);
-            $input->setOption('db-prefix', $database['default']['prefix']['default']);
-            $io->info(
-                sprintf(
-                    $this->trans('commands.site.install.messages.using-current-database'),
-                    $database['default']['driver'],
-                    $database['default']['database'],
-                    $database['default']['username']
-                )
-            );
+        // --db-prefix option
+        $dbPrefix = $input->getOption('db-prefix');
+        if (!$dbPrefix) {
+            $dbPrefix = $this->dbPrefixQuestion($io);
+            $input->setOption('db-prefix', $dbPrefix);
         }
 
         // --site-name option
@@ -289,19 +252,9 @@ class InstallCommand extends Command
         if (!$siteName) {
             $siteName = $io->ask(
                 $this->trans('commands.site.install.questions.site-name'),
-                'Drupal 8'
+                'Wordpress'
             );
             $input->setOption('site-name', $siteName);
-        }
-
-        // --site-mail option
-        $siteMail = $input->getOption('site-mail');
-        if (!$siteMail) {
-            $siteMail = $io->ask(
-                $this->trans('commands.site.install.questions.site-mail'),
-                'admin@example.com'
-            );
-            $input->setOption('site-mail', $siteMail);
         }
 
         // --account-name option
@@ -314,6 +267,16 @@ class InstallCommand extends Command
             $input->setOption('account-name', $accountName);
         }
 
+        // --account-mail option
+        $accountMail = $input->getOption('account-mail');
+        if (!$accountMail) {
+            $accountMail = $io->ask(
+                $this->trans('commands.site.install.questions.account-mail'),
+                'admin@example.com'
+            );
+            $input->setOption('account-mail', $accountMail);
+        }
+
         // --account-pass option
         $accountPass = $input->getOption('account-pass');
         if (!$accountPass) {
@@ -321,16 +284,6 @@ class InstallCommand extends Command
                 $this->trans('commands.site.install.questions.account-pass')
             );
             $input->setOption('account-pass', $accountPass);
-        }
-
-        // --account-mail option
-        $accountMail = $input->getOption('account-mail');
-        if (!$accountMail) {
-            $accountMail = $io->ask(
-                $this->trans('commands.site.install.questions.account-mail'),
-                $siteMail
-            );
-            $input->setOption('account-mail', $accountMail);
         }
     }
 
@@ -341,9 +294,11 @@ class InstallCommand extends Command
     {
         $io = new WPStyle($input, $output);
         $saltGenerator = new SaltGenerator();
-        $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'default'), PHP_URL_HOST);
 
-        $this->init($input);
+        $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_HOST);
+        $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_SCHEME);
+
+        $this->setSiteURL($scheme, $uri);
 
         if($this->site->getConfig()) {
             $io->error(
@@ -358,11 +313,11 @@ class InstallCommand extends Command
         $accountPass = $input->getOption('account-pass');
         $dbHost = $input->getOption('db-host')?:'127.0.0.1';
         $dbName = $input->getOption('db-name')?:'drupal_'.time();
+        $dbUser = $input->getOption('db-user')?:'root';
         $dbPass = $input->getOption('db-pass');
         $langcode = $input->getOption('langcode');
         $dbPrefix = $input->getOption('db-prefix');
         $force = $input->getOption('force');
-        $dbUser = $input->getOption('db-user')?:'root';
 
         $configParameters = array(
             'dbhost' => $dbHost,
@@ -395,6 +350,10 @@ class InstallCommand extends Command
             );
         }
 
+        $io->info(
+            $this->trans('commands.site.install.messages.installing')
+        );
+
         $this->runInstaller($siteName, $accountName, $accountMail, true, $accountPass);
 
         $io->info(
@@ -416,54 +375,14 @@ class InstallCommand extends Command
         return !empty($result);
     }
 
-    protected function getLanguages() {
-        $availableTranslations = wp_get_available_translations();
-        // Add default english language
-        $availableTranslations['en'] = ['native_name' => 'English (United States)'];
-
-        $languages = array_map(function($language) {
-            return $language['native_name'];
-        }, $availableTranslations);
-
-        return $languages;
-    }
-    protected function init(InputInterface $input) {
-        $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'default'), PHP_URL_HOST);
-        $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'default'), PHP_URL_SCHEME);
-
+    protected function setSiteURL($scheme, $uri) {
+/*        print "Scheme:" . $scheme . "\n";
+        print "Uri:" . $uri . "\n";*/
         $_SERVER['SERVER_NAME'] = $uri;
 
         if(!defined( 'WP_SITEURL' ) ) {
             define('WP_SITEURL', $scheme . '://' . $uri);
         }
-
-        if(!defined( 'WP_INSTALLING' ) ) {
-            define('WP_INSTALLING', true);
-        }
-    }
-
-    protected function setupConfig() {
-        define('WP_SETUP_CONFIG', true);
-        define( 'ABSPATH', $this->appRoot . '/' );
-        define('WPINC', 'wp-includes' );
-
-        $this->site->loadLegacyFile('wp-includes/functions.php' );
-        $this->site->loadLegacyFile('wp-includes/load.php' );
-        $this->site->loadLegacyFile('wp-includes/l10n.php');
-        $this->site->loadLegacyFile('wp-includes/general-template.php' );
-        $this->site->loadLegacyFile('wp-includes/link-template.php' );
-        $this->site->loadLegacyFile('wp-includes/class-wp-http-response.php' );
-        $this->site->loadLegacyFile('wp-includes/Requests/Hooker.php' );
-        $this->site->loadLegacyFile('wp-includes/Requests/Hooks.php' );
-        $this->site->loadLegacyFile('wp-includes/class-wp-http-requests-response.php' );
-        $this->site->loadLegacyFile('wp-includes/class-wp-http-requests-hooks.php' );
-        $this->site->loadLegacyFile('wp-includes/http.php' );
-        $this->site->loadLegacyFile('wp-includes/class-wp-http-curl.php' );
-        $this->site->loadLegacyFile('wp-includes/class-wp-http-proxy.php' );
-        $this->site->loadLegacyFile('wp-includes/class-http.php' );
-        $this->site->loadLegacyFile('wp-admin/includes/translation-install.php' );
-        $this->site->loadLegacyFile('wp-includes/plugin.php');
-
     }
 
 }

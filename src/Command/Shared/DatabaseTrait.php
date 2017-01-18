@@ -8,7 +8,8 @@
 namespace WP\Console\Command\Shared;
 
 use Symfony\Component\Console\Input\InputInterface;
-use WP\Console\Core\Style\DrupalStyle;
+use WP\Console\Core\Style\WPStyle;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * Class DatabaseTrait
@@ -25,7 +26,7 @@ trait DatabaseTrait
     public function dbHostQuestion(WPStyle $io)
     {
         return $io->ask(
-            $this->trans('commands.migrate.execute.questions.db-host'),
+            $this->trans('commands.site.install.questions.db-host'),
             '127.0.0.1'
         );
     }
@@ -35,10 +36,10 @@ trait DatabaseTrait
      *
      * @return mixed
      */
-    public function dbNameQuestion(DrupalStyle $io)
+    public function dbNameQuestion(WPStyle $io)
     {
         return $io->ask(
-            $this->trans('commands.migrate.execute.questions.db-name')
+            $this->trans('commands.site.install.questions.db-name')
         );
     }
 
@@ -47,10 +48,10 @@ trait DatabaseTrait
      *
      * @return mixed
      */
-    public function dbUserQuestion(DrupalStyle $io)
+    public function dbUserQuestion(WPStyle $io)
     {
         return $io->ask(
-            $this->trans('commands.migrate.execute.questions.db-user')
+            $this->trans('commands.site.install.questions.db-user')
         );
     }
 
@@ -59,10 +60,10 @@ trait DatabaseTrait
      *
      * @return mixed
      */
-    public function dbPassQuestion(DrupalStyle $io)
+    public function dbPassQuestion(WPStyle $io)
     {
         return $io->askHiddenEmpty(
-            $this->trans('commands.migrate.execute.questions.db-pass')
+            $this->trans('commands.site.install.questions.db-pass')
         );
     }
 
@@ -71,11 +72,10 @@ trait DatabaseTrait
      *
      * @return mixed
      */
-    public function dbPrefixQuestion(DrupalStyle $io)
+    public function dbPrefixQuestion(WPStyle $io)
     {
-        return $io->askEmpty(
-            $this->trans('commands.migrate.execute.questions.db-prefix')
-        );
+        $question = new Question($this->trans('commands.site.install.questions.db-prefix'), 'wp_');
+        return trim($io->askQuestion($question));
     }
 
     /**
@@ -83,10 +83,10 @@ trait DatabaseTrait
      *
      * @return mixed
      */
-    public function dbPortQuestion(DrupalStyle $io)
+    public function dbPortQuestion(WPStyle $io)
     {
         return $io->ask(
-            $this->trans('commands.migrate.execute.questions.db-port'),
+            $this->trans('commands.site.install.questions.db-port'),
             '3306'
         );
     }

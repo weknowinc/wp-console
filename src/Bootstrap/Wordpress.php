@@ -3,10 +3,8 @@
 namespace WP\Console\Bootstrap;
 
 use WP\Console\Core\Bootstrap\WordpressConsoleCore;
-use WP\Console\Bootstrap\WordpressServiceModifier;
-use WP\Console\Core\Utils\StringConverter;
-use WP\Console\Core\Utils\TranslatorManager;
 use WP\Console\Utils\Site;
+use GuzzleHttp\Client;
 
 
 class Wordpress
@@ -31,7 +29,7 @@ class Wordpress
         $this->autoload = $autoload;
         $this->root = $root;
         $this->appRoot = $appRoot;
-        $this->site = new Site($appRoot);
+        $this->site = new Site($appRoot, new Client());
     }
 
     public function boot()
