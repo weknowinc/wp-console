@@ -81,6 +81,8 @@ class WordpressConsoleCore
         }
 
 
+        echo "WP Content Directory:" . WP_CONTENT_DIR . PHP_EOL;
+
         $container->get('console.configuration_manager')
             ->loadConfiguration($this->root)
             ->getConfiguration();

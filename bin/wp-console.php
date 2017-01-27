@@ -63,6 +63,15 @@ if ($argvInputReader->get('remote', false)) {
     exit($remoteSuccess?0:1);
 }
 
+// Getting wordpress content directory
+$wpContentDir = $argvInputReader->get('wp-content-dir');
+print "option:" . $wpContentDir . PHP_EOL;
+if ($wpContentDir) {
+    define('WP_CONTENT_DIR', $wpContentDir );
+}
+
+echo "WP Content Directory:" . WP_CONTENT_DIR . PHP_EOL;
+
 $root = $argvInputReader->get('root');
 if (!$root) {
     $root = getcwd();

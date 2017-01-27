@@ -135,11 +135,6 @@ class Application extends BaseApplication
             new DefaultValueEventListener(
                 $this->container->get('console.configuration_manager')
             )
-        );
-        $dispatcher->addSubscriber(
-            new ShowTipsListener(
-                $this->container->get('console.translator_manager')
-            )
         );*/
         $dispatcher->addSubscriber(
             new CallCommandListener(
@@ -246,6 +241,14 @@ class Application extends BaseApplication
                 '-y',
                 InputOption::VALUE_NONE,
                 $this->trans('application.options.yes')
+            )
+        );
+        $this->getDefinition()->addOption(
+            new InputOption(
+                '--wp-content-dir',
+                '-wcd',
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('application.options.wp-content-dir')
             )
         );
     }

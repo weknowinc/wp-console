@@ -17,6 +17,7 @@ options:
     no-ansi: 'Disable ANSI output'
     no-interaction: 'Do not ask any interactive question'
     check-fix: 'Attempt to fix any missing configuration.'
+    wp-content-dir: 'Wordpress content directory'
 arguments:
     command: 'The command to execute'
 messages:
