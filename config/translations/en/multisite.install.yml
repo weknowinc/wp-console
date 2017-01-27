@@ -14,11 +14,11 @@ questions:
   network-mail: 'Provide your Wordpress network mail'
   network-base: 'Provide your Wordpress network base path'
 messages:
-    already-multisite: "Wordpress is already multisite"
-    invalid-domain: "Multisite with subdomains cannot be configured when domain is '%s"
-    installing: 'Starting Wordpress multisite install process'
-    installed: 'Your Wordpress multisite installation was completed successfully'
-    setup-tables: 'Set up multisite database tables'
-    no-wildcard-dns: 'Wildcard DNS may not be configured correctly'
-    error-installing-multisite: "Error converting Wordpress installation in mulsite network"
+  already-multisite: "Wordpress is already multisite"
+  invalid-domain: "Multisite with subdomains cannot be configured when domain is '%s"
+  installing: 'Starting Wordpress multisite install process'
+  installed: 'Your Wordpress multisite installation was completed successfully'
+  setup-tables: 'Set up multisite database tables'
+  no-wildcard-dns: 'Wildcard DNS may not be configured correctly'
+  error-installing-multisite: "Error converting Wordpress installation in mulsite network"
 

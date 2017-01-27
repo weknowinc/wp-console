@@ -3,3 +3,6 @@ status:
   uncheked: 'NO'
   enabled: 'Enabled'
   disabled: 'Disabled'
+messages:
+  reserved: 'The following words are reserved for use by WordPress functions and cannot be used as blog names: %s'
+  user-create-error: 'There was an error creating the user.'

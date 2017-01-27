@@ -145,6 +145,35 @@ class Site
         }
     }
 
+
+    /**
+     * @return int
+     */
+    public function getCurrentNetworkID() {
+        if(function_exists('get_current_network_id')) {
+            return get_current_network_id();
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * @param $domain
+     * @param $path
+     * @param $title
+     * @param $user_id
+     * @param $meta
+     * @param $site_id
+     * @return int|WP_Error
+     */
+    public function createMultisiteBlog($domain, $path, $title, $user_id, $meta, $site_id) {
+        if(function_exists('wpmu_create_blog')) {
+            return wpmu_create_blog($domain, $path, $title, $user_id, $meta, $site_id);
+        } else {
+            return null;
+        }
+    }
     public function createNetwork( $networkId, $blogId, $domain, $path, $subdomains, $user ) {
         global $wpdb, $current_site, $wp_rewrite;
 
@@ -199,7 +228,6 @@ class Site
      * @return string
      */
     public function getEmail() {
-
         if(function_exists('get_option')) {
             return get_option( 'admin_email' );
         } else {
@@ -211,18 +239,140 @@ class Site
      * @return string
      */
     public function getDomain() {
-        $domain = preg_replace('|https?://|', '', $this->getsiteUrl());
+        $domain = preg_replace('|https?://|', '', $this->getSiteUrl());
         if ( $slash = strpos( $domain, '/' ) )
             $domain = substr( $domain, 0, $slash );
         return $domain;
     }
 
     /**
+     * @return object | null
+     */
+    public function getCurrentSite() {
+        if(function_exists('get_current_site')) {
+            return get_current_site();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function canInstallLanguagePack() {
+        if(function_exists('wp_can_install_language_pack')) {
+            return wp_can_install_language_pack();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function unslash($value) {
+        if(function_exists('wp_unslash')) {
+            return wp_unslash($value);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function emailExists($email) {
+        if(function_exists('email_exists')) {
+            return email_exists($email);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function doAction($action, $argument) {
+        if(function_exists('do_action')) {
+            return do_action($action, $argument);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function usernameExists($username) {
+        if(function_exists('username_exists')) {
+            return username_exists($username);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function downloadLanguagePack($langcode) {
+        if(function_exists('wp_download_language_pack')) {
+            return wp_download_language_pack($langcode);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $length
+     * @param $special_chars
+     * @param $extra_special_chars
      * @return string
      */
-    public function getsiteUrl() {
-        if(function_exists('get_option')) {
-            return get_option('siteurl');
+    public function generatePassword( $length = 12, $special_chars = true, $extra_special_chars = false){
+        if(function_exists('wp_generate_password')) {
+            return wp_generate_password($length, $special_chars, $extra_special_chars);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $userName
+     * @param $password
+     * @param $email
+     * @return int|false
+     */
+    public function createMultisiteUser($userName, $password, $email ) {
+        if(function_exists('wpmu_create_user')) {
+            return wpmu_create_user($userName, $password, $email);
+        } else {
+            return null;
+        }
+    }
+
+    public function mail($to, $subject, $message, $headers = '', $attachments = array()){
+        if(function_exists('wp_mail')) {
+            return wp_mail($to, $subject, $message, $headers, $attachments);
+        } else {
+            return null;
+        }
+    }
+
+    public function multisiteWelcomeNotification($blog_id, $user_id, $password, $title, $meta = array()){
+        if(function_exists('wpmu_welcome_notification')) {
+            return wpmu_welcome_notification($blog_id, $user_id, $password, $title,$meta);
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getSiteUrl($blog_id = null, $path = '', $scheme = null ) {
+        if(function_exists('get_site_url')) {
+            return get_site_url($blog_id, $path, $scheme);
         } else {
             return null;
         }
@@ -251,6 +401,20 @@ class Site
     }
 
     /**
+     * @param $option
+     * @param $userID
+     * @return boolean
+     */
+    public function updateUserOption($userID, $option_name, $newvalue, $global){
+        if(function_exists('update_user_option')) {
+            return update_user_option($userID, $option_name, $newvalue, $global);
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
      * @return mixed
      */
     public function getTables($scope = 'all') {
@@ -261,6 +425,7 @@ class Site
             return [];
         }
     }
+
 
     public function setSiteURL($scheme, $uri) {
         $_SERVER['SERVER_NAME'] = $uri;
@@ -333,6 +498,20 @@ class Site
         }
     }
 
+    public function getCurrentUser(){
+        if(function_exists('wp_get_current_user')) {
+            return wp_get_current_user();
+        } else {
+            return null;
+        }
+    }
+
+
+
+    /**
+     * @param $userID
+     * @return mixed
+     */
     public function getUserSites($userID){
         if(function_exists('get_blogs_of_user')) {
             return get_blogs_of_user($userID);
@@ -342,119 +521,53 @@ class Site
     }
 
     /**
-     * @return array
-     */
-    /*public function getDatabaseTypes()
-    {
-        $this->loadLegacyFile('/core/includes/install.inc');
-        $this->setMinimalContainerPreKernel();
-
-        $finder = new Finder();
-        $finder->directories()
-            ->in($this->appRoot . '/core/lib/Drupal/Core/Database/Driver')
-            ->depth('== 0');
-
-        $databases = [];
-        foreach ($finder as $driver_folder) {
-            if (file_exists($driver_folder->getRealpath() . '/Install/Tasks.php')) {
-                $driver  = $driver_folder->getBasename();
-                $installer = db_installer_object($driver);
-                // Verify is database is installable
-                if ($installer->installable()) {
-                    $reflection = new \ReflectionClass($installer);
-                    $install_namespace = $reflection->getNamespaceName();
-                    // Cut the trailing \Install from namespace.
-                    $driver_class = substr($install_namespace, 0, strrpos($install_namespace, '\\'));
-                    $databases[$driver] = ['namespace' => $driver_class, 'name' =>$installer->name()];
-                }
-            }
-        }
-
-        return $databases;
-    }*/
-
-    /*protected function setMinimalContainerPreKernel()
-    {
-        // Create a minimal mocked container to support calls to t() in the pre-kernel
-        // base system verification code paths below. The strings are not actually
-        // used or output for these calls.
-        $container = new ContainerBuilder();
-        $container->setParameter('language.default_values', Language::$defaultValues);
-        $container
-            ->register('language.default', 'Drupal\Core\Language\LanguageDefault')
-            ->addArgument('%language.default_values%');
-        $container
-            ->register('string_translation', 'Drupal\Core\StringTranslation\TranslationManager')
-            ->addArgument(new Reference('language.default'));
-
-        // Register the stream wrapper manager.
-        $container
-            ->register('stream_wrapper_manager', 'Drupal\Core\StreamWrapper\StreamWrapperManager')
-            ->addMethodCall('setContainer', [new Reference('service_container')]);
-        $container
-            ->register('file_system', 'Drupal\Core\File\FileSystem')
-            ->addArgument(new Reference('stream_wrapper_manager'))
-            ->addArgument(Settings::getInstance())
-            ->addArgument((new LoggerChannelFactory())->get('file'));
-
-        \Drupal::setContainer($container);
-    }*/
-
-    /*public function getDatabaseTypeDriver($driver)
-    {
-        // We cannot use Database::getConnection->getDriverClass() here, because
-        // the connection object is not yet functional.
-        $task_class = "Drupal\\Core\\Database\\Driver\\{$driver}\\Install\\Tasks";
-        if (class_exists($task_class)) {
-            return new $task_class();
-        } else {
-            $task_class = "Drupal\\Driver\\Database\\{$driver}\\Install\\Tasks";
-            return new $task_class();
-        }
-    }*/
-
-    /**
+     * @param $option
+     * @param $default
      * @return mixed
      */
-    /*public function getAutoload()
+    public function getOption( $option, $default = false)
     {
-        $autoLoadFile = $this->appRoot.'/autoload.php';
-
-        return include $autoLoadFile;
-    }*/
-
-    /**
-     * @return boolean
-     */
-    public function multisiteMode($uri)
-    {
-        if ($uri != 'default') {
-            return true;
+        if (function_exists('get_site_option')) {
+            return get_site_option($option, $default);
+        } else {
+            return null;
         }
+    }
 
-        return false;
+            /**
+     * @param $option
+     * @param $userID
+     * @return mixed
+     */
+    public function getUserOption($option, $userID) {
+        if(function_exists('get_user_option')) {
+            return get_user_option($option, $userID);
+        } else {
+            return null;
+        }
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    /*public function validMultisite($uri)
-    {
-        $multiSiteFile = sprintf(
-            '%s/sites/sites.php',
-            $this->appRoot
-        );
-
-        if (file_exists($multiSiteFile)) {
-            include $multiSiteFile;
+    public function isMulsiteSubdomain(){
+        if(function_exists('is_subdomain_install')) {
+            return is_subdomain_install();
         } else {
-            return false;
+            return null;
         }
+    }
 
-        if (isset($sites[$uri]) && is_dir($this->appRoot . "/sites/" . $sites[$uri])) {
-            return true;
+    /**
+     * @return bool
+     */
+    public function getSubdirectoryReservedNames(){
+        if(function_exists('get_subdirectory_reserved_names')) {
+            return get_subdirectory_reserved_names();
+        } else {
+            return null;
         }
+    }
 
-        return false;
-    }*/
+
 }

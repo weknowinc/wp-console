@@ -1,0 +1,25 @@
+description: 'Add New Site a Wordpress multisite network'
+arguments:
+options:
+  network-url: 'Wordpress network url'
+  network-title: 'Wordpress network title'
+  network-mail: 'Wordpress network administrator mail'
+  network-base: 'Wordpress network base path after the domain name that each site url in the network'
+questions:
+  subdomain-example-network-url: '[YOUR-SUBDOMAIN-HERE]'
+  subdirectory-example-network-url: '[YOUR-SUBDIRECTORY-HERE]'
+  network-url: 'Provide your Wordpress network url'
+  network-title: 'Provide your Wordpress network title'
+  network-mail: 'Provide your Wordpress network mail'
+  network-base: 'Provide your Wordpress network base path'
+messages:
+  user-conflict: 'The domain or path entered conflicts with an existing username.'
+  new-site-created: '[%s] New Site Created'
+  new-site-created-by: |
+    New site created by %s
+
+    Address= $s
+    Name= %s
+  email-front: 'From: Site Admin" <%s>'
+  created: 'New Site was created sucessfully'
+

@@ -5,6 +5,10 @@ services:
     arguments: ['@console.site']
     tags:
       - { name: wordpress.command }
+  console.list:
+    class: WP\Console\Core\Command\ListCommand
+    tags:
+      - { name: drupal.command }
   # Installer services
   console.chain_queue:
       class: WP\Console\Core\Utils\ChainQueue
