@@ -1,3 +1,10 @@
 commands:
   aliases:
-
+    multisite:debug:
+      - md
+    multisite:new:
+      - mn
+    multisite:install:
+      - mi
+    site:install:
+      - si

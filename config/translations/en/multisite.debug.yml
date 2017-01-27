@@ -3,6 +3,7 @@ help: 'The <info>multisite:debug</info> list all known sites in network availabl
 options:
   user-id: 'Wordpress User ID'
 messages:
+  user-sites: 'List of sites associated to user %s [id: %s]'
   id: 'ID'
   name: 'Name'
   url: 'URL'

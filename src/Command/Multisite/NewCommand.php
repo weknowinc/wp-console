@@ -63,7 +63,7 @@ class NewCommand extends Command
 
         $this
             ->setName('multisite:new')
-            ->setDescription($this->trans('commands.multisite:new.description'))
+            ->setDescription($this->trans('commands.multisite.new.description'))
             ->addOption(
                 'network-url',
                 '/',

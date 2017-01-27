@@ -7,14 +7,15 @@
 
 namespace WP\Console\Core\Command;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use WP\Console\Command\Shared\CommandTrait;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Helper\DescriptorHelper;
+use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class ListCommand
@@ -52,13 +53,6 @@ class ListCommand extends Command
     {
         $io = new WPStyle($input, $output);
 
-        if ($input->getOption('xml')) {
-            $io->info(
-                'The --xml option was deprecated in version 2.7 and will be removed in version 3.0. Use the --format option instead',
-                E_USER_DEPRECATED
-            );
-            $input->setOption('format', 'xml');
-        }
         $helper = new DescriptorHelper();
         $helper->describe(
             $io,

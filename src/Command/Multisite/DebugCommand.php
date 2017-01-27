@@ -78,6 +78,14 @@ class DebugCommand extends Command
 
         $sites = $this->site->getUserSites($currentUser->ID);
 
+        $io->info(
+            sprintf(
+                $this->trans('commands.multisite.debug.messages.user-sites'),
+                $currentUser->display_name,
+                $currentUser->ID
+            )
+        );
+
         $tableHeader = [
             $this->trans('commands.multisite.debug.messages.id'),
             $this->trans('commands.multisite.debug.messages.name'),
