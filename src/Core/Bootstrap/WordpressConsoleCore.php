@@ -6,6 +6,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use WP\Console\Core\DependencyInjection\ContainerBuilder;
 use WP\Console\Utils\Site;
+use WP\Console\Core\Utils\ArgvInputReader;
 
 class WordpressConsoleCore
 {
@@ -41,33 +42,44 @@ class WordpressConsoleCore
      */
     public function boot()
     {
+        $argvInputReader = new ArgvInputReader();
         $container = new ContainerBuilder();
         $loader = new YamlFileLoader($container, new FileLocator($this->root));
         $loader->load($this->root . '/services-core.yml');
 
         // Validate that Wordpress load files is available
         if ($config = $this->site->getConfig()) {
-            // Include files to define basic wordpress constants and variables,
-            $this->site->loadLegacyFile('wp-load.php');
+            // Include files to define basic wordpress constants and variables
+            try {
+                $uri = $argvInputReader->get('uri');
+                $this->site->setGlobalServer($uri);
+
+                if($uri == 'http://default') {
+                    $constants = $this->site->extractConstants($config);
+                    if (isset($constants['MULTISITE']) && $constants['MULTISITE'] = 'true') {
+                        if (isset($constants['MULTISITE'])) {
+                            $this->site->setGlobalServer($constants['DOMAIN_CURRENT_SITE'], $constants['PATH_CURRENT_SITE']);
+                        }
+                    }
+                }
+                $this->site->loadLegacyFile('wp-load.php');
+            } catch(\Exception $e) {
+                echo $e->getMessage();
+            }
 
             $loader->load($this->root . '/services.yml');
 
-        } else {
-            // Include files to define basic wordpress constants and variables,
-            #define( 'ABSPATH', $this->appRoot . '/');
-//            define( 'ABSPATH', $this->appRoot . '/' );
-//            define( 'WPINC', 'wp-includes' );
-//
-//            $this->site->loadLegacyFile('wp-includes/load.php');
-//            $this->site->loadLegacyFile('wp-includes/functions.php');
-//            $this->site->loadLegacyFile('wp-includes/plugin.php');
-//            $this->site->loadLegacyFile('wp-includes/cache.php');
-//
-//            // Standardize $_SERVER variables across setups.
-//            wp_fix_server_vars();
+            if($this->site->isMultisite()) {
+                $loader->load($this->root . '/services-multisite.yml');
 
-            $loader->load($this->root . '/services-wordpress-install.yml');
+            } else {
+                $loader->load($this->root . '/services-multisite-install.yml');
+            }
+        } else {
+            $loader->load($this->root . '/services-install.yml');
+            $loader->load($this->root . '/services-multisite-install.yml');
         }
+
 
         $container->get('console.configuration_manager')
             ->loadConfiguration($this->root)

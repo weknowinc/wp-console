@@ -74,11 +74,17 @@ class AboutCommand extends Command
             ]
         ];
 
-        if(!$this->isInstalled()) {
+        if(!$this->site->isInstalled()) {
             $commands['site-install'] = [
                 $this->trans('commands.site.install.description'),
                 sprintf(
                     'wp-console site:install'
+                )];
+        } elseif(!$this->site->isMultisite()) {
+            $commands['site-install'] = [
+                $this->trans('commands.site.multisite.install.description'),
+                sprintf(
+                    'wp-console site:multisite:install'
                 )];
         }
 

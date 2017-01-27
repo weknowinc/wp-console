@@ -8,23 +8,15 @@
 namespace WP\Console\Command\Site;
 
 use Anolilab\Wordpress\SaltGenerator\Generator as SaltGenerator;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
-/*use Drupal\Core\Database\Database;
-use Drupal\Core\Installer\Exception\AlreadyInstalledException;*/
 use WP\Console\Core\Generator\SiteInstallGenerator;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Extension\Manager;
 use WP\Console\Core\Style\WPStyle;
-use WP\Console\Bootstrap\Wordpress;
 use WP\Console\Utils\Site;
-use WP\Console\Helper\WordpressFinder;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\DatabaseTrait;
 use WP\Console\Core\Utils\ArgvInputReader;
@@ -124,12 +116,12 @@ class InstallCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.site.install.options.db-prefix')
             )
-            ->addOption(
+            /*->addOption(
                 'db-port',
                 '',
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.site.install.options.db-port')
-            )
+            )*/
             ->addOption(
                 'site-name',
                 '',
@@ -185,7 +177,7 @@ class InstallCommand extends Command
             }
         }
 
-        $this->setSiteURL($scheme, $uri);
+        $this->site->setSiteURL($scheme, $uri);
 
         // --langcode option
         $langcode = $input->getOption('langcode');
@@ -233,12 +225,11 @@ class InstallCommand extends Command
         }
 
         // --db-port option
-        $dbPort = $input->getOption('db-port');
+        /*$dbPort = $input->getOption('db-port');
         if (!$dbPort) {
             $dbPort = $this->dbPortQuestion($io);
             $input->setOption('db-port', $dbPort);
-        }
-
+        }*/
 
         // --db-prefix option
         $dbPrefix = $input->getOption('db-prefix');
@@ -298,7 +289,7 @@ class InstallCommand extends Command
         $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_HOST);
         $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_SCHEME);
 
-        $this->setSiteURL($scheme, $uri);
+        $this->site->setSiteURL($scheme, $uri);
 
         if($this->site->getConfig()) {
             $io->error(
@@ -336,6 +327,8 @@ class InstallCommand extends Command
             'secureSalt' => $saltGenerator->generateSalt(),
             'loggedInSalt' => $saltGenerator->generateSalt(),
             'NonceSalt' => $saltGenerator->generateSalt(),
+            'multisite' => '',
+
         );
 
         $this->generator->generate(
@@ -374,15 +367,4 @@ class InstallCommand extends Command
 
         return !empty($result);
     }
-
-    protected function setSiteURL($scheme, $uri) {
-/*        print "Scheme:" . $scheme . "\n";
-        print "Uri:" . $uri . "\n";*/
-        $_SERVER['SERVER_NAME'] = $uri;
-
-        if(!defined( 'WP_SITEURL' ) ) {
-            define('WP_SITEURL', $scheme . '://' . $uri);
-        }
-    }
-
 }

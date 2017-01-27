@@ -68,6 +68,238 @@ class Site
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function isMultisite() {
+
+        if(function_exists('is_multisite')) {
+            if (is_multisite()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            print 'not found';
+            return false;
+        }
+    }
+
+    /**
+     * @return WP_User|false WP_User object on success, false on failure.
+     */
+    public function getUserByField($field, $value) {
+
+        if(function_exists('get_user_by')) {
+            return get_user_by($field,$value);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return WP_User|false WP_User object on success, false on failure.
+     */
+    public function getUsers($fields) {
+
+        if(function_exists('get_users')) {
+            return get_users($fields);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuperAdmin($userId) {
+
+        if(function_exists('is_super_admin')) {
+            return is_super_admin($userId);
+        } else {
+            return false;
+        }
+    }
+
+    public function addSiteAdmin( $newAdmin ) {
+        $site_admins = array( $newAdmin->user_login );
+        $users = $this->getUsers(array( 'fields' => array( 'ID', 'user_login' )));
+        if ( $users ) {
+            foreach ( $users as $user ) {
+                if ( $this->isSuperAdmin($user->ID) && !in_array( $user->user_login, $site_admins ) )
+                    $site_admins[] = $user->user_login;
+            }
+        }
+
+        $this->updateOption('site_admins', $site_admins );
+    }
+
+    /**
+     * @return bool
+     */
+    public function updateUserMeta($userId, $key, $value, $prevValue = '') {
+        if(function_exists('update_user_meta')) {
+            return update_user_meta($userId, $key, $value, $prevValue);
+        } else {
+            return null;
+        }
+    }
+
+    public function createNetwork( $networkId, $blogId, $domain, $path, $subdomains, $user ) {
+        global $wpdb, $current_site, $wp_rewrite;
+
+        $current_site = new \stdClass;
+        $current_site->domain = $domain;
+        $current_site->path = $path;
+        $current_site->site_name = ucfirst( $domain );
+
+        $wpdb->insert( $wpdb->blogs, array(
+            'site_id' => $networkId,
+            'domain' => $domain,
+            'path' => $path,
+            'registered' => current_time( 'mysql' )
+        ) );
+
+        $current_site->blog_id = $blogId = $wpdb->insert_id;
+        $this->updateUserMeta($user->ID, 'source_domain', $domain );
+        $this->updateUserMeta($user->ID, 'primary_blog', $blogId );
+
+        if ($subdomains)
+            $wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
+        else
+            $wp_rewrite->set_permalink_structure( '/blog/%year%/%monthnum%/%day%/%postname%/' );
+
+        $this->flushRewriteRules();
+    }
+
+    /**
+     * @return bool
+     */
+    public function flushRewriteRules() {
+        if(function_exists('flush_rewrite_rules')) {
+            return flush_rewrite_rules();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle() {
+
+        if(function_exists('get_bloginfo')) {
+           return get_bloginfo();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail() {
+
+        if(function_exists('get_option')) {
+            return get_option( 'admin_email' );
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomain() {
+        $domain = preg_replace('|https?://|', '', $this->getsiteUrl());
+        if ( $slash = strpos( $domain, '/' ) )
+            $domain = substr( $domain, 0, $slash );
+        return $domain;
+    }
+
+    /**
+     * @return string
+     */
+    public function getsiteUrl() {
+        if(function_exists('get_option')) {
+            return get_option('siteurl');
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function deleteOption($option) {
+        if(function_exists('delete_site_option')) {
+            return delete_site_option($option);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function updateOption($option, $value) {
+        if(function_exists('update_site_option')) {
+            return update_site_option($option, $value);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTables($scope = 'all') {
+        global $wpdb;
+        if(is_object($wpdb)) {
+            return $wpdb->tables($scope);
+        } else {
+            return [];
+        }
+    }
+
+    public function setSiteURL($scheme, $uri) {
+        $_SERVER['SERVER_NAME'] = $uri;
+
+        if(!defined( 'WP_SITEURL' ) ) {
+            define('WP_SITEURL', $scheme . '://' . $uri);
+        }
+    }
+
+    // Setup global $_SERVER variables to keep WP from trying to redirect
+    public function setGlobalServer($uri,$basePath = '/', $method = 'GET') {
+        $_SERVER['HTTP_HOST'] = $uri;
+        $_SERVER['SERVER_NAME'] = $uri;
+        $_SERVER['REQUEST_URI'] = $basePath;
+        $_SERVER['REQUEST_METHOD'] = $method;
+    }
+
+    public function extractConstants($filename){
+        $constants = [];
+        if (file_exists($filename)) {
+            //$content=fopen($filename,'r');
+            $lines = file($filename);
+            foreach ($lines as $line) {
+                preg_match_all("/^define\((.*)\);$/m", $line, $m);
+                if (!empty($m[1])) {
+                    $line = $m[1][0];
+                } else {
+                    continue;
+                }
+                list($key, $value) = explode(',', $line);
+                $key = ltrim(trim(str_replace('"', '', str_replace("'", '', $key))));
+                $value = ltrim(trim(str_replace('"', '', str_replace("'", '', $value))));
+                $constants[$key] = $value;
+            }
+        }
+
+        return $constants;
+    }
+
     public function getLanguages() {
 
         $languages['en'] = 'English (United States)';
@@ -93,19 +325,21 @@ class Site
         return $languages;
     }
 
-    /**
-     * @return array
-     */
-    /*public function getStandardLanguages()
-    {
-        $standardLanguages = LanguageManager::getStandardLanguageList();
-        $languages = [];
-        foreach ($standardLanguages as $langcode => $standardLanguage) {
-            $languages[$langcode] = $standardLanguage[0];
+    public function setCurrentUser($userID){
+        if(function_exists('wp_set_current_user')) {
+            return wp_set_current_user($userID);
+        } else {
+            return null;
         }
+    }
 
-        return $languages;
-    }*/
+    public function getUserSites($userID){
+        if(function_exists('get_blogs_of_user')) {
+            return get_blogs_of_user($userID);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @return array

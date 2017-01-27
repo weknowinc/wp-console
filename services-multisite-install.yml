@@ -1,18 +1,11 @@
 services:
   # Installer services
-  console.site_install:
-    class: WP\Console\Command\Site\InstallCommand
-    arguments: ['@console.extension_manager', '@console.site', '@console.configuration_manager', '@app.root', '@console.site_install_generator']
-    tags:
-      - { name: wordpress.command }
+  console.multisite_install:
+      class: WP\Console\Command\Multisite\InstallCommand
+      arguments: ['@console.site', '@console.configuration_manager', '@app.root', '@console.site_install_generator', '@console.chain_queue']
+      tags:
+        - { name: wordpress.command }
   # WordpressConsole Commands
-  console.about:
-    class: WP\Console\Command\AboutCommand
-    arguments: ['@console.site']
-    tags:
-      - { name: wordpress.command }
-  console.file_queue:
-    class: WP\Console\Core\Utils\FileQueue
   # WordpressConsoleCore Generators
   console.site_install_generator:
     class: WP\Console\Core\Generator\SiteInstallGenerator

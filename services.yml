@@ -1,10 +1,4 @@
 services:
-  # WordpressConsole Commands
-  console.about:
-    class: WP\Console\Command\AboutCommand
-    arguments: ['@console.site']
-    tags:
-      - { name: wordpress.command }
   # WordpressConsoleCore Services
   console.chain:
     class: WP\Console\Core\Command\Chain\ChainCommand

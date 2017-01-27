@@ -1,0 +1,24 @@
+description: 'Install a Wordpress multisite network'
+arguments:
+options:
+  subdomains: 'If passed, the network will use subdomains, instead of subdirectories.'
+  network-title: 'Wordpress network title'
+  network-mail: 'Wordpress network administrator mail'
+  network-base: 'Wordpress network base path after the domain name that each site url in the network'
+questions:
+  subdomains:
+    question: 'Provide your Wordpress multisite type'
+    subdomains: 'Sub-domains'
+    subdirectories: 'Sub-directories'
+  network-title: 'Provide your Wordpress network title'
+  network-mail: 'Provide your Wordpress network mail'
+  network-base: 'Provide your Wordpress network base path'
+messages:
+    already-multisite: "Wordpress is already multisite"
+    invalid-domain: "Multisite with subdomains cannot be configured when domain is '%s"
+    installing: 'Starting Wordpress multisite install process'
+    installed: 'Your Wordpress multisite installation was completed successfully'
+    setup-tables: 'Set up multisite database tables'
+    no-wildcard-dns: 'Wildcard DNS may not be configured correctly'
+    error-installing-multisite: "Error converting Wordpress installation in mulsite network"
+

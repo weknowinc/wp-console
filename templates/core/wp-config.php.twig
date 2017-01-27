@@ -65,6 +65,17 @@ $table_prefix = '{{dbprefix}}';
 
 define( 'WPLANG', '{{locale}}' );
 
+{% if multisite %}
+/* Multisite */
+define( 'WP_ALLOW_MULTISITE', {{multisite}} );
+define( 'MULTISITE', true );
+define( 'SUBDOMAIN_INSTALL', {{subdomains}} );
+define( 'DOMAIN_CURRENT_SITE', '{{domain}}' );
+define( 'PATH_CURRENT_SITE', '{{base}}' );
+define( 'SITE_ID_CURRENT_SITE', 1 );
+define( 'BLOG_ID_CURRENT_SITE', 1 );
+{% endif %}
+
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */

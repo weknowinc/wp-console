@@ -78,7 +78,7 @@ class ArgvInputReader
                 continue;
             }
 
-            if (!$argvInput->hasParameterOption($key)) {
+            if (!$argvInput->hasParameterOption('--'.$key)) {
                 if ($option == 1) {
                     $_SERVER['argv'][] = sprintf('--%s', $key);
                 } else {

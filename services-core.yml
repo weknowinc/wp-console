@@ -1,4 +1,10 @@
 services:
+  # WordpressConsole Commands
+  console.about:
+    class: WP\Console\Command\AboutCommand
+    arguments: ['@console.site']
+    tags:
+      - { name: wordpress.command }
   # Installer services
   console.chain_queue:
       class: WP\Console\Core\Utils\ChainQueue
@@ -31,6 +37,8 @@ services:
   # WodpressConsole Services
   http_client:
     class: GuzzleHttp\Client
+  console.file_queue:
+    class: WP\Console\Core\Utils\FileQueue
   # WordpressConsoleCore Generators
   console.init_generator:
     class: WP\Console\Core\Generator\InitGenerator

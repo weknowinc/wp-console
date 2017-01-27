@@ -1,0 +1,15 @@
+description: "List all sites in network available to a specific user"
+help: 'The <info>multisite:debug</info> list all known sites in network available to a specific user.'
+options:
+  user-id: 'Wordpress User ID'
+messages:
+  id: 'ID'
+  name: 'Name'
+  url: 'URL'
+  path: 'Path'
+  archived: 'Archived'
+  mature: 'Mature'
+  spam: 'Spam'
+  deleted: 'Deleted'
+  true: 'True'
+  false: 'False'

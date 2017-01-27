@@ -1,6 +1,5 @@
 description: 'Install a Wordpress project'
 arguments:
-    profile: 'Wordpress Profile to be installed'
     langcode: 'Wordpress language'
     db-type: 'Wordpress Database type to be used in install'
     db-file: 'Wordpress Database file to be used in install'

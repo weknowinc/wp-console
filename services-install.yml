@@ -1,0 +1,12 @@
+services:
+  # Installer services
+  console.site_install:
+    class: WP\Console\Command\Site\InstallCommand
+    arguments: ['@console.extension_manager', '@console.site', '@console.configuration_manager', '@app.root', '@console.site_install_generator']
+    tags:
+      - { name: wordpress.command }
+  # WordpressConsoleCore Generators
+  console.site_install_generator:
+    class: WP\Console\Core\Generator\SiteInstallGenerator
+    tags:
+      - { name: wordpress.generator }

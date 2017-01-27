@@ -43,9 +43,19 @@ class SiteInstallGenerator extends Generator
             );
         }
 
+        # Render wordpress config
         $this->renderFile(
             'core/wp-config.php.twig',
             $configFile,
+            $configParameters
+        );
+
+        $htaccessFile = $root . '/.htaccess';
+
+        # Render htaccess file
+        $this->renderFile(
+            'core/htaccess.twig',
+            $htaccessFile,
             $configParameters
         );
     }

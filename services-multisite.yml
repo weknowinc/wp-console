@@ -1,0 +1,13 @@
+services:
+  # WordpressConsole Commands
+  console.multisite_debug:
+    class: WP\Console\Command\Multisite\DebugCommand
+    arguments: ['@app.root', '@console.site']
+    tags:
+      - { name: wordpress.command }
+  # WordpressConsoleCore Generators
+#  console.multisite_new:
+#    class: WP\Console\Command\Multisite\NewCommand
+#    arguments: ['@app.root']
+#    tags:
+#      - { name: wordpress.command }
