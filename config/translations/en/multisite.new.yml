@@ -21,5 +21,6 @@ messages:
     Address= $s
     Name= %s
   email-front: 'From: Site Admin" <%s>'
+  content-dir-created: 'Wordpress content directory was created successfully'
   created: 'New Site was created sucessfully'
 

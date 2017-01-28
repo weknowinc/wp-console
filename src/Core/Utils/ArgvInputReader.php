@@ -151,6 +151,7 @@ class ArgvInputReader
         $source = $input->getParameterOption(['--source', '-s'], null);
         $target = $input->getParameterOption(['--target', '-t'], null);
         $root = $input->getParameterOption(['--root'], null);
+        $wcd = $input->getParameterOption(['--wp-content-dir', '-wcd'], null);
         $uri = $input->getParameterOption(['--uri', '-l']) ?: 'default';
         if ($uri && !preg_match('/^(http|https):\/\//', $uri)) {
             $uri = sprintf('http://%s', $uri);
@@ -161,6 +162,7 @@ class ArgvInputReader
         $this->set('uri', $uri);
         $this->set('source', $source);
         $this->set('target', $target);
+        $this->set('wp-content-dir', $wcd);
     }
 
     /**

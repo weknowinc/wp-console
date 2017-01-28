@@ -7,7 +7,11 @@ services:
       - { name: wordpress.command }
   console.multisite_new:
     class: WP\Console\Command\Multisite\NewCommand
-    arguments: ['@console.site', '@console.configuration_manager', '@app.root']
+    arguments: ['@console.site', '@console.configuration_manager', '@app.root', '@console.silent_index_generator']
     tags:
       - { name: wordpress.command }
   # WordpressConsoleCore Generators
+  console.silent_index_generator:
+    class: WP\Console\Core\Generator\SilentIndexGenerator
+    tags:
+      - { name: wordpress.generator }

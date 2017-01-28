@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
+use WP\Console\Core\Generator\SilentIndexGenerator;
 use WP\Console\Core\Utils\ArgvInputReader;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Core\Style\WPStyle;
@@ -39,22 +40,30 @@ class NewCommand extends Command
      */
     protected $appRoot;
 
+    /**
+     * @var SilentIndexGenerator
+     */
+    protected $generator;
+
 
     /**
      * InstallCommand constructor.
      *
-     * @param Site                 $site
-     * @param ConfigurationManager $configurationManager
-     * @param string               $appRoot
+     * @param Site                  $site
+     * @param ConfigurationManager  $configurationManager
+     * @param string                $appRoot
+     * @parant SilentIndexGenerator $generator
      */
     public function __construct(
         Site $site,
         ConfigurationManager $configurationManager,
-        $appRoot
+        $appRoot,
+        SilentIndexGenerator $generator
     ) {
         $this->site = $site;
         $this->configurationManager = $configurationManager;
         $this->appRoot = $appRoot;
+        $this->generator = $generator;
         parent::__construct();
     }
 
@@ -261,6 +270,16 @@ class NewCommand extends Command
             );
 
             $this->site->multisiteWelcomeNotification($id, $userID, $password, $networkTitle, array( 'public' => 1 ));
+
+            // Check if WP_CONTENT_DIR exist
+            if(!is_dir(WP_CONTENT_DIR)) {
+                $this->generator->generate($this->appRoot, WP_CONTENT_DIR);
+                $this->generator->generate($this->appRoot, WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'plugins');
+                $this->generator->generate($this->appRoot, WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes');
+                $io->info(
+                    $this->trans('commands.multisite.new.messages.content-dir-created')
+                );
+            }
 
             $io->info(
                 $this->trans('commands.multisite.new.messages.created')
