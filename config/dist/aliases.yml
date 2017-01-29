@@ -8,3 +8,5 @@ commands:
       - mi
     site:install:
       - si
+    generate:plugin:
+      - gp

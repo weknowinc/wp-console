@@ -18,7 +18,7 @@ use WP\Console\Utils\Site;
 /**
  * Class SiteDebugCommand
  *
- * @package Drupal\Console\Command\Site
+ * @package WP\Console\Command\Site
  */
 class DebugCommand extends Command
 {

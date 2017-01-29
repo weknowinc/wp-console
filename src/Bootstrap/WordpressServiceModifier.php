@@ -2,6 +2,7 @@
 
 namespace WP\Console\Bootstrap;
 
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use WP\Console\Core\DependencyInjection\ServiceModifierInterface;
 use WP\Console\Core\DependencyInjection\ContainerBuilder;
 use WP\Console\Bootstrap\AddServicesCompilerPass;
@@ -47,14 +48,19 @@ class WordpressServiceModifier implements ServiceModifierInterface
      */
     public function alter(ContainerBuilder $container)
     {
+        print 'before' . PHP_EOL;
+        $ret = $container->addCompilerPass(
+            new AddServicesCompilerPass($this->root),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION
+        );
+        print_r(get_class($ret));
         $container->addCompilerPass(
-            new AddServicesCompilerPass($this->root)
+            new FindCommandsCompilerPass($this->commandTag),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION
         );
         $container->addCompilerPass(
-            new FindCommandsCompilerPass($this->commandTag)
-        );
-        $container->addCompilerPass(
-            new FindGeneratorsCompilerPass($this->generatorTag)
+            new FindGeneratorsCompilerPass($this->generatorTag),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION
         );
     }
 }

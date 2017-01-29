@@ -1,0 +1,5 @@
+services:
+  console.plugin_generator:
+    class: WP\Console\Generator\PluginGenerator
+    tags:
+      - { name: wordpress.generator }
