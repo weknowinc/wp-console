@@ -21,3 +21,6 @@ services:
   console.shell_process:
       class: WP\Console\Core\Utils\ShellProcess
       arguments: ['@app.root', '@console.translator_manager']
+  console.validator:
+      class: WP\Console\Utils\Validator
+      arguments: ['@console.extension_manager']

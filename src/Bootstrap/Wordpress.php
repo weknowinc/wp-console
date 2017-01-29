@@ -45,14 +45,11 @@ class Wordpress
             )
         );
 
-
-        var_export($this->serviceModifiers);
-        echo PHP_EOL;
-
         foreach ($this->serviceModifiers as $serviceModifier) {
             $serviceModifier->alter($container);
         }
 
+        $container->compile();
         return $wordpress->boot();
     }
 

@@ -48,12 +48,10 @@ class WordpressServiceModifier implements ServiceModifierInterface
      */
     public function alter(ContainerBuilder $container)
     {
-        print 'before' . PHP_EOL;
-        $ret = $container->addCompilerPass(
+        $container->addCompilerPass(
             new AddServicesCompilerPass($this->root),
             PassConfig::TYPE_BEFORE_OPTIMIZATION
         );
-        print_r(get_class($ret));
         $container->addCompilerPass(
             new FindCommandsCompilerPass($this->commandTag),
             PassConfig::TYPE_BEFORE_OPTIMIZATION

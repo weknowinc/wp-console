@@ -33,20 +33,14 @@ class AddServicesCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        print 'Before process' . PHP_EOL;
         $loader = new YamlFileLoader(
             $container,
             new FileLocator($this->root)
         );
 
-        $loader->load($this->root . 'services.yml');
+        $loader->load($this->root . DIRECTORY_SEPARATOR . 'services.yml');
 
-        print 'here2' . PHP_EOL;
         $finder = new Finder();
-        print sprintf(
-            '%s/config/services/wp-console',
-            $this->root
-        );
 
         $finder->files()
             ->name('*.yml')
@@ -58,7 +52,7 @@ class AddServicesCompilerPass implements CompilerPassInterface
             );
 
         foreach ($finder as $file) {
-            print 'file:' . $file->getPathName() . PHP_EOL;
+            print $file . PHP_EOL;
             $loader->load($file->getPathName());
         }
 
@@ -66,13 +60,13 @@ class AddServicesCompilerPass implements CompilerPassInterface
          * @var Manager $extensionManager
          */
         $extensionManager = $container->get('console.extension_manager');
-        $modules = $extensionManager->discoverModules()
+        /*$modules = $extensionManager->discoverModules()
             ->showCore()
             ->showNoCore()
             ->showInstalled()
-            ->getList(true);
+            ->getList(true);*/
 
-        $finder = new Finder();
+       /* $finder = new Finder();
         $finder->files()
             ->name('*.yml')
             ->in(
@@ -80,13 +74,13 @@ class AddServicesCompilerPass implements CompilerPassInterface
                     '%s/config/services/wp-core',
                     $this->root
                 )
-            );
+            );*/
 
-        foreach ($finder as $file) {
+        /*foreach ($finder as $file) {
             if (in_array($file->getBasename('.yml'), $modules)) {
                 $loader->load($file->getPathName());
             }
-        }
+        }*/
 
         $container->setParameter(
             'console.service_definitions',
