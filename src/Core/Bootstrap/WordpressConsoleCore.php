@@ -3,10 +3,13 @@
 namespace WP\Console\Core\Bootstrap;
 
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use WP\Console\Core\DependencyInjection\ContainerBuilder;
 use WP\Console\Utils\Site;
 use WP\Console\Core\Utils\ArgvInputReader;
+use WP\Console\Core\Site\Settings;
+use WP\Console\Component\FileCache\FileCacheFactory;
 
 class WordpressConsoleCore
 {
@@ -61,13 +64,34 @@ class WordpressConsoleCore
                             $this->site->setGlobalServer($constants['DOMAIN_CURRENT_SITE'], $constants['PATH_CURRENT_SITE']);
                         }
                     }
+                } else {
+                    $host =  parse_url($uri, PHP_URL_HOST);
+                    $path =  parse_url($uri, PHP_URL_PATH);
+                    $this->site->setGlobalServer($host, $path);
                 }
+
                 $this->site->loadLegacyFile('wp-load.php');
             } catch(\Exception $e) {
                 echo $e->getMessage();
             }
 
             $loader->load($this->root . '/services.yml');
+
+            // Register commands
+            $finder = new Finder();
+
+            $finder->files()
+                ->name('*.yml')
+                ->in(
+                    sprintf(
+                        '%s/config/services/wp-console',
+                        $this->root
+                    )
+                );
+
+            foreach ($finder as $file) {
+                $loader->load($file->getPathName());
+            }
 
             if($this->site->isMultisite()) {
                 $loader->load($this->root . '/services-multisite.yml');
@@ -106,6 +130,20 @@ class WordpressConsoleCore
                     $this->root.'/templates/',
                 ]
             );
+
+        // Initialize the FileCacheFactory component. We have to do it here instead
+        // of in \WP\Console\Component\FileCache\FileCacheFactory because we can not use
+        // the Settings object in a component.
+        $configuration = Settings::get('file_cache');
+
+        // Provide a default configuration, if not set.
+        if (!isset($configuration['default'])) {
+            if (function_exists('apcu_fetch')) {
+                $configuration['default']['cache_backend_class'] = '\WP\Console\Component\FileCache\ApcuFileCacheBackend';
+            }
+        }
+        FileCacheFactory::setConfiguration($configuration);
+        FileCacheFactory::setPrefix(Settings::getApcuPrefix('file_cache', $this->root));
 
         return $container;
     }

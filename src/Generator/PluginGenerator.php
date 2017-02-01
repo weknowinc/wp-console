@@ -1,0 +1,94 @@
+<?php
+
+/**
+ * @file
+ * Contains \WP\Console\Generator\PluginGenerator.
+ */
+
+namespace WP\Console\Generator;
+
+use WP\Console\Core\Generator\Generator;
+use WP\Console\Utils\Site;
+
+/**
+ * Class PluginGenerator
+ *
+ * @package WP\Console\Generator
+ */
+class PluginGenerator extends Generator
+{
+    /**
+     * @param Site $site
+     * @param $plugin
+     * @param $machineName
+     * @param $dir
+     * @param $description
+     * @param $author
+     * @param $authorUrl
+     * @param $test
+     */
+    public function generate(
+        $site,
+        $plugin,
+        $machineName,
+        $dir,
+        $description,
+        $author,
+        $authorUrl,
+        $package,
+        $test
+    ) {
+        if (file_exists($dir)) {
+            if (!is_dir($dir)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the plugin as the target directory "%s" exists but is a file.',
+                        realpath($dir)
+                    )
+                );
+            }
+            $files = scandir($dir);
+            if ($files != ['.', '..']) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the module as the target directory "%s" is not empty.',
+                        realpath($dir)
+                    )
+                );
+            }
+            if (!is_writable($dir)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the module as the target directory "%s" is not writable.',
+                        realpath($dir)
+                    )
+                );
+            }
+        }
+
+        $parameters = [
+            'plugin' => $plugin,
+            'plugin_uri' => '',
+            'machine_name' => $machineName,
+            'type' => 'module',
+            'version' => $site->getBlogInfo('version'),
+            'description' => $description,
+            'author' => $author,
+            'author_uri' => $authorUrl,
+            'package' => $package,
+            'test' => $test
+        ];
+
+        $this->renderFile(
+            'plugin/plugin.php.twig',
+            $dir.'/'.$machineName.'.php',
+            $parameters
+        );
+
+        $this->renderFile(
+            'plugin/readme.txt.twig',
+            $dir.'/readme.txt',
+            $parameters
+        );
+    }
+}

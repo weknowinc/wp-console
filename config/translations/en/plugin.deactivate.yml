@@ -1,0 +1,10 @@
+description: 'Deactivate plugins or plugin in the application'
+arguments:
+    plugin: 'Plugin or plugins to be deactivated should be separated by a space'
+options:
+questions:
+    plugin: 'Plugin name (press <return> to stop adding plugins)'
+    invalid-plugin: 'Invalid plugin "%s"'
+messages:
+    nothing: 'Nothing to do. All plugin are already deactivated'
+    success: 'The following plugin(s) were deactivated successfully: "%s"'

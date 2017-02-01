@@ -51,18 +51,18 @@ class Manager
     /**
      * @return $this
      */
-    public function showInstalled()
+    public function showActivated()
     {
-        $this->filters['showInstalled'] = true;
+        $this->filters['showActivated'] = true;
         return $this;
     }
 
     /**
      * @return $this
      */
-    public function showUninstalled()
+    public function showDeactivated()
     {
-        $this->filters['showUninstalled'] = true;
+        $this->filters['showDeactivated'] = true;
         return $this;
     }
 
@@ -88,7 +88,7 @@ class Manager
      * @param string $nameOnly
      * @return array
      */
-    public function getList($nameOnly)
+    public function getList($nameOnly = false)
     {
         return $this->getExtensions($this->extension, $nameOnly);
     }
@@ -96,10 +96,10 @@ class Manager
     /**
      * @return $this
      */
-    public function discoverModules()
+    public function discoverPlugins($type = 'plugin')
     {
         $this->initialize();
-        $this->discoverExtension('module');
+        $this->discoverExtension($type);
 
         return $this;
     }
@@ -115,16 +115,6 @@ class Manager
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function discoverProfiles()
-    {
-        $this->initialize();
-        $this->discoverExtension('profile');
-
-        return $this;
-    }
 
     /**
      * @param string $extension
@@ -140,17 +130,14 @@ class Manager
      */
     private function initialize()
     {
-        $this->extension = 'module';
+        $this->extension = 'plugin';
         $this->extensions = [
-            'module' => [],
-            'theme' => [],
-            'profile' => [],
+            'plugin' => [],
+            'theme' => []
         ];
         $this->filters = [
-            'showInstalled' => false,
-            'showUninstalled' => false,
-            'showCore' => false,
-            'showNoCore' => false
+            'showActivated' => false,
+            'showDeactivated' => false
         ];
     }
 
@@ -160,42 +147,40 @@ class Manager
      * @return array
      */
     private function getExtensions(
-        $type = 'module',
+        $type = 'plugin',
         $nameOnly = false
     ) {
-        $showInstalled = $this->filters['showInstalled'];
-        $showUninstalled = $this->filters['showUninstalled'];
-        $showCore = $this->filters['showCore'];
-        $showNoCore = $this->filters['showNoCore'];
+
+        $showActivated = $this->filters['showActivated'];
+        $showDeactivated = $this->filters['showDeactivated'];
 
         $extensions = [];
         if (!array_key_exists($type, $this->extensions)) {
-            return $extensions;
+            return $this->extensions['type'];
         }
 
-        foreach ($this->extensions[$type] as $extension) {
-            $name = $extension->getName();
+        foreach ($this->extensions[$type] as $extension => $extensionData) {
+            $name = $extensionData['Name'];
 
-            $isInstalled = false;
-            if (property_exists($extension, 'status')) {
-                $isInstalled = ($extension->status)?true:false;
+            if($type == 'plugin') {
+                $isActivated = $this->site->isPluginActive($extension);
+            } else {
+                $isActivated = false;
             }
-            if (!$showInstalled && $isInstalled) {
+
+            if (!$showActivated && $isActivated) {
                 continue;
             }
-            if (!$showUninstalled && !$isInstalled) {
-                continue;
-            }
-            if (!$showCore && $extension->origin == 'core') {
-                continue;
-            }
-            if (!$showNoCore && $extension->origin != 'core') {
+            if (!$showDeactivated && !$isActivated) {
                 continue;
             }
 
-            $extensions[$name] = $extension;
+            if($nameOnly) {
+                $extensions[$name] = $name;
+            } else {
+                $extensions[$extension] = $extensionData;
+            }
         }
-
 
         return $nameOnly?array_keys($extensions):$extensions;
     }
@@ -206,12 +191,9 @@ class Manager
      */
     private function discoverExtensions($type)
     {
-        if ($type === 'module') {
-            $this->site->loadLegacyFile('/core/modules/system/system.module');
-            system_rebuild_module_data();
-        }
+        if ($type === 'plugin') {}
 
-        $discovery = new Discovery($this->appRoot);
+        $discovery = new Discovery($this->site, $this->appRoot);
         $discovery->reset();
 
         return $discovery->scan($type);
@@ -221,9 +203,9 @@ class Manager
      * @param string $name
      * @return \WP\Console\Extension\Extension
      */
-    public function getModule($name)
+    public function getPlugin($name)
     {
-        if ($extension = $this->getExtension('module', $name)) {
+        if ($extension = $this->getExtension('plugin', $name)) {
             return $this->createExtension($extension);
         }
 
@@ -289,7 +271,7 @@ class Manager
         return $this->getPath($fullPath) . '/Tests/' . $testType;
     }
 
-    public function validateModuleFunctionExist($moduleName, $function, $moduleFile = null)
+    public function validatePluginFunctionExist($moduleName, $function, $moduleFile = null)
     {
         //Load module file to prevent issue of missing functions used in update
         $module = $this->getModule($moduleName);

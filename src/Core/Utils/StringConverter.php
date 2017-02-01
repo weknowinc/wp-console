@@ -21,7 +21,7 @@ class StringConverter
     const MAX_MACHINE_NAME = 32;
 
     /**
-     * Replaces non alphanumeric characters with underscores.
+     * Replaces non alphanumeric characters with hyphens.
      *
      * @param String $name User input
      *
@@ -29,8 +29,8 @@ class StringConverter
      */
     public function createMachineName($name)
     {
-        $machine_name = preg_replace(self::REGEX_MACHINE_NAME_CHARS, '_', strtolower($name));
-        $machine_name = trim($machine_name, '_');
+        $machine_name = preg_replace(self::REGEX_MACHINE_NAME_CHARS, '-', strtolower($name));
+        $machine_name = trim($machine_name, '-');
 
         if (strlen($machine_name) > self::MAX_MACHINE_NAME) {
             $machine_name = substr($machine_name, 0, self::MAX_MACHINE_NAME);

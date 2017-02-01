@@ -13,7 +13,7 @@ class Validator
 {
     const REGEX_CLASS_NAME = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+$/';
     const REGEX_COMMAND_CLASS_NAME = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+Command$/';
-    const REGEX_MACHINE_NAME = '/^[a-z0-9_]+$/';
+    const REGEX_MACHINE_NAME = '/^[a-z0-9-]+$/';
     // This REGEX remove spaces between words
     const REGEX_REMOVE_SPACES = '/[\\s+]/';
 
@@ -80,7 +80,7 @@ class Validator
         } else {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'Machine name "%s" is invalid, it must contain only lowercase letters, numbers and underscores.',
+                    'Machine name "%s" is invalid, it must contain only lowercase letters, numbers and hyphens.',
                     $machine_name
                 )
             );

@@ -216,9 +216,16 @@ class Site
      * @return string
      */
     public function getTitle() {
+        return $this->getBlogInfo();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBlogInfo($info = '', $filter = 'raw') {
 
         if(function_exists('get_bloginfo')) {
-           return get_bloginfo();
+            return get_bloginfo($info, $filter);
         } else {
             return null;
         }
@@ -277,6 +284,20 @@ class Site
             return null;
         }
     }
+
+    /**
+     * @param string $plugin_folder
+     * @return null
+     */
+    public function getPlugins($plugin_folder = '') {
+        if(function_exists('get_plugins')) {
+            return get_plugins($plugin_folder);
+        } else {
+            return null;
+        }
+    }
+
+
 
     /**
      * @return mixed
@@ -501,6 +522,36 @@ class Site
     public function getCurrentUser(){
         if(function_exists('wp_get_current_user')) {
             return wp_get_current_user();
+        } else {
+            return null;
+        }
+    }
+
+    public function isPluginActive($plugin){
+        if(function_exists('is_plugin_active')) {
+            return is_plugin_active($plugin);
+        } else {
+            return null;
+        }
+    }
+
+    public function activatePlugin($plugin, $redirect = '', $network_wide = false, $silent = false ){
+        if(function_exists('activate_plugin')) {
+            return activate_plugin($plugin,$redirect, $network_wide, $silent);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $plugins
+     * @param bool $silent
+     * @param null $network_wide
+     * @return null
+     */
+    public function deactivatePlugins($plugins, $silent = false, $network_wide = null){
+        if(function_exists('deactivate_plugins')) {
+            return deactivate_plugins( $plugins, $silent, $network_wide);
         } else {
             return null;
         }

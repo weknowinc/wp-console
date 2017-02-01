@@ -1,0 +1,11 @@
+description: 'Display current plugins available for application'
+options:
+    status: 'Plugin status [enabled|disabled]'
+messages:
+    name: Name
+    status: Status
+    plugin-uri: 'Plugin URI'
+    version: Version
+    author: 'Author'
+    author-url: 'Author website'
+

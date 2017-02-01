@@ -9,3 +9,4 @@ messages:
 questions:
     confirm: 'Do you confirm generation?'
     canceled: 'Command generation canceled.'
+    plugin: 'Enter the plugin name'

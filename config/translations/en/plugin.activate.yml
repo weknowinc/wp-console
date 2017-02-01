@@ -1,0 +1,10 @@
+description: 'Activate plugins or plugin in the application'
+arguments:
+    plugin: 'Plugin or plugins to be activated should be separated by a space'
+options:
+questions:
+    plugin: 'Plugin name (press <return> to stop adding plugins)'
+    invalid-plugin: 'Invalid plugin "%s"'
+messages:
+    nothing: 'Nothing to do. All plugin are already activated'
+    success: 'The following plugin(s) were activated successfully: "%s"'

@@ -115,7 +115,7 @@ class PluginCommand extends Command
                 $this->trans('commands.generate.module.options.machine-name')
             )
             ->addOption(
-                'module-path',
+                'plugin-path',
                 '',
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.generate.module.options.module-path')
@@ -127,53 +127,23 @@ class PluginCommand extends Command
                 $this->trans('commands.generate.module.options.description')
             )
             ->addOption(
-                'core',
+                'author',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.module.options.core')
+                $this->trans('commands.generate.plugin.options.author')
             )
             ->addOption(
-                'package',
+                'author-url',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.module.options.package')
+                $this->trans('commands.generate.plugin.options.author-url')
             )
-            ->addOption(
-                'module-file',
-                '',
-                InputOption::VALUE_NONE,
-                $this->trans('commands.generate.module.options.module-file')
-            )
-            ->addOption(
-                'features-bundle',
-                '',
-                InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.module.options.features-bundle')
-            )
-            ->addOption(
-                'composer',
-                '',
-                InputOption::VALUE_NONE,
-                $this->trans('commands.generate.module.options.composer')
-            )
-            ->addOption(
-                'dependencies',
-                '',
-                InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.module.options.dependencies')
-            )
-            ->addOption(
+            /*->addOption(
                 'test',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.module.options.test')
-            )
-            ->addOption(
-                'twigtemplate',
-                '',
-                InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.module.options.twigtemplate')
-            );
+                $this->trans('commands.generate.plugin.options.test')
+            )*/;
     }
 
     /**
@@ -181,7 +151,7 @@ class PluginCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
+        $io = new WPStyle($input, $output);
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
         // @see use Drupal\Console\Command\Shared\ConfirmationTrait::confirmGeneration
@@ -189,92 +159,31 @@ class PluginCommand extends Command
             return;
         }
 
-        $module = $this->validator->validateModuleName($input->getOption('module'));
+        $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
 
-        $modulePath = $this->appRoot . $input->getOption('module-path');
-        $modulePath = $this->validator->validateModulePath($modulePath, true);
+        $pluginPath = $this->appRoot . $input->getOption('plugin-path');
+        $pluginPath = $this->validator->validatePluginPath($pluginPath, true);
 
         $machineName = $this->validator->validateMachineName($input->getOption('machine-name'));
         $description = $input->getOption('description');
-        $core = $input->getOption('core');
-        $package = $input->getOption('package');
-        $moduleFile = $input->getOption('module-file');
-        $featuresBundle = $input->getOption('features-bundle');
-        $composer = $input->getOption('composer');
-        $test = $input->getOption('test');
-        $twigtemplate = $input->getOption('twigtemplate');
+        $author = $input->getOption('author');
+        $authorURL = $input->getOption('author-url');
+        #$test = $input->getOption('test');
 
-        // Modules Dependencies, re-factor and share with other commands
-        $dependencies = $this->validator->validateModuleDependencies($input->getOption('dependencies'));
-        // Check if all module dependencies are available
-        if ($dependencies) {
-            $checked_dependencies = $this->checkDependencies($dependencies['success'], $io);
-            if (!empty($checked_dependencies['no_modules'])) {
-                $io->warning(
-                    sprintf(
-                        $this->trans('commands.generate.module.warnings.module-unavailable'),
-                        implode(', ', $checked_dependencies['no_modules'])
-                    )
-                );
-            }
-            $dependencies = $dependencies['success'];
-        }
+        $package = str_replace( ' ', '_', $plugin );
+
 
         $this->generator->generate(
-            $module,
+            $this->site,
+            $plugin,
             $machineName,
-            $modulePath,
+            $pluginPath,
             $description,
-            $core,
+            $author,
+            $authorURL,
             $package,
-            $moduleFile,
-            $featuresBundle,
-            $composer,
-            $dependencies,
-            $test,
-            $twigtemplate
+            $test
         );
-    }
-
-    /**
-     * @param  array $dependencies
-     * @return array
-     */
-    private function checkDependencies(array $dependencies, DrupalStyle $io)
-    {
-        $this->site->loadLegacyFile('/core/modules/system/system.module');
-        $localModules = [];
-
-        $modules = system_rebuild_module_data();
-        foreach ($modules as $module_id => $module) {
-            array_push($localModules, basename($module->subpath));
-        }
-
-        $checkDependencies = [
-            'local_modules' => [],
-            'drupal_modules' => [],
-            'no_modules' => [],
-        ];
-
-        foreach ($dependencies as $module) {
-            if (in_array($module, $localModules)) {
-                $checkDependencies['local_modules'][] = $module;
-            } else {
-                try {
-                    $response = $this->httpClient->head('https://www.drupal.org/project/' . $module);
-                    $header_link = explode(';', $response->getHeader('link'));
-                    if (empty($header_link[0])) {
-                        $checkDependencies['no_modules'][] = $module;
-                    } else {
-                        $checkDependencies['drupal_modules'][] = $module;
-                    }
-                } catch (ClientException $e) {
-                    $checkDependencies['no_modules'][] = $module;
-                }
-            }
-        }
-
-        return $checkDependencies;
     }
 
     /**
@@ -282,14 +191,14 @@ class PluginCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new DrupalStyle($input, $output);
+        $io = new WPStyle($input, $output);
 
         $validator = $this->validator;
 
         try {
-            $module = $input->getOption('module') ?
-                $this->validator->validateModuleName(
-                    $input->getOption('module')
+            $plugin = $input->getOption('plugin') ?
+                $this->validator->validatePluginName(
+                    $input->getOption('plugin')
                 ) : null;
         } catch (\Exception $error) {
             $io->error($error->getMessage());
@@ -297,20 +206,20 @@ class PluginCommand extends Command
             return;
         }
 
-        if (!$module) {
-            $module = $io->ask(
-                $this->trans('commands.generate.module.questions.module'),
+        if (!$plugin) {
+            $plugin = $io->ask(
+                $this->trans('commands.generate.plugin.questions.plugin'),
                 null,
-                function ($module) use ($validator) {
-                    return $validator->validateModuleName($module);
+                function ($plugin) use ($validator) {
+                    return $validator->validatePluginName($plugin);
                 }
             );
-            $input->setOption('module', $module);
+            $input->setOption('plugin', $plugin);
         }
 
         try {
             $machineName = $input->getOption('machine-name') ?
-                $this->validator->validateModuleName(
+                $this->validator->validatePluginName(
                     $input->getOption('machine-name')
                 ) : null;
         } catch (\Exception $error) {
@@ -319,8 +228,8 @@ class PluginCommand extends Command
 
         if (!$machineName) {
             $machineName = $io->ask(
-                $this->trans('commands.generate.module.questions.machine-name'),
-                $this->stringConverter->createMachineName($module),
+                $this->trans('commands.generate.plugin.questions.machine-name'),
+                $this->stringConverter->createMachineName($plugin),
                 function ($machine_name) use ($validator) {
                     return $validator->validateMachineName($machine_name);
                 }
@@ -328,140 +237,73 @@ class PluginCommand extends Command
             $input->setOption('machine-name', $machineName);
         }
 
-        $modulePath = $input->getOption('module-path');
-        if (!$modulePath) {
-            $drupalRoot = $this->appRoot;
-            $modulePath = $io->ask(
-                $this->trans('commands.generate.module.questions.module-path'),
-                '/modules/custom',
-                function ($modulePath) use ($drupalRoot, $machineName) {
-                    $modulePath = ($modulePath[0] != '/' ? '/' : '').$modulePath;
-                    $fullPath = $drupalRoot.$modulePath.'/'.$machineName;
+        $pluginPath = $input->getOption('plugin-path');
+        if (!$pluginPath) {
+            $wordpressRoot = $this->appRoot;
+            $pluginPath = $io->ask(
+                $this->trans('commands.generate.plugin.questions.plugin-path'),
+                basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $machineName,
+                function ($pluginPath) use ($wordpressRoot, $machineName) {
+                    $pluginPath = ($pluginPath[0] != '/' ? '/' : '').$pluginPath;
+                    $fullPath = $wordpressRoot.$pluginPath.'/'.$machineName;
                     if (file_exists($fullPath)) {
                         throw new \InvalidArgumentException(
                             sprintf(
-                                $this->trans('commands.generate.module.errors.directory-exists'),
+                                $this->trans('commands.generate.plugin.errors.directory-exists'),
                                 $fullPath
                             )
                         );
                     }
 
-                    return $modulePath;
+                    return $pluginPath;
                 }
             );
         }
-        $input->setOption('module-path', $modulePath);
+        $input->setOption('plugin-path', $pluginPath);
 
         $description = $input->getOption('description');
         if (!$description) {
             $description = $io->ask(
-                $this->trans('commands.generate.module.questions.description'),
-                'My Awesome Module'
+                $this->trans('commands.generate.plugin.questions.description'),
+                'My Awesome Plugin'
             );
         }
         $input->setOption('description', $description);
 
-        $package = $input->getOption('package');
-        if (!$package) {
-            $package = $io->ask(
-                $this->trans('commands.generate.module.questions.package'),
-                'Custom'
+        $author = $input->getOption('author');
+        if (!$author) {
+            $author = $io->ask(
+                $this->trans('commands.generate.plugin.questions.author'),
+                ''
             );
         }
-        $input->setOption('package', $package);
+        $input->setOption('author', $author);
 
-        $core = $input->getOption('core');
-        if (!$core) {
-            $core = $io->ask(
-                $this->trans('commands.generate.module.questions.core'), '8.x',
-                function ($core) {
-                    // Only allow 8.x and higher as core version.
-                    if (!preg_match('/^([0-9]+)\.x$/', $core, $matches) || ($matches[1] < 8)) {
-                        throw new \InvalidArgumentException(
-                            sprintf(
-                                $this->trans('commands.generate.module.errors.invalid-core'),
-                                $core
-                            )
-                        );
-                    }
-
-                    return $core;
-                }
+        $authorUrl = $input->getOption('author-url');
+        if (!$authorUrl) {
+            $authorUrl = $io->ask(
+                $this->trans('commands.generate.plugin.questions.author-url'),
+                ''
             );
-            $input->setOption('core', $core);
         }
+        $input->setOption('author-url', $authorUrl);
 
-        $moduleFile = $input->getOption('module-file');
-        if (!$moduleFile) {
-            $moduleFile = $io->confirm(
-                $this->trans('commands.generate.module.questions.module-file'),
-                true
-            );
-            $input->setOption('module-file', $moduleFile);
-        }
 
-        $featuresBundle = $input->getOption('features-bundle');
-        if (!$featuresBundle) {
-            $featuresSupport = $io->confirm(
-                $this->trans('commands.generate.module.questions.features-support'),
-                false
-            );
-            if ($featuresSupport) {
-                $featuresBundle = $io->ask(
-                    $this->trans('commands.generate.module.questions.features-bundle'),
-                    'default'
-                );
-            }
-            $input->setOption('features-bundle', $featuresBundle);
-        }
-
-        $composer = $input->getOption('composer');
-        if (!$composer) {
-            $composer = $io->confirm(
-                $this->trans('commands.generate.module.questions.composer'),
-                true
-            );
-            $input->setOption('composer', $composer);
-        }
-
-        $dependencies = $input->getOption('dependencies');
-        if (!$dependencies) {
-            $addDependencies = $io->confirm(
-                $this->trans('commands.generate.module.questions.dependencies'),
-                false
-            );
-            if ($addDependencies) {
-                $dependencies = $io->ask(
-                    $this->trans('commands.generate.module.options.dependencies')
-                );
-            }
-            $input->setOption('dependencies', $dependencies);
-        }
-
-        $test = $input->getOption('test');
+       /* $test = $input->getOption('test');
         if (!$test) {
             $test = $io->confirm(
-                $this->trans('commands.generate.module.questions.test'),
+                $this->trans('commands.generate.plugin.questions.test'),
                 true
             );
             $input->setOption('test', $test);
-        }
-
-        $twigtemplate = $input->getOption('twigtemplate');
-        if (!$twigtemplate) {
-            $twigtemplate = $io->confirm(
-                $this->trans('commands.generate.module.questions.twigtemplate'),
-                true
-            );
-            $input->setOption('twigtemplate', $twigtemplate);
-        }
+        }*/
     }
 
     /**
-     * @return ModuleGenerator
+     * @return PluginGenerator
      */
     protected function createGenerator()
     {
-        return new ModuleGenerator();
+        return new PluginGenerator();
     }
 }

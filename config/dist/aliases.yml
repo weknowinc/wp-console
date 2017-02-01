@@ -1,5 +1,13 @@
 commands:
   aliases:
+    generate:plugin:
+      - gp
+    plugin:activate:
+      - pa
+    plugin:deactivate:
+      - pd
+    plugin:debug:
+      - pde
     multisite:debug:
       - md
     multisite:new:
@@ -8,5 +16,3 @@ commands:
       - mi
     site:install:
       - si
-    generate:plugin:
-      - gp

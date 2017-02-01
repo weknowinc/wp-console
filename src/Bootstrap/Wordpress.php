@@ -37,27 +37,6 @@ class Wordpress
         $wordpress = new WordpressConsoleCore($this->root, $this->appRoot, $this->site);
         $container = $wordpress->boot();
 
-        $this->addServiceModifier(
-            new WordpressServiceModifier(
-                $this->root,
-                'wordpress.command',
-                'wordpress.generator'
-            )
-        );
-
-        foreach ($this->serviceModifiers as $serviceModifier) {
-            $serviceModifier->alter($container);
-        }
-
-        $container->compile();
-        return $wordpress->boot();
-    }
-
-    /**
-     * @param \WP\Console\Bootstrap\WordpressServiceModifier $serviceModifier
-     */
-    public function addServiceModifier(WordpressServiceModifier $serviceModifier)
-    {
-        $this->serviceModifiers[] = $serviceModifier;
+        return $container;
     }
 }

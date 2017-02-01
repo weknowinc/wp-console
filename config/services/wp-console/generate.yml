@@ -3,4 +3,4 @@ services:
     class: WP\Console\Command\Generate\PluginCommand
     arguments: ['@console.plugin_generator', '@console.validator', '@app.root', '@console.string_converter', '@http_client', '@console.site']
     tags:
-       - { name: wordpress.command }
+      - { name: wordpress.command }
