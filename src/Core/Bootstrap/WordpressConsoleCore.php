@@ -50,6 +50,8 @@ class WordpressConsoleCore
         $loader = new YamlFileLoader($container, new FileLocator($this->root));
         $loader->load($this->root . '/services-core.yml');
 
+        $configurationManager = $container->get('console.configuration_manager');
+
         // Validate that Wordpress load files is available
         if ($config = $this->site->getConfig()) {
             // Include files to define basic wordpress constants and variables
@@ -77,7 +79,7 @@ class WordpressConsoleCore
 
             $loader->load($this->root . '/services.yml');
 
-            // Register commands
+            // Register services commands
             $finder = new Finder();
 
             $finder->files()
@@ -104,10 +106,22 @@ class WordpressConsoleCore
             $loader->load($this->root . '/services-multisite-install.yml');
         }
 
-        $container->get('console.configuration_manager')
+        $configurationManager
             ->loadConfiguration($this->root)
             ->getConfiguration();
 
+        // Register extend commands
+        $directory = $configurationManager->getConsoleDirectory() . 'extend/';
+        $autoloadFile = $directory . 'vendor/autoload.php';
+        if (is_file($autoloadFile)) {
+            include_once $autoloadFile;
+            $extendService = $directory . 'extend.console.services.yml';
+            if (is_file($extendService)) {
+                $loader->load($extendService);
+            }
+        }
+
+        // Set service app.root
         $container->set(
             'app.root',
             $this->appRoot

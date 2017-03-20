@@ -543,6 +543,14 @@ class Site
         }
     }
 
+    public function cacheFlush(){
+        if(function_exists('wp_cache_flush')) {
+            return wp_cache_flush();
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @param $plugins
      * @param bool $silent

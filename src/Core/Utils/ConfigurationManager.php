@@ -43,12 +43,12 @@ class ConfigurationManager
         $root = $input->getParameterOption(['--root'], null);
 
         $configurationDirectories[] = $this->applicationDirectory;
-        $configurationDirectories[] = '/etc/console/wp/';
-        $configurationDirectories[] = $this->getHomeDirectory() . '/.console/wp/';
-        $configurationDirectories[] = getcwd().'/console/';
+        $configurationDirectories[] = '/etc/wp-console/';
+        $configurationDirectories[] = $this->getHomeDirectory() . '/.wp-console/';
+        $configurationDirectories[] = getcwd().'/wp-console/';
 
         if ($root) {
-            $configurationDirectories[] = $root . '/console/';
+            $configurationDirectories[] = $root . '/wp-console/';
         }
 
         $configurationDirectories = array_unique($configurationDirectories);
@@ -85,7 +85,7 @@ class ConfigurationManager
 
     public function loadConfigurationFromDirectory($directory)
     {
-        $builder = new YamlFileConfigurationBuilder([$directory.'/console/wp/config.yml']);
+        $builder = new YamlFileConfigurationBuilder([$directory.'/wp-console/config.yml']);
 
         return $builder->build();
     }
@@ -191,7 +191,7 @@ class ConfigurationManager
      */
     public function getConsoleDirectory()
     {
-        return sprintf('%s/.console/wp/', $this->getHomeDirectory());
+        return sprintf('%s/.wp-console/', $this->getHomeDirectory());
     }
 
     /**
@@ -235,6 +235,27 @@ class ConfigurationManager
                     $aliases['commands']['aliases']
                 );
             }
+        }
+    }
+
+    public function loadExtendConfiguration()
+    {
+        $directory = $this->getHomeDirectory() . '/.wp-console/extend/';
+
+        if (!is_dir($directory)) {
+            return null;
+        }
+
+        $autoloadFile = $directory . 'vendor/autoload.php';
+        if (!is_file($autoloadFile)) {
+            return null;
+        }
+        include_once $autoloadFile;
+        $extendFile = $directory . 'extend.console.config.yml';
+
+        if (is_file($extendFile) && file_get_contents($extendFile)!='') {
+            $builder = new YamlFileConfigurationBuilder([$extendFile]);
+            $this->configuration->import($builder->build());
         }
     }
 }

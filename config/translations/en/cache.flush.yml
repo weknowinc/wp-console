@@ -1,0 +1,7 @@
+description: 'Flush the Wordpress object cache'
+arguments:
+options:
+questions:
+messages:
+    successful: 'The cache was flushed successfully'
+    fail: 'The object cache could not be flushed.'

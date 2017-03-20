@@ -45,9 +45,9 @@ class ChainDiscovery
 
         $this->addDirectories(
             [
-                $this->configurationManager->getHomeDirectory() . DIRECTORY_SEPARATOR . '.console/wp'. DIRECTORY_SEPARATOR .'chain',
-                $this->appRoot . DIRECTORY_SEPARATOR . 'console/wp'. DIRECTORY_SEPARATOR .'chain',
-                $this->appRoot . DIRECTORY_SEPARATOR . '.console/wp'. DIRECTORY_SEPARATOR .'chain',
+                $this->configurationManager->getHomeDirectory() . DIRECTORY_SEPARATOR . '.wp-console'. DIRECTORY_SEPARATOR .'chain',
+                $this->appRoot . DIRECTORY_SEPARATOR . 'wp-console'. DIRECTORY_SEPARATOR .'chain',
+                $this->appRoot . DIRECTORY_SEPARATOR . '.wp-console'. DIRECTORY_SEPARATOR .'chain',
             ]
         );
     }

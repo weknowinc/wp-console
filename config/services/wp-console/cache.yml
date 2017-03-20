@@ -1,0 +1,6 @@
+services:
+  cache_flush:
+      class: WP\Console\Command\Cache\FlushCommand
+      arguments: ['@console.site']
+      tags:
+        - { name: wordpress.command }

@@ -39,6 +39,7 @@ class Application extends BaseApplication
     {
         $this->registerGenerators();
         $this->registerCommands();
+        $this->registerExtendCommands();
 //        $clear = $this->container->get('console.configuration_manager')
 //            ->getConfiguration()
 //            ->get('application.clear')?:false;
@@ -89,6 +90,15 @@ class Application extends BaseApplication
                 );
             }
         }
+    }
+
+    /**
+     * registerExtendCommands
+     */
+    private function registerExtendCommands()
+    {
+        $this->container->get('console.configuration_manager')
+            ->loadExtendConfiguration();
     }
 
     private function registerCommands()
