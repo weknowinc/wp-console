@@ -3,3 +3,8 @@ services:
     class: WP\Console\Generator\PluginGenerator
     tags:
       - { name: wordpress.generator }
+  console.meta_box_generator:
+    class: WP\Console\Generator\MetaBoxGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }

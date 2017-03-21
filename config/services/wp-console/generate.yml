@@ -4,3 +4,8 @@ services:
     arguments: ['@console.plugin_generator', '@console.validator', '@app.root', '@console.string_converter', '@http_client', '@console.site']
     tags:
       - { name: wordpress.command }
+  console.generate_meta_box:
+    class: WP\Console\Command\Generate\MetaBoxCommand
+    arguments: ['@console.meta_box_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }
