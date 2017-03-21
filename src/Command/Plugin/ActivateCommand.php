@@ -7,7 +7,6 @@
 
 namespace WP\Console\Command\Plugin;
 
-
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,11 +59,11 @@ class ActivateCommand extends Command
     /**
      * InstallCommand constructor.
      *
-     * @param Site            $site
-     * @param Validator       $validator
-     * @param Manager         $extensionManager
+     * @param Site       $site
+     * @param Validator  $validator
+     * @param Manager    $extensionManager
      * @param $appRoot
-     * @param ChainQueue      $chainQueue
+     * @param ChainQueue $chainQueue
      */
     public function __construct(
         Site $site,
@@ -119,19 +118,19 @@ class ActivateCommand extends Command
 
         $plugin = $input->getArgument('plugin');
 
-        if(!is_array($plugin)) {
+        if (!is_array($plugin)) {
             $plugins = [$plugin];
         } else {
             $plugins = $plugin;
         }
 
         try {
-
             $extensions = $this->extensionManager->discoverPlugins()->showDeactivated()->getList();
             $extensions = array_combine(array_keys($extensions), array_column($extensions, 'Name'));
 
-            foreach($plugins as $plugin) {
+            foreach ($plugins as $plugin) {
                 $pluginFile = array_search($plugin, $extensions);
+                
                 $this->site->activatePlugin($pluginFile);
             }
 
@@ -147,6 +146,6 @@ class ActivateCommand extends Command
             return 1;
         }
 
-        #$this->chainQueue->addCommand('cache:rebuild', ['cache' => 'all']);
+        // $this->chainQueue->addCommand('cache:rebuild', ['cache' => 'all']);
     }
 }

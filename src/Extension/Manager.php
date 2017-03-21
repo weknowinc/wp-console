@@ -6,6 +6,7 @@ use WP\Console\Utils\Site;
 
 /**
  * Class ExtensionManager
+ *
  * @package WP\Console
  */
 class Manager
@@ -36,6 +37,7 @@ class Manager
 
     /**
      * ExtensionManager constructor.
+     *
      * @param Site   $site
      * @param string $appRoot
      */
@@ -150,7 +152,6 @@ class Manager
         $type = 'plugin',
         $nameOnly = false
     ) {
-
         $showActivated = $this->filters['showActivated'];
         $showDeactivated = $this->filters['showDeactivated'];
 
@@ -162,7 +163,7 @@ class Manager
         foreach ($this->extensions[$type] as $extension => $extensionData) {
             $name = $extensionData['Name'];
 
-            if($type == 'plugin') {
+            if ($type == 'plugin') {
                 $isActivated = $this->site->isPluginActive($extension);
             } else {
                 $isActivated = false;
@@ -175,7 +176,7 @@ class Manager
                 continue;
             }
 
-            if($nameOnly) {
+            if ($nameOnly) {
                 $extensions[$name] = $name;
             } else {
                 $extensions[$extension] = $extensionData;
@@ -191,7 +192,8 @@ class Manager
      */
     private function discoverExtensions($type)
     {
-        if ($type === 'plugin') {}
+        if ($type === 'plugin') {
+        }
 
         $discovery = new Discovery($this->site, $this->appRoot);
         $discovery->reset();
@@ -286,17 +288,5 @@ class Manager
             return true;
         }
         return false;
-    }
-
-    /**
-     * @param string $moduleName
-     * @param string $pluginType
-     * @return string
-     */
-    public function getPluginPath($moduleName, $pluginType)
-    {
-        $module = $this->getModule($moduleName);
-
-        return $module->getPath() . '/src/Plugin/'.$pluginType;
     }
 }
