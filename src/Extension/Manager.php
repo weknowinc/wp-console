@@ -267,13 +267,7 @@ class Manager
             $extension['type'],
             $extension['pathname'],
             $extension['filename']
-            /*$extension->getType(),
-            $extension->getPathname(),
-            $extension->getExtensionFilename()*/
         );
-
-        //$consoleExtension->unserialize($extension);
-        //$consoleExtension->unserialize($extension->serialize());
 
         return $consoleExtension;
     }
