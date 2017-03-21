@@ -239,26 +239,41 @@ class Manager
             $this->discoverExtension($type);
         }
 
-        if (array_key_exists($name, $this->extensions[$type])) {
-            return $this->extensions[$type][$name];
+        $extensions = array_combine(array_keys($this->extensions[$type]), array_column($this->extensions[$type], 'Name'));
+        if($extensionFilename = array_search($name, $extensions)) {
+            $extension = array_merge(
+                [
+                    'type' => $type,
+                    'filename' => basename($extensionFilename),
+                    'pathname' => $extensionFilename
+                ],
+                $this->extensions[$type][$extensionFilename]
+            );
+            return $extension;
         }
 
         return null;
     }
 
     /**
-     * @param \WP\Core\Extension\Extension $extension
+     * @param \WP\Console\Core\Extension\Extension $extension
      * @return \WP\Console\Extension\Extension
      */
     private function createExtension($extension)
     {
+
         $consoleExtension = new Extension(
-            $this->appRoot,
-            $extension->getType(),
+            ABSPATH,
+            $extension['type'],
+            $extension['pathname'],
+            $extension['filename']
+            /*$extension->getType(),
             $extension->getPathname(),
-            $extension->getExtensionFilename()
+            $extension->getExtensionFilename()*/
         );
-        $consoleExtension->unserialize($extension->serialize());
+
+        //$consoleExtension->unserialize($extension);
+        //$consoleExtension->unserialize($extension->serialize());
 
         return $consoleExtension;
     }
@@ -268,12 +283,12 @@ class Manager
      * @param $fullPath
      * @return string
      */
-    public function getTestPath($testType, $fullPath = false)
+    /*public function getTestPath($testType, $fullPath = false)
     {
         return $this->getPath($fullPath) . '/Tests/' . $testType;
-    }
+    }*/
 
-    public function validatePluginFunctionExist($moduleName, $function, $moduleFile = null)
+    /*public function validatePluginFunctionExist($moduleName, $function, $moduleFile = null)
     {
         //Load module file to prevent issue of missing functions used in update
         $module = $this->getModule($moduleName);
@@ -288,5 +303,5 @@ class Manager
             return true;
         }
         return false;
-    }
+    }*/
 }

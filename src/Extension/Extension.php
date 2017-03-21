@@ -2,7 +2,7 @@
 
 namespace WP\Console\Extension;
 
-use WP\Core\Extension\Extension as BaseExtension;
+use WP\Console\Core\Extension\Extension as BaseExtension;
 /**
  * Class Extension
  *

@@ -71,10 +71,10 @@ class MetaBoxGenerator extends Generator
             'priority' => $priority,
             'fields_metabox' => $fields_metabox
         ];
-        
-        $plugin_lower = strtolower($plugin);
-       
-        var_dump($this->extensionManager->getPlugin($plugin_lower.'/'.$plugin_lower.'.php'));
+
+        var_dump($this->extensionManager->getPlugin($plugin)->getPath(true));
+        var_dump($this->extensionManager->getPlugin($plugin)->getPath());
+        var_dump($this->extensionManager->getPlugin($plugin)->getPathname());
    /*     $this->renderFile(
             'plugin/src/metabox/class-metabox-php.twig',
             $this->extensionManager->getPlugin($plugin)->getPath().'/'.$plugin.'/admin/'.$class_name.'_meta_box.php',

@@ -1,6 +1,6 @@
 <?php
 
-namespace WP\Core\Extension;
+namespace WP\Console\Core\Extension;
 
 /**
  * Defines an extension (file) object.
@@ -88,7 +88,11 @@ class Extension implements \Serializable {
      * @return string
      */
     public function getPath() {
-        return dirname($this->pathname);
+        if($this->type == 'plugin') {
+            $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'plugins';
+        }
+
+        return $parentDir . DIRECTORY_SEPARATOR . dirname($this->pathname);
     }
 
     /**
@@ -97,7 +101,11 @@ class Extension implements \Serializable {
      * @return string
      */
     public function getPathname() {
-        return $this->pathname;
+        if($this->type == 'plugin') {
+            $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'plugins';
+        }
+
+        return $parentDir . DIRECTORY_SEPARATOR . $this->pathname;
     }
 
     /**
@@ -169,13 +177,6 @@ class Extension implements \Serializable {
             'filename' => $this->filename,
         );
 
-        // @todo ThemeHandler::listInfo(), ThemeHandler::rebuildThemeData(), and
-        //   system_list() are adding custom properties to the Extension object.
-        $info = new \ReflectionObject($this);
-        foreach ($info->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            $data[$property->getName()] = $property->getValue($this);
-        }
-
         return serialize($data);
     }
 
@@ -184,19 +185,12 @@ class Extension implements \Serializable {
      */
     public function unserialize($data) {
         $data = unserialize($data);
+
         // Get the app root from the container.
-        $this->root = DRUPAL_ROOT;
+        $this->root = ABSPATH;
         $this->type = $data['type'];
         $this->pathname = $data['pathname'];
         $this->filename = $data['filename'];
-
-        // @todo ThemeHandler::listInfo(), ThemeHandler::rebuildThemeData(), and
-        //   system_list() are adding custom properties to the Extension object.
-        foreach ($data as $property => $value) {
-            if (!isset($this->$property)) {
-                $this->$property = $value;
-            }
-        }
     }
 
 }

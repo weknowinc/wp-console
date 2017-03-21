@@ -130,7 +130,6 @@ class ActivateCommand extends Command
 
             foreach ($plugins as $plugin) {
                 $pluginFile = array_search($plugin, $extensions);
-                
                 $this->site->activatePlugin($pluginFile);
             }
 
