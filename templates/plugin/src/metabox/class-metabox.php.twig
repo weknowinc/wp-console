@@ -1,0 +1,49 @@
+<?php
+/**
+ * Represents a meta box to be displayed within the 'Add New Post' page.
+ */
+
+/**
+ * Represents a meta box to be displayed within the 'Add New Post' page.
+ *
+ * The class maintains a reference to a display object responsible for
+ * displaying whatever content is rendered within the display.
+ */
+class {{ class_name }}_Meta_Box {
+
+    /**
+     * A reference to the Meta Box Display.
+     *
+     * @access private
+     * @var    {{ class_name }}_MetaBox_Display
+     */
+    private $display;
+
+    /**
+     * Initializes this class by setting its display property equal to that of
+     * the incoming object.
+     *
+     * @param {{ class_name }}_MetaBox_Display $display Displays the contents of this meta box.
+     */
+    public function __construct( $display ) {
+        $this->display = $display;
+    }
+
+    /**
+     * Registers this meta box with WordPress.
+     *
+     * Defines a meta box that will render inspirational questions at the top
+     * of the sidebar of the 'Add New Post' page in order to help prompt
+     * bloggers with something to write about when they begin drafting a post.
+     */
+    public function init() {
+        add_meta_box(
+            '{{ metabox_id }}',
+            '{{ title }}',
+            array( $this->display, '{{ callback_function }}' ),
+            '{{ screen }}',
+            '{{ page_location }}',
+            '{{ priority }}'
+        );
+    }
+}
