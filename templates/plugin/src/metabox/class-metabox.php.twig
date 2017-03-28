@@ -9,13 +9,13 @@
  * The class maintains a reference to a display object responsible for
  * displaying whatever content is rendered within the display.
  */
-class {{ class_name }}_Meta_Box {
+class Class_Meta_Box {
 
     /**
      * A reference to the Meta Box Display.
      *
      * @access private
-     * @var    {{ class_name }}_MetaBox_Display
+     * @var    Class_MetaBox_Display
      */
     private $display;
 
@@ -23,7 +23,7 @@ class {{ class_name }}_Meta_Box {
      * Initializes this class by setting its display property equal to that of
      * the incoming object.
      *
-     * @param {{ class_name }}_MetaBox_Display $display Displays the contents of this meta box.
+     * @param Class_MetaBox_Display $display Displays the contents of this meta box.
      */
     public function __construct( $display ) {
         $this->display = $display;
@@ -40,7 +40,7 @@ class {{ class_name }}_Meta_Box {
         add_meta_box(
             '{{ metabox_id }}',
             '{{ title }}',
-            array( $this->display, '{{ callback_function }}' ),
+            array( $this->display, '{{ callback_function }}_callback' ),
             '{{ screen }}',
             '{{ page_location }}',
             '{{ priority }}'

@@ -4,9 +4,9 @@ status:
   enabled: 'Enabled'
   disabled: 'Disabled'
 messages:
+  canceled: 'Command generation canceled.'
   reserved: 'The following words are reserved for use by WordPress functions and cannot be used as blog names: %s'
   user-create-error: 'There was an error creating the user.'
 questions:
     confirm: 'Do you confirm generation?'
-    canceled: 'Command generation canceled.'
     plugin: 'Enter the plugin name'

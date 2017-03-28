@@ -196,9 +196,9 @@ class MetaBoxCommand extends Command
             $plugin = $this->pluginQuestion($io);
             $input->setOption('plugin', $plugin);
         }
-        /*
+        
         // --class name
-        $class_name = $input->getOption('class_name');
+        $class_name = $input->getOption('class-name');
         if (!$class_name) {
             $class_name = $io->ask(
                 $this->trans('commands.generate.metabox.questions.class-name'),
@@ -238,10 +238,10 @@ class MetaBoxCommand extends Command
          }
 
         // --screen
-        $screen_options = ['normal', 'advance', 'side'];
+        $screen_options = ['post', 'page', 'custom'];
         $screen = $input->getOption('screen');
         if (!$screen) {
-            $screen = $io->choice(
+            $screen = $io->choiceNoList(
                 $this->trans('commands.generate.metabox.questions.screen'),
                 $screen_options
             );
@@ -249,28 +249,30 @@ class MetaBoxCommand extends Command
         $input->setOption('screen', $screen);
 
         // --page location
+        $options_page_location = ['advanced', 'normal', 'side'];
         $page_location = $input->getOption('page-location');
          if (!$page_location) {
-             $page_location = $io->ask(
+             $page_location = $io->choiceNoList(
                  $this->trans('commands.generate.metabox.questions.page-location'),
-                 ''
+                 $options_page_location
              );
              $input->setOption('page-location', $page_location);
          }
 
         // --priority
+        $options_priority = ['default', 'core', 'high', 'low'];
         $priority = $input->getOption('priority');
         if (!$priority) {
-            $priority = $io->ask(
+            $priority = $io->choiceNoList(
                 $this->trans('commands.generate.metabox.questions.priority'),
-                ''
+                $options_priority
             );
         }
         $input->setOption('priority', $priority);
 
 
         // --field metabox
-        $fields_metabox = $input->getOption('fields-metabox');
+    /*    $fields_metabox = $input->getOption('fields-metabox');
         if (!$fields_metabox) {
             if ($io->confirm(
                 $this->trans('commands.generate.metabox.questions.fields-metabox'),
