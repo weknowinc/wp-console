@@ -9,6 +9,8 @@ options:
     test: 'Generate a test class'
     author: 'Plugin author'
     author-url: 'Plugin author website'
+    activate: 'Generate an activation function class'
+    deactivate: 'Generate a deactivation function class'
 questions:
     plugin: 'Enter the new plugin name'
     machine-name: 'Enter the plugin machine name'
@@ -16,7 +18,8 @@ questions:
     description: 'Enter plugin description'
     author: 'Enter plugin author'
     author-url: 'Enter Plugin author website'
-    test: 'Do you want to generate a unit test class'
+    activate: 'Do you want to generate an activation function class'
+    deactivate: 'Do you want to generate a deactivation function class'
 warnings:
     module-unavailable: 'Warning The following modules are not already available in your local environment "%s"'
 errors:

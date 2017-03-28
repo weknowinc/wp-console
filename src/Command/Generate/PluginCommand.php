@@ -138,12 +138,18 @@ class PluginCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.plugin.options.author-url')
             )
-            /*->addOption(
-                'test',
+            ->addOption(
+                'activate',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.plugin.options.test')
-            )*/;
+                $this->trans('commands.generate.plugin.options.activate')
+            )
+            ->addOption(
+                'deactivate',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('commands.generate.plugin.options.activate')
+            );
     }
 
     /**
@@ -168,10 +174,10 @@ class PluginCommand extends Command
         $description = $input->getOption('description');
         $author = $input->getOption('author');
         $authorURL = $input->getOption('author-url');
-        #$test = $input->getOption('test');
+        $activate = $input->getOption('activate');
+        $deactivate = $input->getOption('deactivate');
 
         $package = str_replace( ' ', '_', $plugin );
-
 
         $this->generator->generate(
             $this->site,
@@ -182,7 +188,8 @@ class PluginCommand extends Command
             $author,
             $authorURL,
             $package,
-            $test
+            $activate,
+            $deactivate
         );
     }
 
@@ -289,14 +296,23 @@ class PluginCommand extends Command
         $input->setOption('author-url', $authorUrl);
 
 
-       /* $test = $input->getOption('test');
-        if (!$test) {
-            $test = $io->confirm(
-                $this->trans('commands.generate.plugin.questions.test'),
+        $activate = $input->getOption('activate');
+        if (!$activate) {
+            $activate = $io->confirm(
+                $this->trans('commands.generate.plugin.questions.activate'),
                 true
             );
-            $input->setOption('test', $test);
-        }*/
+            $input->setOption('activate', $activate);
+        }
+
+        $deactivate = $input->getOption('deactivate');
+        if (!$deactivate) {
+            $deactivate = $io->confirm(
+                $this->trans('commands.generate.plugin.questions.deactivate'),
+                true
+            );
+            $input->setOption('deactivate', $deactivate);
+        }
     }
 
     /**
