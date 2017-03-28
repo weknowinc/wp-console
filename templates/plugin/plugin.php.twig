@@ -1,3 +1,4 @@
+{% if plugin_uri is defined %}
 <?php
 /**
  * Plugin Name:     {{plugin}}
@@ -11,3 +12,28 @@
  *
  * @package         {{package}}
  */
+{% endif %}
+
+{% if class_name is defined %}
+  // If this file is accessed directory, then abort.
+if ( ! defined( 'WPINC' ) ) {
+    die;
+}
+
+// Include the files for rendering the display.
+include_once( 'admin/class_meta_box.php' );
+include_once( 'admin/class_meta_box_display.php' );
+
+/**
+ * Starts the plugin by initializing the meta box, its display, and then
+ * sets the plugin in motion.
+ */
+
+function add_metabox_class() {
+
+  $meta_box = new class_Meta_Box( new class_MetaBox_Display() );
+    $meta_box->init();
+}
+
+add_action( 'add_meta_boxes', 'add_metabox_class' );
+{% endif %}

@@ -19,7 +19,7 @@ questions:
     screen: 'Enter metabox screen'
     page-location: 'Enter Metabox page location'
     priority: 'Enter Metabox priority'
-    field-metabox: 'Do you want to generate the metabox fields'
+    fields-metabox: 'Do you want to generate the metabox fields'
     field-type: 'Enter field type '
     field-id: 'Enter field id'
     field-label: 'Enter field label'
