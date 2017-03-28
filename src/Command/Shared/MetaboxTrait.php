@@ -7,6 +7,8 @@
 
 namespace WP\Console\Command\Shared;
 
+use WP\Console\Core\Style\WPStyle;
+
 /**
  * Class MetaboxTrait
  *

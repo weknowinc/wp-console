@@ -71,20 +71,24 @@ class MetaBoxGenerator extends Generator
             'priority' => $priority,
             'fields_metabox' => $fields_metabox
         ];
-
-        var_dump($this->extensionManager->getPlugin($plugin)->getPath(true));
-        var_dump($this->extensionManager->getPlugin($plugin)->getPath());
-        var_dump($this->extensionManager->getPlugin($plugin)->getPathname());
-   /*     $this->renderFile(
-            'plugin/src/metabox/class-metabox-php.twig',
-            $this->extensionManager->getPlugin($plugin)->getPath().'/'.$plugin.'/admin/'.$class_name.'_meta_box.php',
+        
+        $this->renderFile(
+            'plugin/src/metabox/class-metabox.php.twig',
+            $this->extensionManager->getPlugin($plugin)->getPath().'/admin/class_meta_box.php',
             $parameters
         );
     
         $this->renderFile(
             'plugin/src/metabox/class-metabox-display.php.twig',
-            $this->extensionManager->getPlugin($plugin)->getPath().'/'.$plugin.'/admin/'.$class_name.'_meta_box_display.php',
+            $this->extensionManager->getPlugin($plugin)->getPath().'/admin/class_meta_box_display.php',
             $parameters
-        );*/
+        );
+        
+        $this->renderFile(
+            'plugin/plugin.php.twig',
+            $this->extensionManager->getPlugin($plugin)->getPathname(),
+            $parameters,
+            FILE_APPEND
+        );
     }
 }
