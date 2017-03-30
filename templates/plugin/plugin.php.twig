@@ -21,19 +21,17 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 // Include the files for rendering the display.
-include_once( 'admin/class_meta_box.php' );
-include_once( 'admin/class_meta_box_display.php' );
+include_once( 'admin/{{ class_name }}_meta_box.php' );
 
 /**
- * Starts the plugin by initializing the meta box, its display, and then
+ * Starts the plugin by initializing the meta box {{ screen }}, its display, and then
  * sets the plugin in motion.
  */
 
-function add_metabox_class() {
-
-  $meta_box = new class_Meta_Box( new class_MetaBox_Display() );
+function add_metabox_{{ class_name }}_{{ screen }}() {
+  $meta_box = new {{ class_name }}();
     $meta_box->init();
 }
+add_metabox_{{ class_name }}_{{ screen }}();
 
-add_action( 'add_meta_boxes', 'add_metabox_class' );
 {% endif %}
