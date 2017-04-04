@@ -35,3 +35,20 @@ function add_metabox_{{ class_name }}_{{ screen }}() {
 add_metabox_{{ class_name }}_{{ screen }}();
 
 {% endif %}
+
+{% if class_name_taxonomy is defined %}
+// Include the files for rendering the display.
+include_once( 'admin/{{ class_name_taxonomy }}_taxonomy.php' );
+
+/**
+  * Starts the custom taxonomy
+  */
+
+function add_custom_taxonomy_{{ class_name_taxonomy }}() {
+    $taxonomy = new {{ class_name_taxonomy }}_custom_taxonomy();
+    $taxonomy->init();
+}
+
+add_custom_taxonomy_{{ class_name_taxonomy }}();
+
+{% endif %}
