@@ -47,6 +47,8 @@ class MetaBoxGenerator extends Generator
      * @param $page_location,
      * @param $priority,
      * @param $fields_metabox
+     * @param $wp_nonce
+     * @param $auto_save
      */
     public function generate(
         $plugin,
@@ -57,8 +59,9 @@ class MetaBoxGenerator extends Generator
         $screen,
         $page_location,
         $priority,
-        $fields_metabox
-
+        $fields_metabox,
+        $wp_nonce,
+        $auto_save
     ) {
         $parameters = [
             'plugin' => $plugin,
@@ -69,18 +72,26 @@ class MetaBoxGenerator extends Generator
             'screen' => $screen,
             'page_location' => $page_location,
             'priority' => $priority,
-            'fields_metabox' => $fields_metabox
+            'fields_metabox' => $fields_metabox,
+            'wp_nonce' => $wp_nonce,
+            'auto_save' => $auto_save
         ];
+        
+        $file = $this->extensionManager->getPlugin($plugin)->getPath().'/admin/'.$class_name.'_meta_box.php';
+        if (file_exists($file)) {
+            if (!is_dir($file)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the metaboxs , it already exist at "%s"',
+                        realpath($file)
+                    )
+                );
+            }
+        }
         
         $this->renderFile(
             'plugin/src/metabox/class-metabox.php.twig',
-            $this->extensionManager->getPlugin($plugin)->getPath().'/admin/class_meta_box.php',
-            $parameters
-        );
-    
-        $this->renderFile(
-            'plugin/src/metabox/class-metabox-display.php.twig',
-            $this->extensionManager->getPlugin($plugin)->getPath().'/admin/class_meta_box_display.php',
+            $file,
             $parameters
         );
         

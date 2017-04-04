@@ -1,49 +1,96 @@
 <?php
-/**
- * Represents a meta box to be displayed within the 'Add New Post' page.
- */
 
 /**
- * Represents a meta box to be displayed within the 'Add New Post' page.
- *
- * The class maintains a reference to a display object responsible for
- * displaying whatever content is rendered within the display.
+ * Add Meta Box to "{{ screen  }}"  type
  */
-class Class_Meta_Box {
 
-    /**
-     * A reference to the Meta Box Display.
-     *
-     * @access private
-     * @var    Class_MetaBox_Display
-     */
-    private $display;
+class {{ class_name }} {
 
-    /**
-     * Initializes this class by setting its display property equal to that of
-     * the incoming object.
-     *
-     * @param Class_MetaBox_Display $display Displays the contents of this meta box.
+    /*
+     * Class constructor.
      */
-    public function __construct( $display ) {
-        $this->display = $display;
+
+    public function init() {
+        add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
+{% if autosave is defined %}
+        add_action( 'save_post', array( $this, 'meta_boxes_save' ), 10, 2 );
+{% endif%}
     }
 
     /**
-     * Registers this meta box with WordPress.
-     *
-     * Defines a meta box that will render inspirational questions at the top
-     * of the sidebar of the 'Add New Post' page in order to help prompt
-     * bloggers with something to write about when they begin drafting a post.
+     * Add admin metabox.
      */
-    public function init() {
+    public function add_metabox() {
         add_meta_box(
-            '{{ metabox_id }}',
-            '{{ title }}',
-            array( $this->display, '{{ callback_function }}_callback' ),
-            '{{ screen }}',
-            '{{ page_location }}',
-            '{{ priority }}'
+            '{{ metabox_id }}', // ID
+            '{{ title }}', // Title
+            array( $this, '{{ callback_function }}' ), // Callback to method to display HTML,
+            '{{ screen }}', // screen type
+            '{{ page_location }}', // Context, choose between 'normal', 'advanced', or 'side'
+            '{{ priority }}'  // Position, choose between 'high', 'core', 'default' or 'low'
         );
     }
+
+    /**
+     * Output the meta box.
+     */
+    public function {{ callback_function }}() {
+{% if wp_nonce is defined %}
+        wp_nonce_field(basename(__FILE__), "meta-box-nonce");
+{% endif %}
+
+{% if fields_metabox %}
+        ?>
+{% for fields in fields_metabox %}
+            <p>
+                <label>{{ fields.label }}</label>
+{% if fields.type == 'select'%}
+                <select name="{{ fields.description }}" id="{{ fields.id }}" >
+{% for options in fields.multiSelection %}
+                    <option value="{{ options.value }}">{{ options.label }}</option>
+{% endfor %}
+                </select>
+{% elseif fields.type == 'radio' %}
+{% for options in fields.multiSelection %}
+                <input type="radio" name="{{ fields.id }}" value="{{ options.value }}"> {{ options.label }}<br>
+{% endfor %}
+{% else %}
+                <input type="{{ fields.type }}" name="{{ fields.description }}" id="{{ fields.id }}" placeholder="{{ fields.placeholder }}" value="{{ fields.default_value }}" />
+{% endif %}
+            </p>
+{% endfor %}
+        <?php
+{% else %}
+            echo 'This is the meta box.';
+{% endif %}
+    }
+
+{% if auto_save is defined %}
+    /**
+	 * Save opening times meta box data.
+	 *
+	 * @param  int     $post_id  The post ID
+	 * @param  object  $post     The post object
+	 */
+    public function meta_boxes_save( $post_id, $post ) {
+
+      //Do nonce security check
+      if (!isset($_POST["meta-box-nonce"]) || !wp_verify_nonce($_POST["meta-box-nonce"], basename(__FILE__)))
+        return $post_id;
+
+      if(!current_user_can("edit_post", $post_id))
+        return $post_id;
+
+      if(defined("DOING_AUTOSAVE") && DOING_AUTOSAVE)
+        return $post_id;
+
+{% for fields in fields_metabox %}
+      if(isset($_POST["{{ fields.id }}"]))
+        {
+            ${{ fields.id }}_value = $_POST["{{ fields.id }}"];
+            update_post_meta($post_id, "{{ fields.id }}", ${{ fields.id }}_value);
+        }
+{% endfor %}
+    }
+{% endif %}
 }

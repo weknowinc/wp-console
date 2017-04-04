@@ -10,6 +10,8 @@ options:
     screen: ''
     page-location: 'Metabox page location'
     priority: 'Metabox priority'
+    wp-nonce: 'wp nonce for fields'
+    auto-save: 'Auto save?'
 questions:
     plugin: 'Enter the new plugin name'
     class-name: 'Enter meta box class name'
@@ -27,6 +29,12 @@ questions:
     field-placeholder: 'Enter field placeholder'
     field-default-value: 'Enter field default value'
     field-metabox-add: 'Do you want to add another field metabox'
+    field-metabox-multiple-options: 'Do you want to add option for %option%'
+    multiple-options-label: 'Enter the label for option'
+    multiple-options-value: 'Enter the value for option'
+    field-metabox-multiple-options-add: 'Do you want to add another option for %option%'
+    wp-nonce: 'Do you want add nonce?'
+    auto-save: 'Do you want add auto save?'
 warnings:
     module-unavailable: 'Warning The following modules are not already available in your local environment "%s"'
 errors:
