@@ -14,3 +14,8 @@ services:
     arguments: ['@console.taxonomy_generator', '@console.extension_manager', '@console.validator', '@console.string_converter','@console.site']
     tags:
       - { name: wordpress.command }
+  console.generate_theme:
+    class: WP\Console\Command\Generate\ThemeCommand
+    arguments: ['@console.theme_generator', '@console.validator', '@app.root', '@console.string_converter', '@http_client', '@console.site']
+    tags:
+      - { name: wordpress.command }
