@@ -24,33 +24,61 @@ trait MetaboxTrait
     public function fieldMetaboxQuestion(WPStyle $io)
     {
         $validators = $this->validator;
+        $stringConverter = $this->stringConverter;
+        
         $fields = [];
         while (true) {
-            $type = $io->ask(
+            $type = $io->choiceNoList(
                 $this->trans('commands.generate.metabox.questions.field-type'),
-                'Content'
+                $this->arrayFieldType(),
+                ''
             );
             
-           
+            
             $id = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-id')
+                $this->trans('commands.generate.metabox.questions.field-id'),
+                '',
+                function ($id) use ($stringConverter) {
+                    return $stringConverter->camelCaseToUnderscore($id);
+                }
             );
-    
+            
             $label = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-label')
+                $this->trans('commands.generate.metabox.questions.field-label'),
+                ''
             );
-    
+            
             $description = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-description')
+                $this->trans('commands.generate.metabox.questions.field-description'),
+                ''
             );
-    
-            $field_placeholder = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-placeholder')
-            );
-    
-            $default_value = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-default-value')
-            );
+            
+            $field_placeholder = '';
+            $default_value = '';
+            if($type != 'select' && $type != 'radio'){
+                $field_placeholder = $io->ask(
+                    $this->trans('commands.generate.metabox.questions.field-placeholder'),
+                    ''
+                );
+                
+                $default_value = $io->ask(
+                    $this->trans('commands.generate.metabox.questions.field-default-value'),
+                    ''
+                );
+            }
+            
+            $multi_selection = [];
+            if($type == 'select' || $type == 'radio'){
+                if (!$io->confirm(
+                    $this->trans('commands.generate.metabox.questions.field-metabox-multiple-options', $type),
+                    true
+                )
+                ) {
+                    break;
+                }
+                $multi_selection = $this->multiSelection($io, $type);
+                
+            }
             
             array_push(
                 $fields,
@@ -59,8 +87,9 @@ trait MetaboxTrait
                     'id' => $id,
                     'label' => $label,
                     'description' => $description,
-                    'field_placeholder' => $field_placeholder,
+                    'placeholder' => $field_placeholder,
                     'default_value' => $default_value,
+                    'multiSelection' => $multi_selection
                 ]
             );
             
@@ -74,5 +103,43 @@ trait MetaboxTrait
         }
         
         return $fields;
+    }
+    
+    private function multiSelection(WPStyle $io, $type){
+        $multiple_options = [];
+        while (true) {
+            $multiple_options_label = $io->ask(
+                $this->trans('commands.generate.metabox.questions.multiple-options-label'),
+                ''
+            );
+            
+            
+            $multiple_options_value = $io->ask(
+                $this->trans('commands.generate.metabox.questions.multiple-options-value'),
+                ''
+            );
+            
+            array_push(
+                $multiple_options,
+                [
+                    'label' => $multiple_options_label,
+                    'value' => $multiple_options_value
+                ]
+            );
+            if (!$io->confirm(
+                $this->trans('commands.generate.metabox.questions.field-metabox-multiple-options-add', $type),
+                true
+            )
+            ) {
+                break;
+            }
+        }
+        
+        return $multiple_options;
+    }
+    
+    private function arrayFieldType(){
+        return ['select' ,'checkbox', 'color', 'date', 'email', 'file', 'image', 'month', 'number',
+            'radio','search', 'submit', 'tel', 'text', 'time', 'url', 'week'];
     }
 }

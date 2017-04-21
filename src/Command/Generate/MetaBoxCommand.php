@@ -141,8 +141,20 @@ class MetaBoxCommand extends Command
             ->addOption(
                 'fields-metabox',
                 '',
-                InputOption::VALUE_REQUIRED,
+                InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.metabox.options.fields-metabox')
+            )
+            ->addOption(
+                'wp-nonce',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('commands.generate.metabox.options.page-location')
+            )
+            ->addOption(
+                'auto-save',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('commands.generate.metabox.options.priority')
             );
     }
     
@@ -152,12 +164,12 @@ class MetaBoxCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-    
+        
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
         if (!$this->confirmGeneration($io)) {
             return;
         }
-    
+        
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
         $class_name = $input->getOption('class-name');
         $metabox_id = $input->getOption('metabox-id');
@@ -167,7 +179,9 @@ class MetaBoxCommand extends Command
         $page_location = $input->getOption('page-location');
         $priority = $input->getOption('priority');
         $fields_metabox = $input->getOption('fields-metabox');
-    
+        $wp_nonce = $input->getOption('wp-nonce');
+        $auto_save = $input->getOption('auto-save');
+        
         $this->generator->generate(
             $plugin,
             $class_name,
@@ -177,7 +191,9 @@ class MetaBoxCommand extends Command
             $screen,
             $page_location,
             $priority,
-            $fields_metabox
+            $fields_metabox,
+            $wp_nonce,
+            $auto_save
         );
     }
     
@@ -187,9 +203,10 @@ class MetaBoxCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-    
+        
         $validator = $this->validator;
-    
+        $stringUtils = $this->stringConverter;
+        
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
@@ -197,46 +214,54 @@ class MetaBoxCommand extends Command
             $input->setOption('plugin', $plugin);
         }
         
+        //Get plugin for options
+        $plugin = $input->getOption('plugin');
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
             $class_name = $io->ask(
                 $this->trans('commands.generate.metabox.questions.class-name'),
-                ' '
+                $stringUtils->humanToCamelCase($plugin).'MetaBox',
+                function ($value) use ($stringUtils) {
+                    if (!strlen(trim($value))) {
+                        throw new \Exception('The Class name can not be empty');
+                    }
+                    return $stringUtils->humanToCamelCase($value);
+                }
             );
+            $input->setOption('class-name', $class_name);
         }
-        $input->setOption('class-name', $class_name);
-
+        
         // --metabox id
         $metabox_id = $input->getOption('metabox-id');
         if (!$metabox_id) {
             $metabox_id = $io->ask(
                 $this->trans('commands.generate.metabox.questions.metabox-id'),
-                ' '
+                str_replace(' ', '_', $plugin) .'_meta_box'
             );
         }
         $input->setOption('metabox-id', $metabox_id);
-
-        // --function
+        
+        // --metabox title
         $title = $input->getOption('title');
         if (!$title) {
             $title = $io->ask(
                 $this->trans('commands.generate.metabox.questions.title'),
-                ''
+                ucwords($stringUtils->camelCaseToHuman($plugin)).' Meta Box'
             );
         }
         $input->setOption('title', $title);
-
+        
         // --callback_function
-         $callback_function = $input->getOption('callback-function');
-         if (!$callback_function) {
-             $callback_function = $io->ask(
-                 $this->trans('commands.generate.metabox.questions.callback-function'),
-                 ''
-             );
-             $input->setOption('callback-function', $callback_function);
-         }
-
+        $callback_function = $input->getOption('callback-function');
+        if (!$callback_function) {
+            $callback_function = $io->ask(
+                $this->trans('commands.generate.metabox.questions.callback-function'),
+                str_replace(' ', '_', $plugin) .'_meta_box_callback'
+            );
+            $input->setOption('callback-function', $callback_function);
+        }
+        
         // --screen
         $screen_options = ['post', 'page', 'custom'];
         $screen = $input->getOption('screen');
@@ -247,18 +272,18 @@ class MetaBoxCommand extends Command
             );
         }
         $input->setOption('screen', $screen);
-
+        
         // --page location
         $options_page_location = ['advanced', 'normal', 'side'];
         $page_location = $input->getOption('page-location');
-         if (!$page_location) {
-             $page_location = $io->choiceNoList(
-                 $this->trans('commands.generate.metabox.questions.page-location'),
-                 $options_page_location
-             );
-             $input->setOption('page-location', $page_location);
-         }
-
+        if (!$page_location) {
+            $page_location = $io->choiceNoList(
+                $this->trans('commands.generate.metabox.questions.page-location'),
+                $options_page_location
+            );
+            $input->setOption('page-location', $page_location);
+        }
+        
         // --priority
         $options_priority = ['default', 'core', 'high', 'low'];
         $priority = $input->getOption('priority');
@@ -269,10 +294,10 @@ class MetaBoxCommand extends Command
             );
         }
         $input->setOption('priority', $priority);
-
-
+        
+        
         // --field metabox
-    /*    $fields_metabox = $input->getOption('fields-metabox');
+        $fields_metabox = $input->getOption('fields-metabox');
         if (!$fields_metabox) {
             if ($io->confirm(
                 $this->trans('commands.generate.metabox.questions.fields-metabox'),
@@ -283,7 +308,33 @@ class MetaBoxCommand extends Command
                 $fields_metabox = $this->fieldMetaboxQuestion($io);
                 $input->setOption('fields-metabox', $fields_metabox);
             }
-        }*/
+        }
+        
+        if(!empty($fields_metabox)){
+            // --wp nonce
+            $wp_nonce = $input->getOption('wp-nonce');
+            if (!$wp_nonce) {
+                if ($io->confirm(
+                    $this->trans('commands.generate.metabox.questions.wp-nonce'),
+                    true
+                )
+                ) {
+                    $input->setOption('wp-nonce', $wp_nonce);
+                }
+            }
+            
+            // --auto save
+            $auto_save = $input->getOption('auto-save');
+            if (!$auto_save) {
+                if ($io->confirm(
+                    $this->trans('commands.generate.metabox.questions.auto-save'),
+                    true
+                )
+                ) {
+                    $input->setOption('auto-save', $auto_save);
+                }
+            }
+        }
     }
     
     /**

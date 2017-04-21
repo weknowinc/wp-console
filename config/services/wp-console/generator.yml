@@ -8,3 +8,13 @@ services:
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }
+  console.taxonomy_generator:
+    class: WP\Console\Generator\TaxonomyGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
+  console.theme_generator:
+    class: WP\Console\Generator\ThemeGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
