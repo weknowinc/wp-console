@@ -194,10 +194,6 @@ class Manager
     {
         if ($type === 'plugin') {
         }
-        
-        if ($type === 'theme') {
-        
-        }
 
         $discovery = new Discovery($this->site, $this->appRoot);
         $discovery->reset();
@@ -224,7 +220,7 @@ class Manager
      */
     public function getTheme($name)
     {
-        if ($extension = $this->getExtension('Theme', $name)) {
+        if ($extension = $this->getExtension('theme', $name)) {
             return $this->createExtension($extension);
         }
 
