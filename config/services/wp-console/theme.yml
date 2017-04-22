@@ -1,0 +1,11 @@
+services:
+  theme_activate:
+      class: WP\Console\Command\Theme\ActivateCommand
+      arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
+      tags:
+        - { name: wordpress.command }
+  theme_debug:
+      class: WP\Console\Command\Theme\DebugCommand
+      arguments: ['@console.extension_manager', '@console.site']
+      tags:
+        - { name: wordpress.command }

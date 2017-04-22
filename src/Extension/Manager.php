@@ -109,10 +109,10 @@ class Manager
     /**
      * @return $this
      */
-    public function discoverThemes()
+    public function discoverThemes($type = 'theme')
     {
         $this->initialize();
-        $this->discoverExtension('theme');
+        $this->discoverExtension($type);
 
         return $this;
     }
@@ -166,7 +166,7 @@ class Manager
             if ($type == 'plugin') {
                 $isActivated = $this->site->isPluginActive($extension);
             } else {
-                $isActivated = false;
+                $isActivated =  $this->site->isThemeActive($extension);
             }
 
             if (!$showActivated && $isActivated) {
@@ -194,6 +194,10 @@ class Manager
     {
         if ($type === 'plugin') {
         }
+        
+        if ($type === 'theme') {
+        
+        }
 
         $discovery = new Discovery($this->site, $this->appRoot);
         $discovery->reset();
@@ -220,7 +224,7 @@ class Manager
      */
     public function getTheme($name)
     {
-        if ($extension = $this->getExtension('theme', $name)) {
+        if ($extension = $this->getExtension('Theme', $name)) {
             return $this->createExtension($extension);
         }
 

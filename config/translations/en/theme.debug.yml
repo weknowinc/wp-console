@@ -1,0 +1,11 @@
+description: 'Display current themes available for application'
+options:
+    status: 'Theme status [enabled|disabled]'
+messages:
+    name: Name
+    status: Status
+    theme-uri: 'Theme URI'
+    version: Version
+    author: 'Author'
+    author-url: 'Author website'
+
