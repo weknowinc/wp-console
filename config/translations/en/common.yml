@@ -10,3 +10,4 @@ messages:
 questions:
     confirm: 'Do you confirm generation?'
     plugin: 'Enter the plugin name'
+    theme: 'Enter the theme name'
