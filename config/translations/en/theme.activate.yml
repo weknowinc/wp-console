@@ -1,0 +1,10 @@
+description: 'Activate theme in the application'
+arguments:
+    theme: 'Theme to be activated should be separated by a space'
+options:
+questions:
+    theme: 'Theme name (press <return> to stop adding plugins)'
+    invalid-theme: 'Invalid theme "%s"'
+messages:
+    nothing: 'Nothing to do. All theme are already activated'
+    success: 'The following theme were activated successfully: "%s"'
