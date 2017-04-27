@@ -75,7 +75,7 @@ class Discovery
 
     /**
      * @param string $type
-     *   The extension type to search for. One of 'plugin', 'theme'.
+     *   The extension type to search for. One of 'plugin', 'Theme'.
      * @return mixed An associative array of Extension objects, keyed by extension name
      */
     public function scan($type) {
@@ -89,8 +89,16 @@ class Discovery
                 $this->fileCache->set($type, $plugins);
                 return $plugins;
             }
-        } else {
-            ///
+        } elseif($type == 'theme') {
+            if($themes = $this->fileCache->get($type)) {
+                return $themes;
+            } else {
+                /** WordPress Theme Administration API */
+                $this->site->loadLegacyFile('wp-includes/theme.php');
+                $themes = $this->site->getThemes();
+                $this->fileCache->set($type, $themes);
+                return $themes;
+            }
         }
     }
 

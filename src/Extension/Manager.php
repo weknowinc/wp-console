@@ -109,10 +109,10 @@ class Manager
     /**
      * @return $this
      */
-    public function discoverThemes()
+    public function discoverThemes($type = 'theme')
     {
         $this->initialize();
-        $this->discoverExtension('theme');
+        $this->discoverExtension($type);
 
         return $this;
     }
@@ -166,7 +166,7 @@ class Manager
             if ($type == 'plugin') {
                 $isActivated = $this->site->isPluginActive($extension);
             } else {
-                $isActivated = false;
+                $isActivated =  $this->site->isThemeActive($extension);
             }
 
             if (!$showActivated && $isActivated) {

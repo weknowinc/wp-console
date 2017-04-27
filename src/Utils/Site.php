@@ -528,6 +528,7 @@ class Site
     }
 
     public function isPluginActive($plugin){
+        var_dump($plugin);
         if(function_exists('is_plugin_active')) {
             return is_plugin_active($plugin);
         } else {
@@ -623,6 +624,38 @@ class Site
     public function getSubdirectoryReservedNames(){
         if(function_exists('get_subdirectory_reserved_names')) {
             return get_subdirectory_reserved_names();
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * @param string $theme_folder
+     * @return null
+     */
+    public function getThemes($theme_folder = '') {
+        if(function_exists('wp_get_themes')) {
+            return wp_get_themes($theme_folder);
+        } else {
+            return null;
+        }
+    }
+    
+    public function activateTheme($theme){
+        if(function_exists('switch_theme')) {
+            return switch_theme($theme);
+        } else {
+            return null;
+        }
+    }
+    
+    public function isThemeActive($theme){
+        if(function_exists('wp_get_theme')) {
+            if (wp_get_theme()->stylesheet === $theme){
+                return true;
+            }else{
+                return false;
+            }
         } else {
             return null;
         }
