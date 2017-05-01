@@ -136,7 +136,7 @@ class WordpressConsoleCore
                 $this->root
             );
         }
-        
+
         $container->get('console.renderer')
             ->setSkeletonDirs(
                 [
