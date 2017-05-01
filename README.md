@@ -8,9 +8,40 @@ All notable changes to this project will be documented in the [releases page](ht
 
 # Install
 
-## Use
+## Usage
 
-# Contribute
+### Available commands:
+  about                             Display basic information about Wordprss Console project
+  
+  chain                             Chain command execution
+  exec                              Execute an external command.
+  help                              Displays help for a command
+  init                              Copy configuration files.
+  list                              Lists all available commands
+ **cache**
+  cache:flush                       Flush the Wordpress object cache
+ **chain**
+  chain:debug                       List available chain files.
+ **generate**
+  generate:metabox                  Generate a meta box.
+  generate:plugin (gp)              Generate a plugin.
+  generate:taxonomy                 Generate a custom taxonomy.
+  generate:theme                    Generate a plugin.
+  Install a Wordpress project
+ **multisite**
+  multisite:install (mi)            Install a Wordpress multisite network
+  multisite:debug                   List all sites in network available to a specific user
+ **plugin**
+  plugin:activate (pa)              Activate plugins or plugin in the application
+  plugin:deactivate (pd)            Deactivate plugins or plugin in the application
+  plugin:debug (pde)                Display current plugins available for application
+ **site**
+  site:install                      Install a Wordpress project
+ **theme**
+  theme:activate                    Activate theme in the application
+  theme:debug                       Display current themes available for application
+
+# How to contribute
 
 ## Fork
 Fork your own copy of the [WordPress Console](https://bitbucket.org/weknowinc/wp-console/fork) repository to your account
