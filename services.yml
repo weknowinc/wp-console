@@ -1,5 +1,7 @@
 services:
   # WordpressConsoleCore Services
+  console.root:
+    class: SplString
   console.chain:
     class: WP\Console\Core\Command\Chain\ChainCommand
     arguments: ['@console.chain_queue', '@console.chain_discovery']
@@ -24,12 +26,3 @@ services:
   console.validator:
       class: WP\Console\Utils\Validator
       arguments: ['@console.extension_manager']
-#  console.generate_plugin:
-#    class: WP\Console\Command\Generate\PluginCommand
-#    arguments: ['@console.plugin_generator', '@console.validator', '@app.root', '@console.string_converter', '@http_client', '@console.site']
-#    tags:
-#      - { name: wordpress.command }
-#  console.plugin_generator:
-#    class: WP\Console\Generator\PluginGenerator
-#    tags:
-#      - { name: wordpress.generator }

@@ -28,6 +28,8 @@ function activate_plugin_name() {
 	require_once plugin_dir_path( __FILE__ ) . '{{ class_name_activator_path }}';
 	{{ class_name_activator }}::activate();
 }
+
+register_activation_hook( __FILE__, 'activate_plugin_name' );
 {% endif %}
 
 {% if deactivate is defined %}
@@ -40,6 +42,7 @@ function deactivate_plugin_name() {
 	{{ class_name_deactivator }}::deactivate();
 }
 
+register_deactivation_hook( __FILE__, 'deactivate_plugin_name' );
 {% endif %}
 
 {% if metabox_class_name is defined %}

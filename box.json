@@ -9,6 +9,10 @@
   "files": [
     "config.yml",
     "services.yml",
+    "services-core.yml",
+    "services-install.yml",
+    "services-multisite.yml",
+    "services-multisite-install.yml",
     "bin/wp-console.php",
     "vendor/autoload.php"
   ],

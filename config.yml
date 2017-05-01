@@ -11,7 +11,7 @@ application:
   clear: 'false'
   remote:
     user: 'wordpress'
-#    password: 'drupal'
+#    password: 'wordpress'
     port: '22'
 #    keys:
 #      public: '~/.ssh/id_rsa.pub'
@@ -19,7 +19,7 @@ application:
 #      passphrase: '~/.ssh/passphrase.txt'
   options:
     learning: true
-#    target: drupalvm.dev
+#    target: wordpressvm.dev
 #    uri: miltisite.dev
     generate-inline: false
     generate-chain: false
