@@ -17,7 +17,8 @@ use WP\Console\Core\Utils\ShowFile;
 
 /**
  * Class ShowGeneratedFilesListener
- * @package Drupal\Console\Core\EventSubscriber
+ *
+ * @package WP\Console\Core\EventSubscriber
  */
 class ShowGeneratedFilesListener implements EventSubscriberInterface
 {
@@ -33,6 +34,7 @@ class ShowGeneratedFilesListener implements EventSubscriberInterface
 
     /**
      * ShowGeneratedFilesListener constructor.
+     *
      * @param FileQueue $fileQueue
      * @param ShowFile  $showFile
      */

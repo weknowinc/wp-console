@@ -16,7 +16,7 @@ services:
       tags:
         - { name: wordpress.command }
   console.remote:
-      class: Drupal\Console\Core\Utils\Remote
+      class: WP\Console\Core\Utils\Remote
       arguments: ['@console.translator_manager']
   console.shell_process:
       class: WP\Console\Core\Utils\ShellProcess

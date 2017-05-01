@@ -39,8 +39,7 @@ class WordpressFinder
     {
         // Validate that Wordpress load files is available
         if (!empty($path) && is_dir($path) && file_exists($path . '/wp-load.php')) {
-             $this->wordpressRoot = $path;
-
+            $this->wordpressRoot = $path;
         } else {
             $this->wordpressRoot = false;
         }

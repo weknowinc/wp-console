@@ -13,7 +13,8 @@ namespace WP\Console\Component\FileCache;
  * on the file modification to ensure that cached data is still up to date and
  * does not need to be invalidated externally.
  */
-interface FileCacheInterface {
+interface FileCacheInterface
+{
 
     /**
      * Gets data based on a filename.
@@ -43,7 +44,7 @@ interface FileCacheInterface {
      *
      * @param string $filepath
      *   Path of the file that the cached data is based on.
-     * @param mixed $data
+     * @param mixed  $data
      *   The data that should be cached.
      */
     public function set($filepath, $data);
@@ -55,5 +56,4 @@ interface FileCacheInterface {
      *   Path of the file that the cached data is based on.
      */
     public function delete($filepath);
-
 }

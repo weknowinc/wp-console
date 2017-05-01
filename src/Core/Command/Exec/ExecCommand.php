@@ -19,7 +19,8 @@ use WP\Console\Core\Utils\ShellProcess;
 
 /**
  * Class ExecCommand
- * @package Drupal\Console\Core\Command\Exec
+ *
+ * @package WP\Console\Core\Command\Exec
  */
 class ExecCommand extends Command
 {
@@ -32,6 +33,7 @@ class ExecCommand extends Command
 
     /**
      * ExecCommand constructor.
+     *
      * @param ShellProcess $shellProcess
      */
     public function __construct(ShellProcess $shellProcess)

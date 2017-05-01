@@ -2,16 +2,17 @@
 
 /**
  * @file
- * Contains Drupal\Console\Command\Shared\CommandTrait.
+ * Contains WP\Console\Command\Shared\CommandTrait.
  */
 
 namespace WP\Console\Command\Shared;
 
-use Drupal\Console\Core\Utils\TranslatorManager;
+use WP\Console\Core\Utils\TranslatorManager;
 
 /**
  * Class CommandTrait
- * @package Drupal\Console\Command
+ *
+ * @package WP\Console\Command
  */
 trait CommandTrait
 {

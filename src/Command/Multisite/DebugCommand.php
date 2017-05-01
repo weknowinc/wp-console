@@ -35,12 +35,12 @@ class DebugCommand extends Command
      * DebugCommand constructor.
      *
      * @param $appRoot
-     * @param Site  $site
+     * @param Site    $site
      */
     public function __construct(
         $appRoot,
-        Site $site)
-    {
+        Site $site
+    ) {
         $this->appRoot = $appRoot;
         $this->site = $site;
         parent::__construct();

@@ -96,12 +96,6 @@ class MetaBoxCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.generate.metabox.options.class-name')
             )
-            /*   ->addOption(
-                 'text-domain',
-                 '',
-                 InputOption::VALUE_REQUIRED,
-                 $this->trans('commands.common.options.text-domain')
-             )*/
             ->addOption(
                 'metabox-id',
                 '',
@@ -203,8 +197,6 @@ class MetaBoxCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-        
-        $validator = $this->validator;
         $stringUtils = $this->stringConverter;
         
         // --plugin
@@ -310,7 +302,7 @@ class MetaBoxCommand extends Command
             }
         }
         
-        if(!empty($fields_metabox)){
+        if (!empty($fields_metabox)) {
             // --wp nonce
             $wp_nonce = $input->getOption('wp-nonce');
             if (!$wp_nonce) {

@@ -116,12 +116,6 @@ class InstallCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.site.install.options.db-prefix')
             )
-            /*->addOption(
-                'db-port',
-                '',
-                InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.site.install.options.db-port')
-            )*/
             ->addOption(
                 'site-name',
                 '',
@@ -165,12 +159,12 @@ class InstallCommand extends Command
         // --uri parameter
         $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_HOST);
         $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_SCHEME);
-        if($uri == 'default') {
+        if ($uri == 'default') {
             $siteUri = $io->ask(
                 $this->trans('commands.site.install.questions.site-url'),
                 'http://wordpress.local'
             );
-            if($siteUri != 'default') {
+            if ($siteUri != 'default') {
                 $uri =  parse_url($siteUri, PHP_URL_HOST);
                 $scheme =  parse_url($siteUri, PHP_URL_SCHEME);
                 $argvInputReader->setOptionsFromConfiguration(['--uri'=>$siteUri]);
@@ -223,13 +217,6 @@ class InstallCommand extends Command
             $dbPass = $this->dbPassQuestion($io);
             $input->setOption('db-pass', $dbPass);
         }
-
-        // --db-port option
-        /*$dbPort = $input->getOption('db-port');
-        if (!$dbPort) {
-            $dbPort = $this->dbPortQuestion($io);
-            $input->setOption('db-port', $dbPort);
-        }*/
 
         // --db-prefix option
         $dbPrefix = $input->getOption('db-prefix');
@@ -291,7 +278,7 @@ class InstallCommand extends Command
 
         $this->site->setSiteURL($scheme, $uri);
 
-        if($this->site->getConfig()) {
+        if ($this->site->getConfig()) {
             $io->error(
                 sprintf($this->trans('commands.site.install.messages.already-installed'), $uri, $uri)
             );
@@ -303,7 +290,7 @@ class InstallCommand extends Command
         $accountMail = $input->getOption('account-mail');
         $accountPass = $input->getOption('account-pass');
         $dbHost = $input->getOption('db-host')?:'127.0.0.1';
-        $dbName = $input->getOption('db-name')?:'drupal_'.time();
+        $dbName = $input->getOption('db-name')?:'wp_'.time();
         $dbUser = $input->getOption('db-user')?:'root';
         $dbPass = $input->getOption('db-pass');
         $langcode = $input->getOption('langcode');
@@ -337,7 +324,7 @@ class InstallCommand extends Command
             $configParameters
         );
 
-        if($force && file_exists($this->appRoot . "/wp-config.php.old")) {
+        if ($force && file_exists($this->appRoot . "/wp-config.php.old")) {
             $io->error(
                 $this->trans('commands.site.install.messages.config-overwrite')
             );
@@ -354,16 +341,16 @@ class InstallCommand extends Command
         );
     }
 
-    public function runInstaller($siteName, $accountName, $accountMail, $public, $accountPass) {
-
-        if(!defined( 'WP_INSTALLING' ) ) {
+    public function runInstaller($siteName, $accountName, $accountMail, $public, $accountPass)
+    {
+        if (!defined('WP_INSTALLING')) {
             define('WP_INSTALLING', true);
         }
 
         $this->site->loadLegacyFile('wp-config.php');
-        $this->site->loadLegacyFile('wp-admin/includes/upgrade.php' );
+        $this->site->loadLegacyFile('wp-admin/includes/upgrade.php');
 
-        $result = wp_install( $siteName, $accountName, $accountMail, $public, '', $accountPass );
+        $result = wp_install($siteName, $accountName, $accountMail, $public, '', $accountPass);
 
         return !empty($result);
     }

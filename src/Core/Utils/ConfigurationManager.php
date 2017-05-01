@@ -180,10 +180,10 @@ class ConfigurationManager
     public function getSitesDirectory()
     {
         return null;
-//        return sprintf(
-//            '%s/sites',
-//            $this->getConsoleDirectory()
-//        );
+        //        return sprintf(
+        //            '%s/sites',
+        //            $this->getConsoleDirectory()
+        //        );
     }
 
     /**

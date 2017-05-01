@@ -5,7 +5,8 @@ namespace WP\Console\Component\FileCache;
 /**
  * Allows to cache data based on file modification dates.
  */
-class FileCache implements FileCacheInterface {
+class FileCache implements FileCacheInterface
+{
 
     /**
      * Prefix that is used for cache entries.
@@ -38,18 +39,18 @@ class FileCache implements FileCacheInterface {
     /**
      * Constructs a FileCache object.
      *
-     * @param string $prefix
+     * @param string      $prefix
      *   The cache prefix.
-     * @param string $collection
+     * @param string      $collection
      *   A collection identifier to ensure that the same files could be cached for
      *   different purposes without clashing.
      * @param string|null $cache_backend_class
      *   (optional) The class that should be used as cache backend.
-     * @param array $cache_backend_configuration
+     * @param array       $cache_backend_configuration
      *   (optional) The configuration for the backend class.
      */
-    public function __construct($prefix, $collection, $cache_backend_class = NULL, array $cache_backend_configuration = []) {
-
+    public function __construct($prefix, $collection, $cache_backend_class = null, array $cache_backend_configuration = [])
+    {
         if (empty($prefix)) {
             throw new \InvalidArgumentException('Required prefix configuration is missing');
         }
@@ -65,16 +66,18 @@ class FileCache implements FileCacheInterface {
     /**
      * {@inheritdoc}
      */
-    public function get($type) {
+    public function get($type)
+    {
         $types = [$type];
         $cached = $this->getMultiple($types);
-        return isset($cached[$type]) ? $cached[$type] : NULL;
+        return isset($cached[$type]) ? $cached[$type] : null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMultiple(array $types) {
+    public function getMultiple(array $types)
+    {
         $data = [];
         $remaining_cids = [];
 
@@ -83,8 +86,7 @@ class FileCache implements FileCacheInterface {
             $cid = $this->prefix . ':' . $this->collection . ':' . $type;
             if (isset(static::$cached[$cid])) {
                 $data[$type] = static::$cached[$cid]['data'];
-            }
-            else {
+            } else {
                 // Collect a list of cache IDs that we still need to fetch from cache
                 // backend.
                 $remaining_cids[$cid] = $type;
@@ -97,7 +99,6 @@ class FileCache implements FileCacheInterface {
             foreach ($cache_results as $cid => $cached) {
                 $data[$cached['type']] = $cached['data'];
                 static::$cached[$cid] = $cached;
-
             }
         }
 
@@ -107,7 +108,8 @@ class FileCache implements FileCacheInterface {
     /**
      * {@inheritdoc}
      */
-    public function set($type, $data) {
+    public function set($type, $data)
+    {
         $cached = [
             'type' => $type,
             'data' => $data,
@@ -123,7 +125,8 @@ class FileCache implements FileCacheInterface {
     /**
      * {@inheritdoc}
      */
-    public function delete($filepath) {
+    public function delete($filepath)
+    {
         $realpath = realpath($filepath);
         $cid = $this->prefix . ':' . $this->collection . ':' . $realpath;
 
@@ -135,10 +138,9 @@ class FileCache implements FileCacheInterface {
 
     /**
      * Resets the static cache.
-     *
      */
-    public static function reset() {
+    public static function reset()
+    {
         static::$cached = [];
     }
-
 }

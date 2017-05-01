@@ -178,8 +178,7 @@ class TextDescriptor extends Descriptor
             $width = $this->getColumnWidth($description->getCommands()) + 4;
             if ($describedNamespace) {
                 $this->writeText(sprintf($application->trans('commands.list.messages.comment'), $describedNamespace), $options);
-            }
-            else {
+            } else {
                 $this->writeText($application->trans('commands.list.messages.available-commands'), $options);
             }
 
@@ -202,8 +201,7 @@ class TextDescriptor extends Descriptor
                     $this->writeText(' <comment>'.$namespace['id'].'</comment>', $options);
                 }
                 foreach ($namespace['commands'] as $name) {
-
-                    if (ApplicationDescription::GLOBAL_NAMESPACE == $namespace['id']){
+                    if (ApplicationDescription::GLOBAL_NAMESPACE == $namespace['id']) {
                         if (!in_array($name, $singleCommands)) {
                             continue;
                         }
@@ -211,7 +209,7 @@ class TextDescriptor extends Descriptor
 
                     $this->writeText("\n");
                     $alias = '';
-                    if ($description->getCommand($name)->getAliases()){
+                    if ($description->getCommand($name)->getAliases()) {
                         $alias = sprintf(
                             '(%s)',
                             implode(',', $description->getCommand($name)->getAliases())
@@ -219,7 +217,8 @@ class TextDescriptor extends Descriptor
                     }
                     $spacingWidth = $width - strlen($name.$alias);
                     $this->writeText(
-                        sprintf('  <info>%s</info> <comment>%s</comment> %s%s',
+                        sprintf(
+                            '  <info>%s</info> <comment>%s</comment> %s%s',
                             $name,
                             $alias,
                             str_repeat(' ', $spacingWidth),

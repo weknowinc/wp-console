@@ -7,7 +7,6 @@
 
 namespace WP\Console\Command\Shared;
 
-use Symfony\Component\Console\Input\InputInterface;
 use WP\Console\Core\Style\WPStyle;
 use Symfony\Component\Console\Question\Question;
 
@@ -32,7 +31,7 @@ trait DatabaseTrait
     }
 
     /**
-     * @param DrupalStyle $io
+     * @param WPStyle $io
      *
      * @return mixed
      */
@@ -44,7 +43,7 @@ trait DatabaseTrait
     }
 
     /**
-     * @param DrupalStyle $io
+     * @param WPStyle $io
      *
      * @return mixed
      */
@@ -56,7 +55,7 @@ trait DatabaseTrait
     }
 
     /**
-     * @param DrupalStyle $io
+     * @param WPStyle $io
      *
      * @return mixed
      */
@@ -68,7 +67,7 @@ trait DatabaseTrait
     }
 
     /**
-     * @param DrupalStyle $io
+     * @param WPStyle $io
      *
      * @return mixed
      */
@@ -79,7 +78,7 @@ trait DatabaseTrait
     }
 
     /**
-     * @param DrupalStyle $io
+     * @param WPStyle $io
      *
      * @return mixed
      */

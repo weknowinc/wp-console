@@ -13,9 +13,11 @@ use Symfony\Component\Console\Command\Command;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Utils\ChainDiscovery;
 use WP\Console\Core\Style\WPStyle;
+
 /**
  * Class ChainDebugCommand
- * @package Drupal\Console\Core\Command\Chain
+ *
+ * @package WP\Console\Core\Command\Chain
  */
 class ChainDebugCommand extends Command
 {
