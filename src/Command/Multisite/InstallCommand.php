@@ -104,7 +104,7 @@ class InstallCommand extends Command
 
         $this
             ->setName('multisite:install')
-            ->setDescription($this->trans('commands.multisite:install.description'))
+            ->setDescription($this->trans('commands.multisite.install.description'))
             ->addOption(
                 'langcode',
                 '',

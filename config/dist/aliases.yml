@@ -1,18 +1,32 @@
 commands:
   aliases:
+    cache:flush:
+      - cf
+    chain:debug:
+      - cd
+    generate:metabox:
+      - gm
     generate:plugin:
       - gp
-    plugin:activate:
-      - pa
-    plugin:deactivate:
-      - pd
-    plugin:debug:
-      - pde
+    generate:taxonomy:
+      - gta
+    generate:theme:
+      - gth
     multisite:debug:
       - md
     multisite:new:
       - mn
     multisite:install:
       - mi
+    plugin:activate:
+      - pa
+    plugin:deactivate:
+      - pd
+    plugin:debug:
+      - pde
     site:install:
       - si
+    theme:activate:
+      - ta
+    theme:debug:
+      - td	        

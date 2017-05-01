@@ -47,8 +47,8 @@ class ConfigurationManager
         $configurationDirectories[] = $this->getHomeDirectory() . '/.wp-console/';
         $configurationDirectories[] = getcwd().'/wp-console/';
 
-        if ($root) {
-            $configurationDirectories[] = $root . '/wp-console/';
+        if ($root and !in_array($root . 'wp-console/', $configurationDirectories)) {
+            $configurationDirectories[] = $root . 'wp-console/';
         }
 
         $configurationDirectories = array_unique($configurationDirectories);
