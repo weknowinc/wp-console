@@ -8,9 +8,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Application as BaseApplication;
 
-
-
-
 /**
  * Class Application
  * @package WP\Console
@@ -25,7 +22,7 @@ class Application extends BaseApplication
     /**
      * @var string
      */
-    const VERSION = '0.0.1';
+    const VERSION = '0.1.0';
 
     public function __construct(ContainerInterface $container)
     {

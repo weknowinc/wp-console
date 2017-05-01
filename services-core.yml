@@ -14,7 +14,7 @@ services:
       class: WP\Console\Core\Utils\ChainQueue
   console.chain_discovery:
       class: WP\Console\Core\Utils\ChainDiscovery
-      arguments: ['@console.root', '@console.configuration_manager']
+      arguments: ['@?console.root', '@console.configuration_manager']
   console.configuration_manager:
     class: WP\Console\Core\Utils\ConfigurationManager
   console.init:

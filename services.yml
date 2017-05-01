@@ -1,7 +1,5 @@
 services:
   # WordpressConsoleCore Services
-  console.root:
-    class: SplString
   console.chain:
     class: WP\Console\Core\Command\Chain\ChainCommand
     arguments: ['@console.chain_queue', '@console.chain_discovery']
