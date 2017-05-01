@@ -9,6 +9,7 @@ namespace WP\Console\Core\Utils;
 
 /**
  * Class FileQueue
+ *
  * @package WP\Console\Core\Utils
  */
 class FileQueue

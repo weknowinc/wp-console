@@ -18,7 +18,7 @@ use WP\Console\Utils\Site;
 class PluginGenerator extends Generator
 {
     /**
-     * @param Site $site
+     * @param Site        $site
      * @param $plugin
      * @param $machineName
      * @param $dir
@@ -99,7 +99,7 @@ class PluginGenerator extends Generator
             $parameters
         );
 
-        if($activate) {
+        if ($activate) {
             $this->renderFile(
                 'plugin/includes/plugin-activator.php.twig',
                 $dir. '/' . $parameters['class_name_activator_path'],
@@ -107,7 +107,7 @@ class PluginGenerator extends Generator
             );
         }
 
-        if($deactivate) {
+        if ($deactivate) {
             $this->renderFile(
                 'plugin/includes/plugin-deactivator.php.twig',
                 $dir. '/' .  $parameters['class_name_deactivator_path'],

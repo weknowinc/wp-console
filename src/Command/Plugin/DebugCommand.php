@@ -2,12 +2,11 @@
 
 /**
  * @file
- * Contains \Drupal\Console\Command\Module\DebugCommand.
+ * Contains \WP\Console\Command\Module\DebugCommand.
  */
 
 namespace WP\Console\Command\Plugin;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,7 +35,7 @@ class DebugCommand extends Command
      * DebugCommand constructor.
      *
      * @param Manager $extensionManager
-     * @param Site                 $site
+     * @param Site    $site
      */
     public function __construct(
         Manager $extensionManager,
@@ -78,9 +77,9 @@ class DebugCommand extends Command
         $tableRows = [];
 
         $discoverPlugins = $this->extensionManager->discoverPlugins();
-        if($status == 'disabled') {
+        if ($status == 'disabled') {
             $discoverPlugins->showDeactivated();
-        } elseif($status == 'enabled') {
+        } elseif ($status == 'enabled') {
             $discoverPlugins->showActivated();
         } else {
             $discoverPlugins->showActivated()->showDeactivated();
@@ -89,7 +88,7 @@ class DebugCommand extends Command
         $plugins = $discoverPlugins->getList();
 
 
-        foreach ($plugins as $plugin => $pluginData ) {
+        foreach ($plugins as $plugin => $pluginData) {
             $pluginStatus = ($this->site->isPluginActive($plugin))?$this->trans('commands.common.status.enabled'): $this->trans('commands.common.status.disabled');
 
 

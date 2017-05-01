@@ -30,7 +30,7 @@ class ShellProcess
     private $process;
 
     /**
-     * @var DrupalStyle
+     * @var WPStyle
      */
     private $io;
 

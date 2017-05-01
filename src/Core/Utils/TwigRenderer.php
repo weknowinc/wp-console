@@ -24,6 +24,7 @@ class TwigRenderer
 
     /**
      * TwigRenderer constructor.
+     *
      * @param $translator
      * @param StringConverter $stringConverter
      */

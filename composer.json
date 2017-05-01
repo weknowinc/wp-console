@@ -42,7 +42,7 @@
         "anolilab/wordpress-salt-generator": "^1.2",
         "twig/twig": "^1.31"
     },
-    "bin": ["bin/drupal"],
+    "bin": ["bin/wp-console"],
     "config": {
         "bin-dir": "bin/",
         "generate-salts": true
@@ -50,10 +50,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
-        "files": [
-            "src/Core/constants.php",
-            "src/Core/functions.php"
-        ],
         "psr-4": {"WP\\Console\\": "src"}
     },
     "scripts": {

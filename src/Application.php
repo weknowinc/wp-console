@@ -5,11 +5,11 @@ namespace WP\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Application as BaseApplication;
 
 /**
  * Class Application
+ *
  * @package WP\Console
  */
 class Application extends BaseApplication
@@ -37,19 +37,7 @@ class Application extends BaseApplication
         $this->registerGenerators();
         $this->registerCommands();
         $this->registerExtendCommands();
-//        $clear = $this->container->get('console.configuration_manager')
-//            ->getConfiguration()
-//            ->get('application.clear')?:false;
-//        if ($clear === true || $clear === 'true') {
-//            $output->write(sprintf("\033\143"));
-//        }
         parent::doRun($input, $output);
-        /*if ($this->getCommandName($input) == 'list' && $this->container->hasParameter('console.warning')) {
-            $io = new WPStyle($input, $output);
-            $io->warning(
-                $this->trans($this->container->getParameter('console.warning'))
-            );
-        }*/
     }
 
     private function registerGenerators()
@@ -126,7 +114,6 @@ class Application extends BaseApplication
             ->get('application.commands.aliases')?:[];
 
         foreach ($consoleCommands as $name) {
-
             if (!$this->container->has($name)) {
                 continue;
             }
@@ -179,9 +166,9 @@ class Application extends BaseApplication
             'list',
             'server'
         ];
-//        $languages = $this->container->get('console.configuration_manager')
-//            ->getConfiguration()
-//            ->get('application.languages');
+        //        $languages = $this->container->get('console.configuration_manager')
+        //            ->getConfiguration()
+        //            ->get('application.languages');
 
         $data = [];
         foreach ($singleCommands as $singleCommand) {
@@ -190,8 +177,8 @@ class Application extends BaseApplication
 
         $namespaces = array_filter(
             $this->getNamespaces(), function ($item) {
-            return (strpos($item, ':')<=0);
-        }
+                return (strpos($item, ':')<=0);
+            }
         );
         sort($namespaces);
         array_unshift($namespaces, 'misc');
@@ -200,8 +187,8 @@ class Application extends BaseApplication
             $commands = $this->all($namespace);
             usort(
                 $commands, function ($cmd1, $cmd2) {
-                return strcmp($cmd1->getName(), $cmd2->getName());
-            }
+                    return strcmp($cmd1->getName(), $cmd2->getName());
+                }
             );
 
             foreach ($commands as $command) {

@@ -9,7 +9,7 @@ arguments:
     account-mail: 'Wordpress administrator account mail'
     account-pass: 'Wordpress administrator account password'
 options:
-    db-type: 'Drupal Database type'
+    db-type: 'Wordpress Database type'
     db-host: 'Database Host'
     db-name: 'Database Name'
     db-user: 'Database User'
@@ -26,7 +26,7 @@ questions:
     account-name: 'Provide your Wordpress administrator account name'
     account-mail: 'Provide your Wordpress administrator account mail'
     account-pass: 'Provide your Wordpress administrator account password'
-    db-type: 'Drupal Database type'
+    db-type: 'Wordpress Database type'
     db-host: 'Database Host'
     db-name: 'Database Name'
     db-user: 'Database User'

@@ -18,7 +18,7 @@ use WP\Console\Utils\Site;
 class ThemeGenerator extends Generator
 {
     /**
-     * @param Site $site
+     * @param Site           $site
      * @param $Theme
      * @param $machineName
      * @param $dir
@@ -83,11 +83,11 @@ class ThemeGenerator extends Generator
             'test' => $test
         ];
         
-        foreach ($template_files as $template){
+        foreach ($template_files as $template) {
             $this->renderFile(
                 'theme/template.php.twig',
                 $dir.'/'.$template.'.php',
-            ['template' => $template, 'theme' => $theme, 'package' => $package]
+                ['template' => $template, 'theme' => $theme, 'package' => $package]
             );
         }
         
@@ -103,10 +103,9 @@ class ThemeGenerator extends Generator
             $parameters
         );
         
-        if(file_exists($screenshot)){
+        if (file_exists($screenshot)) {
             $file = explode(".", $screenshot);
             copy($screenshot, $dir.'/screenshot.'.end($file));
         }
-        
     }
 }

@@ -20,8 +20,10 @@ use WP\Console\Command\Shared\InputTrait;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\ChainQueue;
 use WP\Console\Core\Utils\ChainDiscovery;
+
 /**
  * Class ChainCommand
+ *
  * @package WP\Console\Core\Command\Chain
  */
 class ChainCommand extends Command
@@ -41,6 +43,7 @@ class ChainCommand extends Command
 
     /**
      * ChainCommand constructor.
+     *
      * @param ChainQueue     $chainQueue
      * @param ChainDiscovery $chainDiscovery
      */

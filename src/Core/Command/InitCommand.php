@@ -21,7 +21,8 @@ use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class InitCommand
- * @package Drupal\Console\Core\Command
+ *
+ * @package WP\Console\Core\Command
  */
 class InitCommand extends Command
 {
@@ -62,6 +63,7 @@ class InitCommand extends Command
 
     /**
      * InitCommand constructor.
+     *
      * @param ShowFile             $showFile
      * @param ConfigurationManager $configurationManager
      * @param InitGenerator        $generator
@@ -123,9 +125,11 @@ class InitCommand extends Command
         $configuration = $this->configurationManager->getConfiguration();
         $configurationDirectories = $this->configurationManager->getConfigurationDirectories();
         $applicationDirectory = $this->configurationManager->getApplicationDirectory();
-        $configurationDirectories = array_filter($configurationDirectories, function($directory) use ($applicationDirectory) {
-           return $directory != $applicationDirectory;
-        });
+        $configurationDirectories = array_filter(
+            $configurationDirectories, function ($directory) use ($applicationDirectory) {
+                return $directory != $applicationDirectory;
+            }
+        );
 
 
         if (!$destination) {

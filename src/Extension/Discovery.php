@@ -10,7 +10,6 @@ namespace WP\Console\Extension;
 use WP\Console\Component\FileCache\FileCacheFactory;
 use WP\Console\Utils\Site;
 
-
 class Discovery
 {
 
@@ -50,18 +49,19 @@ class Discovery
     /**
      * Constructs a new ExtensionDiscovery object.
      *
-     * @param Site $site
+     * @param Site   $site
      * @param string $root
      *   The app root.
-     * @param bool $use_file_cache
+     * @param bool   $use_file_cache
      *   Whether file cache should be used.
      * @param string $site_path
      *   The path to the site.
      */
-    public function __construct(Site $site, $root, $use_file_cache = TRUE, $site_path = NULL) {
+    public function __construct(Site $site, $root, $use_file_cache = true, $site_path = null)
+    {
         $this->site = $site;
         $this->root = $root;
-        $this->fileCache = $use_file_cache ? FileCacheFactory::get('extension_discovery') : NULL;
+        $this->fileCache = $use_file_cache ? FileCacheFactory::get('extension_discovery') : null;
         $this->sitePath = $site_path;
     }
 
@@ -78,22 +78,27 @@ class Discovery
      *   The extension type to search for. One of 'plugin', 'Theme'.
      * @return mixed An associative array of Extension objects, keyed by extension name
      */
-    public function scan($type) {
-        if($type == 'plugin') {
-            if($plugins = $this->fileCache->get($type)) {
+    public function scan($type)
+    {
+        if ($type == 'plugin') {
+            if ($plugins = $this->fileCache->get($type)) {
                 return $plugins;
             } else {
-                /** WordPress Plugin Administration API */
+                /**
+ * WordPress Plugin Administration API
+*/
                 $this->site->loadLegacyFile('wp-admin/includes/plugin.php');
                 $plugins = $this->site->getPlugins();
                 $this->fileCache->set($type, $plugins);
                 return $plugins;
             }
-        } elseif($type == 'theme') {
-            if($themes = $this->fileCache->get($type)) {
+        } elseif ($type == 'theme') {
+            if ($themes = $this->fileCache->get($type)) {
                 return $themes;
             } else {
-                /** WordPress Theme Administration API */
+                /**
+ * WordPress Theme Administration API
+*/
                 $this->site->loadLegacyFile('wp-includes/theme.php');
                 $themes = $this->site->getThemes();
                 $this->fileCache->set($type, $themes);
@@ -101,5 +106,4 @@ class Discovery
             }
         }
     }
-
 }

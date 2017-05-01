@@ -9,6 +9,7 @@ namespace WP\Console\Command\Shared;
 
 /**
  * Class CommandTrait
+ *
  * @package WP\Console\Core\Command
  */
 trait ContainerAwareCommandTrait

@@ -18,7 +18,7 @@ class Site
      * Site constructor.
      *
      * @param $appRoot
-     * @param Client $httpClient
+     * @param Client  $httpClient
      */
     public function __construct($appRoot, Client $httpClient)
     {
@@ -35,7 +35,7 @@ class Site
         }
 
         if (file_exists($legacyFile)) {
-            require_once $legacyFile;
+            include_once $legacyFile;
 
             return true;
         }
@@ -43,8 +43,8 @@ class Site
         return false;
     }
 
-    public function getConfig() {
-
+    public function getConfig()
+    {
         if (!empty($this->appRoot) && is_dir($this->appRoot) && file_exists($this->appRoot . '/wp-config.php')) {
             return $this->appRoot . '/wp-config.php';
         } else {
@@ -55,9 +55,9 @@ class Site
     /**
      * @return bool
      */
-    public function isInstalled() {
-
-        if(function_exists('is_blog_installed')) {
+    public function isInstalled()
+    {
+        if (function_exists('is_blog_installed')) {
             if (is_blog_installed()) {
                 return true;
             } else {
@@ -71,9 +71,9 @@ class Site
     /**
      * @return bool
      */
-    public function isMultisite() {
-
-        if(function_exists('is_multisite')) {
+    public function isMultisite()
+    {
+        if (function_exists('is_multisite')) {
             if (is_multisite()) {
                 return true;
             } else {
@@ -88,10 +88,10 @@ class Site
     /**
      * @return WP_User|false WP_User object on success, false on failure.
      */
-    public function getUserByField($field, $value) {
-
-        if(function_exists('get_user_by')) {
-            return get_user_by($field,$value);
+    public function getUserByField($field, $value)
+    {
+        if (function_exists('get_user_by')) {
+            return get_user_by($field, $value);
         } else {
             return false;
         }
@@ -100,9 +100,9 @@ class Site
     /**
      * @return WP_User|false WP_User object on success, false on failure.
      */
-    public function getUsers($fields) {
-
-        if(function_exists('get_users')) {
+    public function getUsers($fields)
+    {
+        if (function_exists('get_users')) {
             return get_users($fields);
         } else {
             return false;
@@ -112,33 +112,36 @@ class Site
     /**
      * @return bool
      */
-    public function isSuperAdmin($userId) {
-
-        if(function_exists('is_super_admin')) {
+    public function isSuperAdmin($userId)
+    {
+        if (function_exists('is_super_admin')) {
             return is_super_admin($userId);
         } else {
             return false;
         }
     }
 
-    public function addSiteAdmin( $newAdmin ) {
+    public function addSiteAdmin($newAdmin)
+    {
         $site_admins = array( $newAdmin->user_login );
         $users = $this->getUsers(array( 'fields' => array( 'ID', 'user_login' )));
-        if ( $users ) {
-            foreach ( $users as $user ) {
-                if ( $this->isSuperAdmin($user->ID) && !in_array( $user->user_login, $site_admins ) )
+        if ($users) {
+            foreach ($users as $user) {
+                if ($this->isSuperAdmin($user->ID) && !in_array($user->user_login, $site_admins)) {
                     $site_admins[] = $user->user_login;
+                }
             }
         }
 
-        $this->updateOption('site_admins', $site_admins );
+        $this->updateOption('site_admins', $site_admins);
     }
 
     /**
      * @return bool
      */
-    public function updateUserMeta($userId, $key, $value, $prevValue = '') {
-        if(function_exists('update_user_meta')) {
+    public function updateUserMeta($userId, $key, $value, $prevValue = '')
+    {
+        if (function_exists('update_user_meta')) {
             return update_user_meta($userId, $key, $value, $prevValue);
         } else {
             return null;
@@ -149,8 +152,9 @@ class Site
     /**
      * @return int
      */
-    public function getCurrentNetworkID() {
-        if(function_exists('get_current_network_id')) {
+    public function getCurrentNetworkID()
+    {
+        if (function_exists('get_current_network_id')) {
             return get_current_network_id();
         } else {
             return null;
@@ -167,36 +171,41 @@ class Site
      * @param $site_id
      * @return int|WP_Error
      */
-    public function createMultisiteBlog($domain, $path, $title, $user_id, $meta, $site_id) {
-        if(function_exists('wpmu_create_blog')) {
+    public function createMultisiteBlog($domain, $path, $title, $user_id, $meta, $site_id)
+    {
+        if (function_exists('wpmu_create_blog')) {
             return wpmu_create_blog($domain, $path, $title, $user_id, $meta, $site_id);
         } else {
             return null;
         }
     }
-    public function createNetwork( $networkId, $blogId, $domain, $path, $subdomains, $user ) {
+    public function createNetwork($networkId, $blogId, $domain, $path, $subdomains, $user)
+    {
         global $wpdb, $current_site, $wp_rewrite;
 
         $current_site = new \stdClass;
         $current_site->domain = $domain;
         $current_site->path = $path;
-        $current_site->site_name = ucfirst( $domain );
+        $current_site->site_name = ucfirst($domain);
 
-        $wpdb->insert( $wpdb->blogs, array(
+        $wpdb->insert(
+            $wpdb->blogs, array(
             'site_id' => $networkId,
             'domain' => $domain,
             'path' => $path,
-            'registered' => current_time( 'mysql' )
-        ) );
+            'registered' => current_time('mysql')
+            )
+        );
 
         $current_site->blog_id = $blogId = $wpdb->insert_id;
-        $this->updateUserMeta($user->ID, 'source_domain', $domain );
-        $this->updateUserMeta($user->ID, 'primary_blog', $blogId );
+        $this->updateUserMeta($user->ID, 'source_domain', $domain);
+        $this->updateUserMeta($user->ID, 'primary_blog', $blogId);
 
-        if ($subdomains)
-            $wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
-        else
-            $wp_rewrite->set_permalink_structure( '/blog/%year%/%monthnum%/%day%/%postname%/' );
+        if ($subdomains) {
+            $wp_rewrite->set_permalink_structure('/%year%/%monthnum%/%day%/%postname%/');
+        } else {
+            $wp_rewrite->set_permalink_structure('/blog/%year%/%monthnum%/%day%/%postname%/');
+        }
 
         $this->flushRewriteRules();
     }
@@ -204,8 +213,9 @@ class Site
     /**
      * @return bool
      */
-    public function flushRewriteRules() {
-        if(function_exists('flush_rewrite_rules')) {
+    public function flushRewriteRules()
+    {
+        if (function_exists('flush_rewrite_rules')) {
             return flush_rewrite_rules();
         } else {
             return null;
@@ -215,16 +225,17 @@ class Site
     /**
      * @return string
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->getBlogInfo();
     }
 
     /**
      * @return string
      */
-    public function getBlogInfo($info = '', $filter = 'raw') {
-
-        if(function_exists('get_bloginfo')) {
+    public function getBlogInfo($info = '', $filter = 'raw')
+    {
+        if (function_exists('get_bloginfo')) {
             return get_bloginfo($info, $filter);
         } else {
             return null;
@@ -234,9 +245,10 @@ class Site
     /**
      * @return string
      */
-    public function getEmail() {
-        if(function_exists('get_option')) {
-            return get_option( 'admin_email' );
+    public function getEmail()
+    {
+        if (function_exists('get_option')) {
+            return get_option('admin_email');
         } else {
             return null;
         }
@@ -245,18 +257,21 @@ class Site
     /**
      * @return string
      */
-    public function getDomain() {
+    public function getDomain()
+    {
         $domain = preg_replace('|https?://|', '', $this->getSiteUrl());
-        if ( $slash = strpos( $domain, '/' ) )
-            $domain = substr( $domain, 0, $slash );
+        if ($slash = strpos($domain, '/')) {
+            $domain = substr($domain, 0, $slash);
+        }
         return $domain;
     }
 
     /**
      * @return object | null
      */
-    public function getCurrentSite() {
-        if(function_exists('get_current_site')) {
+    public function getCurrentSite()
+    {
+        if (function_exists('get_current_site')) {
             return get_current_site();
         } else {
             return null;
@@ -266,8 +281,9 @@ class Site
     /**
      * @return boolean
      */
-    public function canInstallLanguagePack() {
-        if(function_exists('wp_can_install_language_pack')) {
+    public function canInstallLanguagePack()
+    {
+        if (function_exists('wp_can_install_language_pack')) {
             return wp_can_install_language_pack();
         } else {
             return null;
@@ -277,8 +293,9 @@ class Site
     /**
      * @return mixed
      */
-    public function unslash($value) {
-        if(function_exists('wp_unslash')) {
+    public function unslash($value)
+    {
+        if (function_exists('wp_unslash')) {
             return wp_unslash($value);
         } else {
             return null;
@@ -289,8 +306,9 @@ class Site
      * @param string $plugin_folder
      * @return null
      */
-    public function getPlugins($plugin_folder = '') {
-        if(function_exists('get_plugins')) {
+    public function getPlugins($plugin_folder = '')
+    {
+        if (function_exists('get_plugins')) {
             return get_plugins($plugin_folder);
         } else {
             return null;
@@ -302,8 +320,9 @@ class Site
     /**
      * @return mixed
      */
-    public function emailExists($email) {
-        if(function_exists('email_exists')) {
+    public function emailExists($email)
+    {
+        if (function_exists('email_exists')) {
             return email_exists($email);
         } else {
             return null;
@@ -313,8 +332,9 @@ class Site
     /**
      * @return mixed
      */
-    public function doAction($action, $argument) {
-        if(function_exists('do_action')) {
+    public function doAction($action, $argument)
+    {
+        if (function_exists('do_action')) {
             return do_action($action, $argument);
         } else {
             return null;
@@ -324,8 +344,9 @@ class Site
     /**
      * @return boolean
      */
-    public function usernameExists($username) {
-        if(function_exists('username_exists')) {
+    public function usernameExists($username)
+    {
+        if (function_exists('username_exists')) {
             return username_exists($username);
         } else {
             return null;
@@ -335,8 +356,9 @@ class Site
     /**
      * @return mixed
      */
-    public function downloadLanguagePack($langcode) {
-        if(function_exists('wp_download_language_pack')) {
+    public function downloadLanguagePack($langcode)
+    {
+        if (function_exists('wp_download_language_pack')) {
             return wp_download_language_pack($langcode);
         } else {
             return null;
@@ -349,8 +371,9 @@ class Site
      * @param $extra_special_chars
      * @return string
      */
-    public function generatePassword( $length = 12, $special_chars = true, $extra_special_chars = false){
-        if(function_exists('wp_generate_password')) {
+    public function generatePassword($length = 12, $special_chars = true, $extra_special_chars = false)
+    {
+        if (function_exists('wp_generate_password')) {
             return wp_generate_password($length, $special_chars, $extra_special_chars);
         } else {
             return null;
@@ -363,25 +386,28 @@ class Site
      * @param $email
      * @return int|false
      */
-    public function createMultisiteUser($userName, $password, $email ) {
-        if(function_exists('wpmu_create_user')) {
+    public function createMultisiteUser($userName, $password, $email)
+    {
+        if (function_exists('wpmu_create_user')) {
             return wpmu_create_user($userName, $password, $email);
         } else {
             return null;
         }
     }
 
-    public function mail($to, $subject, $message, $headers = '', $attachments = array()){
-        if(function_exists('wp_mail')) {
+    public function mail($to, $subject, $message, $headers = '', $attachments = array())
+    {
+        if (function_exists('wp_mail')) {
             return wp_mail($to, $subject, $message, $headers, $attachments);
         } else {
             return null;
         }
     }
 
-    public function multisiteWelcomeNotification($blog_id, $user_id, $password, $title, $meta = array()){
-        if(function_exists('wpmu_welcome_notification')) {
-            return wpmu_welcome_notification($blog_id, $user_id, $password, $title,$meta);
+    public function multisiteWelcomeNotification($blog_id, $user_id, $password, $title, $meta = array())
+    {
+        if (function_exists('wpmu_welcome_notification')) {
+            return wpmu_welcome_notification($blog_id, $user_id, $password, $title, $meta);
         } else {
             return null;
         }
@@ -391,8 +417,9 @@ class Site
     /**
      * @return string
      */
-    public function getSiteUrl($blog_id = null, $path = '', $scheme = null ) {
-        if(function_exists('get_site_url')) {
+    public function getSiteUrl($blog_id = null, $path = '', $scheme = null)
+    {
+        if (function_exists('get_site_url')) {
             return get_site_url($blog_id, $path, $scheme);
         } else {
             return null;
@@ -402,8 +429,9 @@ class Site
     /**
      * @return bool
      */
-    public function deleteOption($option) {
-        if(function_exists('delete_site_option')) {
+    public function deleteOption($option)
+    {
+        if (function_exists('delete_site_option')) {
             return delete_site_option($option);
         } else {
             return null;
@@ -413,8 +441,9 @@ class Site
     /**
      * @return bool
      */
-    public function updateOption($option, $value) {
-        if(function_exists('update_site_option')) {
+    public function updateOption($option, $value)
+    {
+        if (function_exists('update_site_option')) {
             return update_site_option($option, $value);
         } else {
             return null;
@@ -426,8 +455,9 @@ class Site
      * @param $userID
      * @return boolean
      */
-    public function updateUserOption($userID, $option_name, $newvalue, $global){
-        if(function_exists('update_user_option')) {
+    public function updateUserOption($userID, $option_name, $newvalue, $global)
+    {
+        if (function_exists('update_user_option')) {
             return update_user_option($userID, $option_name, $newvalue, $global);
         } else {
             return null;
@@ -438,9 +468,10 @@ class Site
     /**
      * @return mixed
      */
-    public function getTables($scope = 'all') {
+    public function getTables($scope = 'all')
+    {
         global $wpdb;
-        if(is_object($wpdb)) {
+        if (is_object($wpdb)) {
             return $wpdb->tables($scope);
         } else {
             return [];
@@ -448,23 +479,26 @@ class Site
     }
 
 
-    public function setSiteURL($scheme, $uri) {
+    public function setSiteURL($scheme, $uri)
+    {
         $_SERVER['SERVER_NAME'] = $uri;
 
-        if(!defined( 'WP_SITEURL' ) ) {
+        if (!defined('WP_SITEURL')) {
             define('WP_SITEURL', $scheme . '://' . $uri);
         }
     }
 
     // Setup global $_SERVER variables to keep WP from trying to redirect
-    public function setGlobalServer($uri,$basePath = '/', $method = 'GET') {
+    public function setGlobalServer($uri, $basePath = '/', $method = 'GET')
+    {
         $_SERVER['HTTP_HOST'] = $uri;
         $_SERVER['SERVER_NAME'] = $uri;
         $_SERVER['REQUEST_URI'] = $basePath;
         $_SERVER['REQUEST_METHOD'] = $method;
     }
 
-    public function extractConstants($filename){
+    public function extractConstants($filename)
+    {
         $constants = [];
         if (file_exists($filename)) {
             //$content=fopen($filename,'r');
@@ -486,8 +520,8 @@ class Site
         return $constants;
     }
 
-    public function getLanguages() {
-
+    public function getLanguages()
+    {
         $languages['en'] = 'English (United States)';
 
         $availableTranslationsResponse = $this->httpClient->request('GET', 'http://api.wordpress.org/translations/core/1.0/');
@@ -504,47 +538,52 @@ class Site
             return $languages;
         }
 
-        foreach($availableTranslations->translations as $translation) {
+        foreach ($availableTranslations->translations as $translation) {
             $languages[$translation->language] = $translation->native_name;
         }
 
         return $languages;
     }
 
-    public function setCurrentUser($userID){
-        if(function_exists('wp_set_current_user')) {
+    public function setCurrentUser($userID)
+    {
+        if (function_exists('wp_set_current_user')) {
             return wp_set_current_user($userID);
         } else {
             return null;
         }
     }
 
-    public function getCurrentUser(){
-        if(function_exists('wp_get_current_user')) {
+    public function getCurrentUser()
+    {
+        if (function_exists('wp_get_current_user')) {
             return wp_get_current_user();
         } else {
             return null;
         }
     }
 
-    public function isPluginActive($plugin){
-        if(function_exists('is_plugin_active')) {
+    public function isPluginActive($plugin)
+    {
+        if (function_exists('is_plugin_active')) {
             return is_plugin_active($plugin);
         } else {
             return null;
         }
     }
 
-    public function activatePlugin($plugin, $redirect = '', $network_wide = false, $silent = false ){
-        if(function_exists('activate_plugin')) {
-            return activate_plugin($plugin,$redirect, $network_wide, $silent);
+    public function activatePlugin($plugin, $redirect = '', $network_wide = false, $silent = false)
+    {
+        if (function_exists('activate_plugin')) {
+            return activate_plugin($plugin, $redirect, $network_wide, $silent);
         } else {
             return null;
         }
     }
 
-    public function cacheFlush(){
-        if(function_exists('wp_cache_flush')) {
+    public function cacheFlush()
+    {
+        if (function_exists('wp_cache_flush')) {
             return wp_cache_flush();
         } else {
             return null;
@@ -553,13 +592,14 @@ class Site
 
     /**
      * @param $plugins
-     * @param bool $silent
-     * @param null $network_wide
+     * @param bool    $silent
+     * @param null    $network_wide
      * @return null
      */
-    public function deactivatePlugins($plugins, $silent = false, $network_wide = null){
-        if(function_exists('deactivate_plugins')) {
-            return deactivate_plugins( $plugins, $silent, $network_wide);
+    public function deactivatePlugins($plugins, $silent = false, $network_wide = null)
+    {
+        if (function_exists('deactivate_plugins')) {
+            return deactivate_plugins($plugins, $silent, $network_wide);
         } else {
             return null;
         }
@@ -571,8 +611,9 @@ class Site
      * @param $userID
      * @return mixed
      */
-    public function getUserSites($userID){
-        if(function_exists('get_blogs_of_user')) {
+    public function getUserSites($userID)
+    {
+        if (function_exists('get_blogs_of_user')) {
             return get_blogs_of_user($userID);
         } else {
             return null;
@@ -584,7 +625,7 @@ class Site
      * @param $default
      * @return mixed
      */
-    public function getOption( $option, $default = false)
+    public function getOption($option, $default = false)
     {
         if (function_exists('get_site_option')) {
             return get_site_option($option, $default);
@@ -598,8 +639,9 @@ class Site
      * @param $userID
      * @return mixed
      */
-    public function getUserOption($option, $userID) {
-        if(function_exists('get_user_option')) {
+    public function getUserOption($option, $userID)
+    {
+        if (function_exists('get_user_option')) {
             return get_user_option($option, $userID);
         } else {
             return null;
@@ -609,8 +651,9 @@ class Site
     /**
      * @return bool
      */
-    public function isMulsiteSubdomain(){
-        if(function_exists('is_subdomain_install')) {
+    public function isMulsiteSubdomain()
+    {
+        if (function_exists('is_subdomain_install')) {
             return is_subdomain_install();
         } else {
             return null;
@@ -620,8 +663,9 @@ class Site
     /**
      * @return bool
      */
-    public function getSubdirectoryReservedNames(){
-        if(function_exists('get_subdirectory_reserved_names')) {
+    public function getSubdirectoryReservedNames()
+    {
+        if (function_exists('get_subdirectory_reserved_names')) {
             return get_subdirectory_reserved_names();
         } else {
             return null;
@@ -632,33 +676,34 @@ class Site
      * @param string $theme_folder
      * @return null
      */
-    public function getThemes($theme_folder = '') {
-        if(function_exists('wp_get_themes')) {
+    public function getThemes($theme_folder = '')
+    {
+        if (function_exists('wp_get_themes')) {
             return wp_get_themes($theme_folder);
         } else {
             return null;
         }
     }
     
-    public function activateTheme($theme){
-        if(function_exists('switch_theme')) {
+    public function activateTheme($theme)
+    {
+        if (function_exists('switch_theme')) {
             return switch_theme($theme);
         } else {
             return null;
         }
     }
     
-    public function isThemeActive($theme){
-        if(function_exists('wp_get_theme')) {
-            if (wp_get_theme()->stylesheet === $theme){
+    public function isThemeActive($theme)
+    {
+        if (function_exists('wp_get_theme')) {
+            if (wp_get_theme()->stylesheet === $theme) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         } else {
             return null;
         }
     }
-
-
 }

@@ -8,6 +8,7 @@ namespace WP\Console\Core\Generator;
 
 /**
  * Class InitGenerator
+ *
  * @package WP\Console\Core\Generator
  */
 class InitGenerator extends Generator

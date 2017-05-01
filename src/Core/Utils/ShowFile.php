@@ -12,7 +12,7 @@ use WP\Console\Core\Style\WPStyle;
 /**
  * Class ShowFileHelper
  *
- * @package Drupal\Console\Core\Utils
+ * @package WP\Console\Core\Utils
  */
 class ShowFile
 {
@@ -29,7 +29,7 @@ class ShowFile
     /**
      * ShowFile constructor.
      *
-     * @param string                     $root
+     * @param string            $root
      * @param TranslatorManager $translator
      */
     public function __construct(
@@ -42,8 +42,8 @@ class ShowFile
 
     /**
      * @param WPStyle $io
-     * @param string      $files
-     * @param boolean     $showPath
+     * @param string  $files
+     * @param boolean $showPath
      */
     public function generatedFiles($io, $files, $showPath = true)
     {
@@ -63,7 +63,7 @@ class ShowFile
     }
 
     /**
-     * @param DrupalStyle $io
+     * @param WPStyle $io
      * @param string      $files
      * @param boolean     $showPath
      */
@@ -85,7 +85,7 @@ class ShowFile
     }
 
     /**
-     * @param DrupalStyle $io
+     * @param WPStyle $io
      * @param array       $files
      * @param string      $headerKey
      * @param string      $pathKey
@@ -119,8 +119,8 @@ class ShowFile
 
     /**
      * @param WPStyle $io
-     * @param string      $file
-     * @param int         $index
+     * @param string  $file
+     * @param int     $index
      */
     private function showSingle(WPStyle $io, $file, $index)
     {

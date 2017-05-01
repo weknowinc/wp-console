@@ -9,7 +9,8 @@ namespace WP\Console\Command\Shared;
 
 /**
  * Class InputTrait
- * @package Drupal\Console\Core\Command
+ *
+ * @package WP\Console\Core\Command
  */
 trait InputTrait
 {
