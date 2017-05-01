@@ -528,7 +528,6 @@ class Site
     }
 
     public function isPluginActive($plugin){
-        var_dump($plugin);
         if(function_exists('is_plugin_active')) {
             return is_plugin_active($plugin);
         } else {

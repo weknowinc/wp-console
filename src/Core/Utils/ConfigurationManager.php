@@ -220,8 +220,6 @@ class ConfigurationManager
             $this->configurationDirectories
         );
 
-        //var_dump($configurationDirectories);
-
         foreach ($configurationDirectories as $directory) {
             $aliasFile = $directory . 'aliases.yml';
             $aliases = [];

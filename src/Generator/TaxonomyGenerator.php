@@ -89,7 +89,7 @@ class TaxonomyGenerator extends Generator
             'child_theme' => $child_themes,
             'update_count_callback' => $update_count_callback
         ];
-        var_dump($parameters);
+
         $this->renderFile(
             'plugin/src/taxonomy/class-taxonomy.php.twig',
             $this->extensionManager->getPlugin($plugin)->getPath().'/admin/'.$class_name.'_taxonomy.php',

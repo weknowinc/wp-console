@@ -14,25 +14,48 @@
  */
 {% endif %}
 
-{% if class_name is defined %}
-  // If this file is accessed directory, then abort.
+// If this file is accessed directory, then abort.
 if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
+{% if activate is defined %}
+/**
+ * The code that runs during plugin activation.
+ * This action is documented in {{ class_name_activator_path }}
+ */
+function activate_plugin_name() {
+	require_once plugin_dir_path( __FILE__ ) . '{{ class_name_activator_path }}';
+	{{ class_name_activator }}::activate();
+}
+{% endif %}
+
+{% if deactivate is defined %}
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in {{ class_name_deactivator_path }}
+ */
+function deactivate_plugin_name() {
+	require_once plugin_dir_path( __FILE__ ) . '{{ class_name_deactivator_path }}';
+	{{ class_name_deactivator }}::deactivate();
+}
+
+{% endif %}
+
+{% if metabox_class_name is defined %}
 // Include the files for rendering the display.
-include_once( 'admin/{{ class_name }}_meta_box.php' );
+include_once( 'admin/{{ metabox_class_name }}_meta_box.php' );
 
 /**
  * Starts the plugin by initializing the meta box {{ screen }}, its display, and then
  * sets the plugin in motion.
  */
 
-function add_metabox_{{ class_name }}_{{ screen }}() {
-  $meta_box = new {{ class_name }}();
+function add_metabox_{{ metabox_class_name }}_{{ screen }}() {
+  $meta_box = new {{ metabox_class_name }}();
     $meta_box->init();
 }
-add_metabox_{{ class_name }}_{{ screen }}();
+add_metabox_{{ metabox_class_name }}_{{ screen }}();
 
 {% endif %}
 

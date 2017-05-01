@@ -179,6 +179,8 @@ class PluginCommand extends Command
 
         $package = str_replace( ' ', '_', $plugin );
 
+        $className = $this->stringConverter->humanToCamelCase($plugin);
+
         $this->generator->generate(
             $this->site,
             $plugin,
@@ -188,6 +190,7 @@ class PluginCommand extends Command
             $author,
             $authorURL,
             $package,
+            $className,
             $activate,
             $deactivate
         );

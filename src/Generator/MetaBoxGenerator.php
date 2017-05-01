@@ -65,7 +65,7 @@ class MetaBoxGenerator extends Generator
     ) {
         $parameters = [
             'plugin' => $plugin,
-            'class_name' => $class_name,
+            'metabox_class_name' => $class_name,
             'metabox_id' => $metabox_id,
             'title' => $title,
             'callback_function' => $callback_function,

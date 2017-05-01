@@ -36,7 +36,9 @@ class PluginGenerator extends Generator
         $author,
         $authorUrl,
         $package,
-        $test
+        $className,
+        $activate,
+        $deactivate
     ) {
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
@@ -76,7 +78,13 @@ class PluginGenerator extends Generator
             'author' => $author,
             'author_uri' => $authorUrl,
             'package' => $package,
-            'test' => $test
+            'class_name_base' => $className,
+            'class_name_activator' => $className . 'Activator',
+            'class_name_activator_path' => 'includes/' . $machineName . '-activator.php',
+            'class_name_deactivator' => $className . 'Deactivator',
+            'class_name_deactivator_path' => 'includes/' . $machineName . '-deactivator.php',
+            'activate' => $activate,
+            'deactivate' => $deactivate
         ];
 
         $this->renderFile(
@@ -90,5 +98,21 @@ class PluginGenerator extends Generator
             $dir.'/readme.txt',
             $parameters
         );
+
+        if($activate) {
+            $this->renderFile(
+                'plugin/includes/plugin-activator.php.twig',
+                $dir. '/' . $parameters['class_name_activator_path'],
+                $parameters
+            );
+        }
+
+        if($deactivate) {
+            $this->renderFile(
+                'plugin/includes/plugin-deactivator.php.twig',
+                $dir. '/' .  $parameters['class_name_deactivator_path'],
+                $parameters
+            );
+        }
     }
 }
