@@ -19,7 +19,6 @@ use WP\Console\Utils\Site;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\DatabaseTrait;
 
-
 class NewCommand extends Command
 {
     use CommandTrait;
@@ -49,10 +48,10 @@ class NewCommand extends Command
     /**
      * InstallCommand constructor.
      *
-     * @param Site                  $site
-     * @param ConfigurationManager  $configurationManager
-     * @param string                $appRoot
-     * @parant SilentIndexGenerator $generator
+     * @param Site                 $site
+     * @param ConfigurationManager $configurationManager
+     * @param string               $appRoot
+     * @param SilentIndexGenerator $generator
      */
     public function __construct(
         Site $site,
@@ -69,7 +68,6 @@ class NewCommand extends Command
 
     protected function configure()
     {
-
         $this
             ->setName('multisite:new')
             ->setDescription($this->trans('commands.multisite.new.description'))
@@ -105,14 +103,13 @@ class NewCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-        $argvInputReader = new ArgvInputReader();
 
         $subdomains = $this->site->isMulsiteSubdomain();
 
         // --network-url option
         $networkUrl = $input->getOption('network-url');
         if (!$networkUrl) {
-            if($subdomains) {
+            if ($subdomains) {
                 $exampleURL = $this->trans('commands.multisite.new.questions.subdomain-example-network-url') . "." . $this->site->getDomain();
             } else {
                 $exampleURL = $this->site->getDomain() ."/" . $this->trans('commands.multisite.new.questions.subdirectory-example-network-url');
@@ -163,7 +160,6 @@ class NewCommand extends Command
             );
             $input->setOption('network-mail', $networkMail);
         }
-
     }
 
     /**
@@ -187,7 +183,6 @@ class NewCommand extends Command
         if ($subdomains) {
             $newdomain = $networkUrl . "." . $this->site->getDomain();
             $path = $currentSite->path;
-
         } else {
             $subdirectory_reserved_names = $this->site->getSubdirectoryReservedNames();
 
@@ -241,14 +236,14 @@ class NewCommand extends Command
                 return false;
             }
 
-            $this->site->doAction('network_site_new_created_user', $userID );
+            $this->site->doAction('network_site_new_created_user', $userID);
         }
 
         $id = $this->site->createMultisiteBlog($newdomain, $path, $networkTitle, $userID, $meta, $this->site->getCurrentNetworkID());
         $wpdb->show_errors();
-        if ( ! is_wp_error( $id ) ) {
-            if ( !$this->site->isSuperAdmin($userID) && !$this->site->getUserOption('primary_blog', $userID)) {
-                $this->site->updateUserOption($userID, 'primary_blog', $id, true );
+        if (! is_wp_error($id)) {
+            if (!$this->site->isSuperAdmin($userID) && !$this->site->getUserOption('primary_blog', $userID)) {
+                $this->site->updateUserOption($userID, 'primary_blog', $id, true);
             }
 
             $this->site->mail(
@@ -261,7 +256,7 @@ class NewCommand extends Command
                     $this->trans('commands.multisite.new.messages.new-site-created-by'),
                     $currentUser->user_login,
                     $this->site->getSiteUrl($id),
-                    $this->site->unslash( $networkTitle )
+                    $this->site->unslash($networkTitle)
                 ),
                 sprintf(
                     $this->trans('commands.multisite.new.messages.email-from'),
@@ -272,7 +267,7 @@ class NewCommand extends Command
             $this->site->multisiteWelcomeNotification($id, $userID, $password, $networkTitle, array( 'public' => 1 ));
 
             // Check if WP_CONTENT_DIR exist
-            if(!is_dir(WP_CONTENT_DIR)) {
+            if (!is_dir(WP_CONTENT_DIR)) {
                 $this->generator->generate($this->appRoot, WP_CONTENT_DIR);
                 $this->generator->generate($this->appRoot, WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'plugins');
                 $this->generator->generate($this->appRoot, WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes');

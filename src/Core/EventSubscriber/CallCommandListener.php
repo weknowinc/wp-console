@@ -17,7 +17,8 @@ use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class CallCommandListener
- * @package Drupal\Console\Core\EventSubscriber
+ *
+ * @package WP\Console\Core\EventSubscriber
  */
 class CallCommandListener implements EventSubscriberInterface
 {
@@ -28,6 +29,7 @@ class CallCommandListener implements EventSubscriberInterface
 
     /**
      * CallCommandListener constructor.
+     *
      * @param ChainQueue $chainQueue
      */
     public function __construct(ChainQueue $chainQueue)

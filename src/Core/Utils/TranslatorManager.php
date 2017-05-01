@@ -17,7 +17,8 @@ use Symfony\Component\Yaml\Exception\ParseException;
 
 /**
  * Class TranslatorManager
- * @package Drupal\Console\Utils
+ *
+ * @package WP\Console\Utils
  */
 class TranslatorManager
 {

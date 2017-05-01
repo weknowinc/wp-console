@@ -240,7 +240,7 @@ class Manager
         }
 
         $extensions = array_combine(array_keys($this->extensions[$type]), array_column($this->extensions[$type], 'Name'));
-        if($extensionFilename = array_search($name, $extensions)) {
+        if ($extensionFilename = array_search($name, $extensions)) {
             $extension = array_merge(
                 [
                     'type' => $type,
@@ -261,7 +261,6 @@ class Manager
      */
     private function createExtension($extension)
     {
-
         $consoleExtension = new Extension(
             ABSPATH,
             $extension['type'],

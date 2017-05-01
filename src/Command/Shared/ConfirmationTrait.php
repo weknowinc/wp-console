@@ -18,7 +18,7 @@ trait ConfirmationTrait
 {
     /**
      * @param WPStyle $io
-     * @param bool        $yes
+     * @param bool    $yes
      *
      * @return bool
      */

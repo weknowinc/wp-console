@@ -70,7 +70,6 @@ class TaxonomyGenerator extends Generator
         $rest,
         $child_themes,
         $update_count_callback
-    
     ) {
         $parameters = [
             'plugin' => $plugin,

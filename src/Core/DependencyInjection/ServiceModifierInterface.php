@@ -7,7 +7,8 @@ namespace WP\Console\Core\DependencyInjection;
  *
  * @ingroup container
  */
-interface ServiceModifierInterface {
+interface ServiceModifierInterface
+{
 
     /**
      * Modifies existing service definitions.
@@ -16,5 +17,4 @@ interface ServiceModifierInterface {
      *   The ContainerBuilder whose service definitions can be altered.
      */
     public function alter(ContainerBuilder $container);
-
 }

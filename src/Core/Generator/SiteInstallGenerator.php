@@ -8,7 +8,8 @@ namespace WP\Console\Core\Generator;
 
 /**
  * Class InitGenerator
- * @package Drupal\Console\Core\Generator
+ *
+ * @package WP\Console\Core\Generator
  */
 class SiteInstallGenerator extends Generator
 {
@@ -43,7 +44,7 @@ class SiteInstallGenerator extends Generator
             );
         }
 
-        # Render wordpress config
+        // Render wordpress config
         $this->renderFile(
             'core/wp-config.php.twig',
             $configFile,
@@ -52,7 +53,7 @@ class SiteInstallGenerator extends Generator
 
         $htaccessFile = $root . '/.htaccess';
 
-        # Render htaccess file
+        // Render htaccess file
         $this->renderFile(
             'core/htaccess.twig',
             $htaccessFile,

@@ -12,7 +12,7 @@ use WP\Console\Core\Style\WPStyle;
 /**
  * Class MetaboxTrait
  *
- * @package Drupal\Console\Core\Command
+ * @package WP\Console\Core\Command
  */
 trait MetaboxTrait
 {
@@ -23,7 +23,6 @@ trait MetaboxTrait
      */
     public function fieldMetaboxQuestion(WPStyle $io)
     {
-        $validators = $this->validator;
         $stringConverter = $this->stringConverter;
         
         $fields = [];
@@ -55,7 +54,7 @@ trait MetaboxTrait
             
             $field_placeholder = '';
             $default_value = '';
-            if($type != 'select' && $type != 'radio'){
+            if ($type != 'select' && $type != 'radio') {
                 $field_placeholder = $io->ask(
                     $this->trans('commands.generate.metabox.questions.field-placeholder'),
                     ''
@@ -68,7 +67,7 @@ trait MetaboxTrait
             }
             
             $multi_selection = [];
-            if($type == 'select' || $type == 'radio'){
+            if ($type == 'select' || $type == 'radio') {
                 if (!$io->confirm(
                     $this->trans('commands.generate.metabox.questions.field-metabox-multiple-options', $type),
                     true
@@ -77,7 +76,6 @@ trait MetaboxTrait
                     break;
                 }
                 $multi_selection = $this->multiSelection($io, $type);
-                
             }
             
             array_push(
@@ -105,7 +103,8 @@ trait MetaboxTrait
         return $fields;
     }
     
-    private function multiSelection(WPStyle $io, $type){
+    private function multiSelection(WPStyle $io, $type)
+    {
         $multiple_options = [];
         while (true) {
             $multiple_options_label = $io->ask(
@@ -138,7 +137,8 @@ trait MetaboxTrait
         return $multiple_options;
     }
     
-    private function arrayFieldType(){
+    private function arrayFieldType()
+    {
         return ['select' ,'checkbox', 'color', 'date', 'email', 'file', 'image', 'month', 'number',
             'radio','search', 'submit', 'tel', 'text', 'time', 'url', 'week'];
     }

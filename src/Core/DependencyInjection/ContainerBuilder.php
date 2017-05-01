@@ -11,14 +11,14 @@ use Symfony\Component\DependencyInjection\LazyProxy\Instantiator\RealServiceInst
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
- * Drupal's dependency injection container builder.
+ * Wordpress's dependency injection container builder.
  *
  * @todo Submit upstream patches to Symfony to not require these overrides.
  *
  * @ingroup container
  */
-class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInterface {
-
+class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInterface
+{
     const SCOPE_CONTAINER = 'container';
 
     /**
@@ -29,8 +29,9 @@ class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInter
     /**
      * {@inheritdoc}
      */
-    public function __construct(ParameterBagInterface $parameterBag = NULL) {
-        $this->setResourceTracking(FALSE);
+    public function __construct(ParameterBagInterface $parameterBag = null)
+    {
+        $this->setResourceTracking(false);
         parent::__construct($parameterBag);
     }
 
@@ -69,7 +70,7 @@ class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInter
     /**
      * Overrides Symfony\Component\DependencyInjection\ContainerBuilder::set().
      *
-     * Drupal's container builder can be used at runtime after compilation, so we
+     * Wordpress's container builder can be used at runtime after compilation, so we
      * override Symfony's ContainerBuilder's restriction on setting services in a
      * frozen builder.
      *
@@ -77,7 +78,8 @@ class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInter
      *   ContainerBuilder class should be fixed to allow setting synthetic
      *   services in a frozen builder.
      */
-    public function set($id, $service, $scope = self::SCOPE_CONTAINER) {
+    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
+    {
         if (strtolower($id) !== $id) {
             throw new \InvalidArgumentException("Service ID names must be lowercase: $id");
         }
@@ -92,7 +94,8 @@ class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInter
     /**
      * {@inheritdoc}
      */
-    public function register($id, $class = null) {
+    public function register($id, $class = null)
+    {
         if (strtolower($id) !== $id) {
             throw new \InvalidArgumentException("Service ID names must be lowercase: $id");
         }
@@ -102,7 +105,8 @@ class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInter
     /**
      * {@inheritdoc}
      */
-    public function setParameter($name, $value) {
+    public function setParameter($name, $value)
+    {
         if (strtolower($name) !== $name) {
             throw new \InvalidArgumentException("Parameter names must be lowercase: $name");
         }
@@ -112,7 +116,8 @@ class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInter
     /**
      * A 1to1 copy of parent::callMethod.
      */
-    protected function callMethod($service, $call) {
+    protected function callMethod($service, $call)
+    {
         $services = self::getServiceConditionals($call[1]);
 
         foreach ($services as $s) {
@@ -127,9 +132,9 @@ class ContainerBuilder extends SymfonyContainerBuilder implements ContainerInter
     /**
      * {@inheritdoc}
      */
-    public function __sleep() {
-        assert(FALSE, 'The container was serialized.');
+    public function __sleep()
+    {
+        assert(false, 'The container was serialized.');
         return array_keys(get_object_vars($this));
     }
-
 }

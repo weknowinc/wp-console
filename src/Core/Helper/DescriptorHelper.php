@@ -15,7 +15,6 @@ use WP\Console\Core\Descriptor\TextDescriptor;
 
 /**
  * This class adds helper method to describe objects in various formats.
- *
  */
 class DescriptorHelper extends BaseHelper
 {

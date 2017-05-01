@@ -5,7 +5,8 @@ namespace WP\Console\Core\Extension;
 /**
  * Defines an extension (file) object.
  */
-class Extension implements \Serializable {
+class Extension implements \Serializable
+{
 
     /**
      * The type of the extension (e.g., 'module').
@@ -57,7 +58,8 @@ class Extension implements \Serializable {
      * @param string $filename
      *   (optional) The filename of the main extension file; e.g., 'node.module'.
      */
-    public function __construct($root, $type, $pathname, $filename = NULL) {
+    public function __construct($root, $type, $pathname, $filename = null)
+    {
         $this->root = $root;
         $this->type = $type;
         $this->pathname = $pathname;
@@ -69,7 +71,8 @@ class Extension implements \Serializable {
      *
      * @return string
      */
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -78,7 +81,8 @@ class Extension implements \Serializable {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return basename($this->pathname, '.info.yml');
     }
 
@@ -87,8 +91,9 @@ class Extension implements \Serializable {
      *
      * @return string
      */
-    public function getPath() {
-        if($this->type == 'plugin') {
+    public function getPath()
+    {
+        if ($this->type == 'plugin') {
             $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'plugins';
         }
 
@@ -100,8 +105,9 @@ class Extension implements \Serializable {
      *
      * @return string
      */
-    public function getPathname() {
-        if($this->type == 'plugin') {
+    public function getPathname()
+    {
+        if ($this->type == 'plugin') {
             $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'plugins';
         }
 
@@ -113,7 +119,8 @@ class Extension implements \Serializable {
      *
      * @return string
      */
-    public function getFilename() {
+    public function getFilename()
+    {
         return basename($this->pathname);
     }
 
@@ -122,7 +129,8 @@ class Extension implements \Serializable {
      *
      * @return string|null
      */
-    public function getExtensionPathname() {
+    public function getExtensionPathname()
+    {
         if ($this->filename) {
             return $this->getPath() . '/' . $this->filename;
         }
@@ -133,7 +141,8 @@ class Extension implements \Serializable {
      *
      * @return string|null
      */
-    public function getExtensionFilename() {
+    public function getExtensionFilename()
+    {
         return $this->filename;
     }
 
@@ -143,12 +152,13 @@ class Extension implements \Serializable {
      * @return bool
      *   TRUE if this extension has a main extension file, FALSE otherwise.
      */
-    public function load() {
+    public function load()
+    {
         if ($this->filename) {
             include_once $this->root . '/' . $this->getPath() . '/' . $this->filename;
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -156,7 +166,8 @@ class Extension implements \Serializable {
      *
      * Offers all SplFileInfo methods to consumers; e.g., $extension->getMTime().
      */
-    public function __call($method, array $args) {
+    public function __call($method, array $args)
+    {
         if (!isset($this->splFileInfo)) {
             $this->splFileInfo = new \SplFileInfo($this->pathname);
         }
@@ -168,7 +179,8 @@ class Extension implements \Serializable {
      *
      * Serializes the Extension object in the most optimized way.
      */
-    public function serialize() {
+    public function serialize()
+    {
         // Don't serialize the app root, since this could change if the install is
         // moved.
         $data = array(
@@ -183,7 +195,8 @@ class Extension implements \Serializable {
     /**
      * {@inheritdoc}
      */
-    public function unserialize($data) {
+    public function unserialize($data)
+    {
         $data = unserialize($data);
 
         // Get the app root from the container.
@@ -192,5 +205,4 @@ class Extension implements \Serializable {
         $this->pathname = $data['pathname'];
         $this->filename = $data['filename'];
     }
-
 }

@@ -11,12 +11,11 @@ use phpseclib\Crypt\RSA;
 use phpseclib\System\SSH\Agent;
 use phpseclib\Net\SFTP;
 use WP\Console\Core\Style\WPStyle;
-use WP\Console\Core\Utils\TranslatorManagerInterface;
 
 /**
  * Class Remote
  *
- * @package Drupal\Console\Launcher\Utils
+ * @package WP\Console\Launcher\Utils
  */
 class Remote
 {
@@ -38,11 +37,11 @@ class Remote
 
     /**
      * @param WPStyle $io
-     * @param string      $commandName
-     * @param string      $target
-     * @param array       $targetConfig
-     * @param array       $inputCommand
-     * @param array       $userHomeDir
+     * @param string  $commandName
+     * @param string  $target
+     * @param array   $targetConfig
+     * @param array   $inputCommand
+     * @param array   $userHomeDir
      *
      * @return boolean
      */

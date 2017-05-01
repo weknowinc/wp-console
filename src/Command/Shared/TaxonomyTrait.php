@@ -18,7 +18,6 @@ trait TaxonomyTrait
 {
     /**
      * @param \WP\Console\Core\Style\WPStyle $io
-     * @param all | bool $status
      * @return string
      * @throws \Exception
      */
@@ -33,11 +32,12 @@ trait TaxonomyTrait
         
         $stringUtils = $this->stringConverter;
         $label_array = [];
-        foreach ($labels as $label){
-            if($io->confirm(
+        foreach ($labels as $label) {
+            if ($io->confirm(
                 $this->trans('commands.generate.taxonomy.questions.labels-add'). $label,
                 true
-            )){
+            )
+            ) {
                 $result = $io->ask(
                     $this->trans('commands.generate.taxonomy.questions.labels-edit'). $label,
                     $stringUtils->camelCaseToHuman($label)
@@ -48,12 +48,10 @@ trait TaxonomyTrait
         }
         
         return $label_array;
-    
     }
     
     public function postTypeQuestion()
     {
-    
     }
     
     public function visibilityQuestion(WPStyle $io)
@@ -93,7 +91,6 @@ trait TaxonomyTrait
             ];
         
         return $visibility;
-        
     }
     
     public function permalinksQuestion(WPStyle $io)
@@ -128,7 +125,6 @@ trait TaxonomyTrait
         $capabilities_edit_terms = $io->ask(
             $this->trans('commands.generate.taxonomy.questions.capabilities-edit-terms'),
             'manage_categories'
-        
         );
         
         $capabilities_delete_terms = $io->ask(

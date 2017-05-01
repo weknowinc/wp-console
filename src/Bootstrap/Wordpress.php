@@ -6,7 +6,6 @@ use WP\Console\Core\Bootstrap\WordpressConsoleCore;
 use WP\Console\Utils\Site;
 use GuzzleHttp\Client;
 
-
 class Wordpress
 {
     protected $autoload;
@@ -20,12 +19,12 @@ class Wordpress
 
     /**
      * Wordpress constructor.
+     *
      * @param $autoload
      * @param $appRoot
      */
     public function __construct($autoload, $root, $appRoot)
     {
-
         $this->autoload = $autoload;
         $this->root = $root;
         $this->appRoot = $appRoot;

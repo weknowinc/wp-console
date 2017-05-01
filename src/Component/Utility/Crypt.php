@@ -7,7 +7,8 @@ namespace WP\Console\Component\Utility;
  *
  * @ingroup utility
  */
-class Crypt {
+class Crypt
+{
 
     /**
      * Returns a string of highly randomized bytes (over the full 8-bit range).
@@ -27,7 +28,8 @@ class Crypt {
      * @return string
      *   A randomly generated string.
      */
-    public static function randomBytes($count) {
+    public static function randomBytes($count)
+    {
         return random_bytes($count);
     }
 
@@ -43,7 +45,8 @@ class Crypt {
      *   A base-64 encoded sha-256 hmac, with + replaced with -, / with _ and
      *   any = padding characters removed.
      */
-    public static function hmacBase64($data, $key) {
+    public static function hmacBase64($data, $key)
+    {
         // $data and $key being strings here is necessary to avoid empty string
         // results of the hash function if they are not scalar values. As this
         // function is used in security-critical contexts like token validation it
@@ -52,7 +55,7 @@ class Crypt {
             throw new \InvalidArgumentException('Both parameters passed to \WP\Console\Component\Utility\Crypt::hmacBase64 must be scalar values.');
         }
 
-        $hmac = base64_encode(hash_hmac('sha256', $data, $key, TRUE));
+        $hmac = base64_encode(hash_hmac('sha256', $data, $key, true));
         // Modify the hmac so it's safe to use in URLs.
         return str_replace(['+', '/', '='], ['-', '_', ''], $hmac);
     }
@@ -67,8 +70,9 @@ class Crypt {
      *   A base-64 encoded sha-256 hash, with + replaced with -, / with _ and
      *   any = padding characters removed.
      */
-    public static function hashBase64($data) {
-        $hash = base64_encode(hash('sha256', $data, TRUE));
+    public static function hashBase64($data)
+    {
+        $hash = base64_encode(hash('sha256', $data, true));
         // Modify the hash so it's safe to use in URLs.
         return str_replace(['+', '/', '='], ['-', '_', ''], $hash);
     }
@@ -84,26 +88,26 @@ class Crypt {
      * @return bool
      *   Returns TRUE when the two strings are equal, FALSE otherwise.
      */
-    public static function hashEquals($known_string, $user_string) {
+    public static function hashEquals($known_string, $user_string)
+    {
         if (function_exists('hash_equals')) {
             return hash_equals($known_string, $user_string);
-        }
-        else {
+        } else {
             // Backport of hash_equals() function from PHP 5.6
             // @see https://github.com/php/php-src/blob/PHP-5.6/ext/hash/hash.c#L739
             if (!is_string($known_string)) {
                 trigger_error(sprintf("Expected known_string to be a string, %s given", gettype($known_string)), E_USER_WARNING);
-                return FALSE;
+                return false;
             }
 
             if (!is_string($user_string)) {
                 trigger_error(sprintf("Expected user_string to be a string, %s given", gettype($user_string)), E_USER_WARNING);
-                return FALSE;
+                return false;
             }
 
             $known_len = strlen($known_string);
             if ($known_len !== strlen($user_string)) {
-                return FALSE;
+                return false;
             }
 
             // This is security sensitive code. Do not optimize this for speed.
@@ -127,8 +131,8 @@ class Crypt {
      *
      * @see \WP\Console\Component\Utility\Crypt::randomBytes()
      */
-    public static function randomBytesBase64($count = 32) {
+    public static function randomBytesBase64($count = 32)
+    {
         return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(static::randomBytes($count)));
     }
-
 }

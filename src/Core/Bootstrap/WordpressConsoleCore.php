@@ -30,6 +30,7 @@ class WordpressConsoleCore
 
     /**
      * Wordoress Console constructor.
+     *
      * @param $root
      * @param $appRoot
      */
@@ -59,7 +60,7 @@ class WordpressConsoleCore
                 $uri = $argvInputReader->get('uri');
                 $this->site->setGlobalServer($uri);
 
-                if($uri == 'http://default') {
+                if ($uri == 'http://default') {
                     $constants = $this->site->extractConstants($config);
                     if (isset($constants['MULTISITE']) && $constants['MULTISITE'] = 'true') {
                         if (isset($constants['MULTISITE'])) {
@@ -73,7 +74,7 @@ class WordpressConsoleCore
                 }
 
                 $this->site->loadLegacyFile('wp-load.php');
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 echo $e->getMessage();
             }
 
@@ -95,9 +96,8 @@ class WordpressConsoleCore
                 $loader->load($file->getPathName());
             }
 
-            if($this->site->isMultisite()) {
+            if ($this->site->isMultisite()) {
                 $loader->load($this->root . '/services-multisite.yml');
-
             } else {
                 $loader->load($this->root . '/services-multisite-install.yml');
             }

@@ -119,10 +119,9 @@ class ActivateCommand extends Command
         $theme = $input->getArgument('theme');
         
         try {
-            
             $extensions = $this->extensionManager->discoverthemes()->showDeactivated()->getList();
             foreach ($extensions as $key => $value) {
-                if ($value->get('Name') == $theme){
+                if ($value->get('Name') == $theme) {
                     $theme = $value->stylesheet;
                 }
             }

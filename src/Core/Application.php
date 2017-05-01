@@ -17,9 +17,9 @@ use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Core\Utils\ChainDiscovery;
 
-
 /**
  * Class Application
+ *
  * @package WP\Console
  */
 class Application extends BaseApplication
@@ -36,6 +36,7 @@ class Application extends BaseApplication
 
     /**
      * ConsoleApplication constructor.
+     *
      * @param ContainerInterface $container
      * @param string             $name
      * @param string             $version
@@ -105,13 +106,13 @@ class Application extends BaseApplication
             $output
         );
 
-//        if ($this->commandName != 'init' && $configurationManager->getMissingConfigurationFiles()) {
-//            $io->warning($this->trans('application.site.errors.missing-config-file'));
-//            $io->listing($configurationManager->getMissingConfigurationFiles());
-//            $io->commentBlock(
-//                $this->trans('application.site.errors.missing-config-file-command')
-//            );
-//        }
+        //        if ($this->commandName != 'init' && $configurationManager->getMissingConfigurationFiles()) {
+        //            $io->warning($this->trans('application.site.errors.missing-config-file'));
+        //            $io->listing($configurationManager->getMissingConfigurationFiles());
+        //            $io->commentBlock(
+        //                $this->trans('application.site.errors.missing-config-file-command')
+        //            );
+        //        }
 
         return $code;
     }

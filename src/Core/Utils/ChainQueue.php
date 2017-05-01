@@ -9,7 +9,8 @@ namespace WP\Console\Core\Utils;
 
 /**
  * Class ChainQueue
- * @package Drupal\Console\Core\Helper
+ *
+ * @package WP\Console\Core\Helper
  */
 class ChainQueue
 {

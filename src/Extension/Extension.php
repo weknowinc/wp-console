@@ -3,6 +3,7 @@
 namespace WP\Console\Extension;
 
 use WP\Console\Core\Extension\Extension as BaseExtension;
+
 /**
  * Class Extension
  *

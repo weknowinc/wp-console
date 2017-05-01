@@ -5,7 +5,8 @@ namespace WP\Console\Component\FileCache;
 /**
  * Creates a FileCache object.
  */
-class FileCacheFactory {
+class FileCacheFactory
+{
 
     /**
      * The configuration key to disable FileCache completely.
@@ -31,14 +32,15 @@ class FileCacheFactory {
      *
      * @param string $collection
      *   The collection identifier for this FileCache.
-     * @param array $default_configuration
+     * @param array  $default_configuration
      *   (optional) The default configuration for this FileCache collection. This
      *   can be used to e.g. specify default usage of a FileCache class.
      *
      * @return \WP\Console\Component\FileCache\FileCacheInterface
      *   The initialized FileCache object.
      */
-    public static function get($collection, $default_configuration = []) {
+    public static function get($collection, $default_configuration = [])
+    {
         // If there is a special key in the configuration, disable FileCache completely.
         if (!empty(static::$configuration[static::DISABLE_CACHE])) {
             return new NullFileCache('', '');
@@ -63,7 +65,7 @@ class FileCacheFactory {
         $fallback_configuration = [
             'class' => '\WP\Console\Component\FileCache\FileCache',
             'collection' => $collection,
-            'cache_backend_class' => NULL,
+            'cache_backend_class' => null,
             'cache_backend_configuration' => [],
         ];
 
@@ -79,7 +81,8 @@ class FileCacheFactory {
      * @return array
      *   The configuration that is used.
      */
-    public static function getConfiguration() {
+    public static function getConfiguration()
+    {
         return static::$configuration;
     }
 
@@ -89,7 +92,8 @@ class FileCacheFactory {
      * @param array $configuration
      *   The configuration to use.
      */
-    public static function setConfiguration($configuration) {
+    public static function setConfiguration($configuration)
+    {
         static::$configuration = $configuration;
     }
 
@@ -99,7 +103,8 @@ class FileCacheFactory {
      * @return string
      *   The cache prefix.
      */
-    public static function getPrefix() {
+    public static function getPrefix()
+    {
         return static::$prefix;
     }
 
@@ -112,8 +117,8 @@ class FileCacheFactory {
      * @param string $prefix
      *   The cache prefix.
      */
-    public static function setPrefix($prefix) {
+    public static function setPrefix($prefix)
+    {
         static::$prefix = $prefix;
     }
-
 }

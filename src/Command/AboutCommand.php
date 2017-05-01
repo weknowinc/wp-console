@@ -5,7 +5,7 @@
  * Contains \WP\Console\Command\AboutCommand.
  */
 
-namespace Wp\Console\Command;
+namespace WP\Console\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +26,7 @@ class AboutCommand extends Command
     /**
      * AboutCommand constructor.
      *
-     * @param Site                 $site
+     * @param Site $site
      */
     public function __construct(
         Site $site
@@ -74,13 +74,13 @@ class AboutCommand extends Command
             ]
         ];
 
-        if(!$this->site->isInstalled()) {
+        if (!$this->site->isInstalled()) {
             $commands['site-install'] = [
                 $this->trans('commands.site.install.description'),
                 sprintf(
                     'wp-console site:install'
                 )];
-        } elseif(!$this->site->isMultisite()) {
+        } elseif (!$this->site->isMultisite()) {
             $commands['site-install'] = [
                 $this->trans('commands.site.multisite.install.description'),
                 sprintf(

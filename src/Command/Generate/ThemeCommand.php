@@ -8,7 +8,6 @@
 namespace WP\Console\Command\Generate;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +19,6 @@ use WP\Console\Utils\Validator;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\Site;
-
 
 class ThemeCommand extends Command
 {
@@ -66,7 +64,7 @@ class ThemeCommand extends Command
     /**
      * ThemeCommand constructor.
      *
-     * @param ThemeGenerator $generator
+     * @param ThemeGenerator  $generator
      * @param Validator       $validator
      * @param $appRoot
      * @param StringConverter $stringConverter
@@ -126,7 +124,7 @@ class ThemeCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.module.options.description')
             )
-           ->addOption(
+            ->addOption(
                 'author',
                 '',
                 InputOption::VALUE_OPTIONAL,
@@ -148,13 +146,7 @@ class ThemeCommand extends Command
                 '',
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.theme.options.template-files')
-            )
-            /*->addOption(
-                'test',
-                '',
-                InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.theme.options.test')
-            )*/;
+            );
     }
     
     /**
@@ -165,7 +157,7 @@ class ThemeCommand extends Command
         $io = new WPStyle($input, $output);
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
         
-        // @see use Drupal\Console\Command\Shared\ConfirmationTrait::confirmGeneration
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
         if (!$this->confirmGeneration($io, $yes)) {
             return;
         }
@@ -181,9 +173,9 @@ class ThemeCommand extends Command
         $authorURL = $input->getOption('author-url');
         $template_files = $input->getOption('template-files');
         $screenshot = $input->getOption('screenshot');
-        #$test = $input->getOption('test');
+        // $test = $input->getOption('test');
         
-        $package = str_replace( ' ', '_', $theme );
+        $package = str_replace(' ', '_', $theme);
         
         
         $this->generator->generate(
@@ -312,17 +304,16 @@ class ThemeCommand extends Command
         // -- template files
         $template_files = $input->getOption('template-files');
         if (!$template_files) {
-        $options_template_files = ['header', 'footer', 'sidebar', 'front-page', 'home', 'single', 'page', 'category',
+            $options_template_files = ['header', 'footer', 'sidebar', 'front-page', 'home', 'single', 'page', 'category',
             'comments', 'search', '404', 'functions'];
-            foreach ($options_template_files as $options)
-            {
-                if($io->confirm(
+            foreach ($options_template_files as $options) {
+                if ($io->confirm(
                     $this->trans('commands.generate.theme.questions.template-'.$options),
                     false
-                  )
-                  ){
+                )
+                ) {
                     $template_files [$options] = $options;
-                  }
+                }
             }
         }
         $input->setOption('template-files', $template_files);

@@ -8,7 +8,6 @@
 namespace WP\Console\Command\Generate;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,7 +19,6 @@ use WP\Console\Utils\Validator;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\Site;
-
 
 class PluginCommand extends Command
 {
@@ -62,11 +60,10 @@ class PluginCommand extends Command
      */
     protected $twigtemplate;
 
-
     /**
      * ModuleCommand constructor.
      *
-     * @param ModuleGenerator $generator
+     * @param PluginGenerator $generator
      * @param Validator       $validator
      * @param $appRoot
      * @param StringConverter $stringConverter
@@ -160,7 +157,7 @@ class PluginCommand extends Command
         $io = new WPStyle($input, $output);
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use Drupal\Console\Command\Shared\ConfirmationTrait::confirmGeneration
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
         if (!$this->confirmGeneration($io, $yes)) {
             return;
         }
@@ -177,7 +174,7 @@ class PluginCommand extends Command
         $activate = $input->getOption('activate');
         $deactivate = $input->getOption('deactivate');
 
-        $package = str_replace( ' ', '_', $plugin );
+        $package = str_replace(' ', '_', $plugin);
 
         $className = $this->stringConverter->humanToCamelCase($plugin);
 

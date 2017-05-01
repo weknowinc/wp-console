@@ -18,18 +18,17 @@ trait PluginTrait
 {
     /**
      * @param \WP\Console\Core\Style\WPStyle $io
-     * @param all | bool $status
+     * @param string                         $status
      * @return string
      * @throws \Exception
      */
     public function pluginQuestion(WPStyle $io, $status = 'all')
     {
-
         $extensionManager = $this->extensionManager->discoverPlugins();
 
-        if($status == 'all') {
+        if ($status == 'all') {
             $extensionManager->showDeactivated()->showActivated();
-        } elseif($status) {
+        } elseif ($status) {
             $extensionManager->showActivated();
         } else {
             $extensionManager->showDeactivated();

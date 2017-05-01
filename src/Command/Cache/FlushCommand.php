@@ -2,13 +2,11 @@
 
 /**
  * @file
- * Contains \Drupal\Console\Command\Cache\FlushCommand.
+ * Contains \WP\Console\Command\Cache\FlushCommand.
  */
 
 namespace WP\Console\Command\Cache;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
@@ -35,8 +33,7 @@ class FlushCommand extends Command
     /**
      * DebugCommand constructor.
      *
-     * @param Manager $extensionManager
-     * @param Site                 $site
+     * @param Site $site
      */
     public function __construct(
         Site $site
@@ -58,7 +55,7 @@ class FlushCommand extends Command
 
         $success = $this->site->cacheFlush();
 
-        if($success) {
+        if ($success) {
             $io->info($this->trans('commands.cache.flush.messages.successful'));
         } else {
             $io->error($this->trans('commands.cache.flush.messages.fail'));

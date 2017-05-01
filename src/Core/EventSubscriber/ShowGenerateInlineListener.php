@@ -14,7 +14,6 @@ use Symfony\Component\Console\Command\Command;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\TranslatorManager;
 
-
 /**
  * Class ShowGenerateInlineListener
  *

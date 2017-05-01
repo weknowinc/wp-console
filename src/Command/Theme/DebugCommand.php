@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\Console\Command\Theme\DebugCommand.
+ * Contains \WP\Console\Command\Theme\DebugCommand.
  */
 
 namespace WP\Console\Command\Theme;
@@ -36,7 +36,7 @@ class DebugCommand extends Command
      * DebugCommand constructor.
      *
      * @param Manager $extensionManager
-     * @param Site                 $site
+     * @param Site    $site
      */
     public function __construct(
         Manager $extensionManager,
@@ -78,9 +78,9 @@ class DebugCommand extends Command
         $tableRows = [];
         
         $discoverThemes = $this->extensionManager->discoverThemes();
-        if($status == 'disabled') {
+        if ($status == 'disabled') {
             $discoverThemes->showDeactivated();
-        } elseif($status == 'enabled') {
+        } elseif ($status == 'enabled') {
             $discoverThemes->showActivated();
         } else {
             $discoverThemes->showActivated()->showDeactivated();
@@ -88,7 +88,7 @@ class DebugCommand extends Command
     
         $themes = $discoverThemes->getList();
        
-        foreach ($themes as $theme => $themeData ) {
+        foreach ($themes as $theme => $themeData) {
             $themeStatus = ($this->site->isThemeActive($theme))?$this->trans('commands.common.status.enabled'): $this->trans('commands.common.status.disabled');
             
             $tableRows [] = [

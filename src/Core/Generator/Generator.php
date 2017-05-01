@@ -12,6 +12,7 @@ use WP\Console\Core\Utils\FileQueue;
 
 /**
  * Class Generator
+ *
  * @package WP\Console\Core\Generator
  */
 abstract class Generator
