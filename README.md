@@ -8,6 +8,18 @@ All notable changes to this project will be documented in the [releases page](ht
 
 # Install
 
+To use WP Console project, you need to download a phar file in your system, the following example use the version 0.1.0, please select the latest release to get more features and fixes.
+
+```
+$ wget https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar
+
+$ chmod 755 wordpress.phar 
+
+$ mv wordpress.phar  /user/local/bin/wordpress
+```
+
+Use the file [https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar.version](https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar.version) to check 
+
 ## Usage
 
 ### Available commands:
