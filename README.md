@@ -8,14 +8,10 @@ All notable changes to this project will be documented in the [releases page](ht
 
 # Install
 
-To use WP Console project, you need to download a phar file in your system, the following example use the version 0.1.0, please select the latest release to get more features and fixes.
-
 ```
-$ wget https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar
-
-$ chmod 755 wordpress.phar 
-
-$ mv wordpress.phar  /user/local/bin/wordpress
+curl https://weknowinc.com/wp-console/installer -L -o wordpress.phar
+mv wordpress.phar /usr/local/bin/wordpress
+chmod +x /usr/local/bin/wordpress
 ```
 
 Use the file [https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar.version](https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar.version) to check 
@@ -24,7 +20,7 @@ Use the file [https://github.com/weknowinc/wp-console/releases/download/0.1.0/wo
 
 ### Available commands:
   
-  * about                             Display basic information about Wordprss Console project
+  * about                             Display basic information about Wordpres Console project
   * chain                             Chain command execution
   * exec                              Execute an external command.
   * help                              Displays help for a command
