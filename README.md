@@ -14,8 +14,6 @@ mv wordpress.phar /usr/local/bin/wordpress
 chmod +x /usr/local/bin/wordpress
 ```
 
-Use the file [https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar.version](https://github.com/weknowinc/wp-console/releases/download/0.1.0/wordpress.phar.version) to check 
-
 ## Usage
 
 ### Available commands:
