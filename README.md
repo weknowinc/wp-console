@@ -8,6 +8,8 @@ All notable changes to this project will be documented in the [releases page](ht
 
 # Install
 
+These instructions are intented for Unix, Linux, Mac OSX system, use sudo if you get permissions errors
+
 ```
 curl https://weknowinc.com/wp-console/installer -L -o wordpress.phar
 mv wordpress.phar /usr/local/bin/wordpress
