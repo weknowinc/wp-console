@@ -32,8 +32,12 @@ chmod +x /usr/local/bin/wordpress
  
  **chain**
   * chain:debug                       List available chain files.
- 
+
+ **container**
+   * container:debug                  Displays current services for an application..
+
  **generate**
+  * generate:command                  Generate commands for the console.
   * generate:metabox                  Generate a meta box.
   * generate:plugin (gp)              Generate a plugin.
   * generate:taxonomy                 Generate a custom taxonomy.

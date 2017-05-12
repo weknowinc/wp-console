@@ -5,6 +5,8 @@ namespace WP\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use WP\Console\Annotations\WPCommandAnnotationReader;
+use WP\Console\Utils\AnnotationValidator;
 use WP\Console\Core\Application as BaseApplication;
 
 /**
@@ -104,9 +106,22 @@ class Application extends BaseApplication
 
         $serviceDefinitions = [];
         $annotationValidator = null;
+        $annotationCommandReader = null;
         if ($this->container->hasParameter('console.service_definitions')) {
             $serviceDefinitions = $this->container
                 ->getParameter('console.service_definitions');
+
+            /**
+             * @var WPCommandAnnotationReader $annotationCommandReader
+             */
+            $annotationCommandReader = $this->container
+                ->get('console.annotation_command_reader');
+
+            /**
+             * @var AnnotationValidator $annotationValidator
+             */
+            $annotationValidator = $this->container
+                ->get('console.annotation_validator');
         }
 
         $aliases = $this->container->get('console.configuration_manager')
@@ -128,6 +143,26 @@ class Application extends BaseApplication
 
             if (!$command) {
                 continue;
+            }
+
+            if ($annotationValidator && $annotationCommandReader) {
+                if (!$serviceDefinition = $serviceDefinitions[$name]) {
+                    continue;
+                }
+
+                $annotation = $annotationCommandReader->readAnnotation($serviceDefinition->getClass());
+                
+                if ($annotation) {
+                    $this->container->get('console.translator_manager')
+                        ->addResourceTranslationsByExtension(
+                            $annotation['extension'],
+                            $annotation['extensionType']
+                        );
+                }
+
+                if (!$annotationValidator->isValidCommand($serviceDefinition->getClass())) {
+                    continue;
+                }
             }
 
             if (method_exists($command, 'setTranslator')) {

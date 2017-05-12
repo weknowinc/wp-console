@@ -40,7 +40,8 @@
         "guzzlehttp/guzzle": "~6.1",
         "phpseclib/phpseclib": "^2.0",
         "anolilab/wordpress-salt-generator": "^1.2",
-        "twig/twig": "^1.31"
+        "twig/twig": "^1.31",
+        "doctrine/annotations": "^1.4"
     },
     "bin": ["bin/wp-console"],
     "config": {

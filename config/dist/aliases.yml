@@ -4,6 +4,8 @@ commands:
       - cf
     chain:debug:
       - cd
+    container:debug:
+      - cod
     generate:command:
       - gc
     generate:metabox:

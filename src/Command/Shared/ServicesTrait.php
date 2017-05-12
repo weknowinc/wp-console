@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains Drupal\Console\Command\Shared\ServicesTrait.
+ * Contains WP\Console\Command\Shared\ServicesTrait.
  */
 
 namespace WP\Console\Command\Shared;

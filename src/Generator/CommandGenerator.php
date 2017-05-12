@@ -14,7 +14,7 @@ use WP\Console\Core\Generator\Generator;
 /**
  * Class CommandGenerator
  *
- * @package Drupal\Console\Generator
+ * @package WP\Console\Generator
  */
 class CommandGenerator extends Generator
 {

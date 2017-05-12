@@ -38,6 +38,11 @@ services:
   console.extension_manager:
       class: WP\Console\Extension\Manager
       arguments: ['@console.site', '@app.root']
+  console.annotation_command_reader:
+    class: WP\Console\Annotations\WPCommandAnnotationReader
+  console.annotation_validator:
+    class: WP\Console\Utils\AnnotationValidator
+    arguments: ['@console.annotation_command_reader', '@console.extension_manager']
   # WodpressConsole Services
   http_client:
     class: GuzzleHttp\Client
@@ -48,3 +53,4 @@ services:
     class: WP\Console\Core\Generator\InitGenerator
     tags:
       - { name: wordpress.generator }
+

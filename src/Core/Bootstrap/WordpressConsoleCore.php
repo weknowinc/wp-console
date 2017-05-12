@@ -10,8 +10,7 @@ use WP\Console\Utils\Site;
 use WP\Console\Core\Utils\ArgvInputReader;
 use WP\Console\Core\Site\Settings;
 use WP\Console\Component\FileCache\FileCacheFactory;
-use WP\Console\Bootstrap\AddServicesCompilerPass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use WP\Console\Utils\TranslatorManager;
 
 class WordpressConsoleCore
 {
@@ -160,6 +159,9 @@ class WordpressConsoleCore
         FileCacheFactory::setConfiguration($configuration);
         FileCacheFactory::setPrefix(Settings::getApcuPrefix('file_cache', $this->root));
 
+        $definition = $container->getDefinition('console.translator_manager');
+        $definition->setClass(TranslatorManager::class);
+
         /* Load plugin custom commands */
         /* @TODO Implemt WP\Console\Bootstrap\AddServicesCompilerPass
 
@@ -167,6 +169,8 @@ class WordpressConsoleCore
          * @var Manager $extensionManager
          */
         $extensionManager = $container->get('console.extension_manager');
+
+        $finder = new Finder();
 
         /**
          * @var Extension[] $modules
@@ -178,15 +182,25 @@ class WordpressConsoleCore
             ->getList(false);
 
         foreach ($plugins as $plugin) {
-            $consoleServicesExtensionFile = $this->appRoot . '/' .
-                $extensionManager->getPlugin($plugin['Name'])->getPath()  . '/console.services.yml';
+            $pluginPath = $this->appRoot . '/' . $extensionManager->getPlugin($plugin['Name'])->getPath();
 
-            print $consoleServicesExtensionFile . PHP_EOL;
+            $finder->files()->in($pluginPath . '/src/Command');
+
+            foreach ($finder as $command) {
+                require_once $command->getRealPath();
+            }
+
+            $consoleServicesExtensionFile = $pluginPath . '/console.services.yml';
 
             if (is_file($consoleServicesExtensionFile)) {
                 $loader->load($consoleServicesExtensionFile);
             }
         }
+
+        $container->setParameter(
+            'console.service_definitions',
+            $container->getDefinitions()
+        );
 
         return $container;
     }

@@ -1,0 +1,5 @@
+services:
+  console.container_debug:
+    class: WP\Console\Command\ContainerDebugCommand
+    tags:
+      - { name: wordpress.command }

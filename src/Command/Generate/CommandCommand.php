@@ -124,12 +124,12 @@ class CommandCommand extends Command
         $services = $input->getOption('services');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use Drupal\Console\Command\Shared\ConfirmationTrait::confirmGeneration
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
         if (!$this->confirmGeneration($io, $yes)) {
             return;
         }
 
-        // @see use Drupal\Console\Command\Shared\ServicesTrait::buildServices
+        // @see use WP\Console\Command\Shared\ServicesTrait::buildServices
         $build_services = $this->buildServices($services);
 
         $this->generator->generate(
