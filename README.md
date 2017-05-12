@@ -8,11 +8,19 @@ All notable changes to this project will be documented in the [releases page](ht
 
 # Install
 
+These instructions are intented for Unix, Linux, Mac OSX system, use sudo if you get permissions errors
+
+```
+curl https://weknowinc.com/wp-console/installer -L -o wordpress.phar
+mv wordpress.phar /usr/local/bin/wordpress
+chmod +x /usr/local/bin/wordpress
+```
+
 ## Usage
 
 ### Available commands:
   
-  * about                             Display basic information about Wordprss Console project
+  * about                             Display basic information about Wordpres Console project
   * chain                             Chain command execution
   * exec                              Execute an external command.
   * help                              Displays help for a command
@@ -34,6 +42,7 @@ All notable changes to this project will be documented in the [releases page](ht
  **multisite**
   * multisite:install (mi)            Install a Wordpress multisite network
   * multisite:debug                   List all sites in network available to a specific user
+  * multisite:new                     Add New Site a Wordpress multisite network
  
  **plugin**
   * plugin:activate (pa)              Activate plugins or plugin in the application
