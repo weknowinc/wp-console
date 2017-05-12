@@ -1,0 +1,67 @@
+{% extends "base/class.php.twig" %}
+
+{% block file_path %}
+\WP\{{pluginNameSpace}}\Command\{{ class }}.
+{% endblock %}
+
+{% block namespace_class %}
+namespace WP\{{pluginNameSpace}}\Command;
+{% endblock %}
+
+{% block use_class %}
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Command\Command;
+use Drupal\Console\Core\Command\Shared\CommandTrait;
+use WP\Console\Core\Style\WPStyle;
+use WP\Console\Annotations\WPCommand;
+{% endblock %}
+
+{% block class_declaration %}
+/**
+ * Class {{ class_name }}.
+ *
+ * @package WP\{{pluginNameSpace}}
+ *
+ * @WPCommand (
+ *     extension="{{plugin}}"
+ * )
+ */
+class {{ class_name }} extends Command {% endblock %}
+{% block class_construct %}
+{% if services is not empty %}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct({{ servicesAsParameters(services)|join(', ') }}) {
+{{ serviceClassInitialization(services) }}
+    parent::__construct();
+  }
+{% endif %}
+{% endblock %}
+
+{% block use_trait %}
+  use CommandTrait;
+
+{% endblock %}
+
+{% block class_methods %}
+  /**
+   * {@inheritdoc}
+   */
+  protected function configure() {
+    $this
+      ->setName('{{ name }}')
+      ->setDescription($this->trans('commands.{{ command_key }}.description'));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function execute(InputInterface $input, OutputInterface $output) {
+    $io = new WPStyle($input, $output);
+
+    $io->info($this->trans('commands.{{ command_key }}.messages.success'));
+  }
+{%- endblock -%}

@@ -1,4 +1,9 @@
 services:
+  console.generate_command:
+    class: WP\Console\Command\Generate\CommandCommand
+    arguments: ['@console.command_generator', '@console.extension_manager', '@console.validator', '@console.string_converter' ]
+    tags:
+       - { name: wordpress.command }
   console.generate_plugin:
     class: WP\Console\Command\Generate\PluginCommand
     arguments: ['@console.plugin_generator', '@console.validator', '@app.root', '@console.string_converter', '@http_client', '@console.site']

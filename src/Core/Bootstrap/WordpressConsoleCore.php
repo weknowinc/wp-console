@@ -10,6 +10,8 @@ use WP\Console\Utils\Site;
 use WP\Console\Core\Utils\ArgvInputReader;
 use WP\Console\Core\Site\Settings;
 use WP\Console\Component\FileCache\FileCacheFactory;
+use WP\Console\Bootstrap\AddServicesCompilerPass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 class WordpressConsoleCore
 {
@@ -157,6 +159,34 @@ class WordpressConsoleCore
         }
         FileCacheFactory::setConfiguration($configuration);
         FileCacheFactory::setPrefix(Settings::getApcuPrefix('file_cache', $this->root));
+
+        /* Load plugin custom commands */
+        /* @TODO Implemt WP\Console\Bootstrap\AddServicesCompilerPass
+
+        /**
+         * @var Manager $extensionManager
+         */
+        $extensionManager = $container->get('console.extension_manager');
+
+        /**
+         * @var Extension[] $modules
+         */
+        $plugins = $extensionManager->discoverPlugins()
+            ->showCore()
+            ->showNoCore()
+            ->showActivated()
+            ->getList(false);
+
+        foreach ($plugins as $plugin) {
+            $consoleServicesExtensionFile = $this->appRoot . '/' .
+                $extensionManager->getPlugin($plugin['Name'])->getPath()  . '/console.services.yml';
+
+            print $consoleServicesExtensionFile . PHP_EOL;
+
+            if (is_file($consoleServicesExtensionFile)) {
+                $loader->load($consoleServicesExtensionFile);
+            }
+        }
 
         return $container;
     }

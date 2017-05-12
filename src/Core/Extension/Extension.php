@@ -115,6 +115,24 @@ class Extension implements \Serializable
     }
 
     /**
+     * @param bool $fullPath
+     * @return string
+     */
+    public function getSourcePath($fullPath=false)
+    {
+        return $this->getPath($fullPath) . '/src';
+    }
+
+    /**
+     * @param bool $fullPath
+     * @return string
+     */
+    public function getCommandDirectory($fullPath=false)
+    {
+        return $this->getSourcePath($fullPath) . '/Command/';
+    }
+
+    /**
      * Returns the filename of the extension's info file.
      *
      * @return string

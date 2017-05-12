@@ -1,0 +1,11 @@
+description: 'Generate commands for the console.'
+help: 'The <info>generate:command</info> command helps you generate a new command.'
+welcome: 'Welcome to the WP-Console Command generator'
+options:
+    plugin: 'The name of the plugin (that will contain the command).'
+    class: 'The Class that describes the command. (Must end with the word ''Command'').'
+    name: 'The Command name.'
+questions:
+    module: common.questions.module
+    class: 'Enter the Command Class. (Must end with the word ''Command'').'
+    name: 'Enter the Command name.'

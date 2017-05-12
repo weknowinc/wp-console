@@ -4,6 +4,8 @@ commands:
       - cf
     chain:debug:
       - cd
+    generate:command:
+      - gc
     generate:metabox:
       - gm
     generate:plugin:
@@ -29,4 +31,4 @@ commands:
     theme:activate:
       - ta
     theme:debug:
-      - td	        
+      - td

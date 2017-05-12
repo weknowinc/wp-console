@@ -17,13 +17,13 @@
             "homepage":  "http://enzolutions.com/"
         },
         {
-            "name":      "Drupal Console Contributors",
-            "homepage":  "https://github.com/magicgen/wp-Console/graphs/contributors"
+            "name":      "Wordpress Console Contributors",
+            "homepage":  "https://github.com/weknowinc/wp-Console/graphs/contributors"
         }
     ],
     "support": {
-        "issues": "https://github.com/magicgen/wp-console/issues",
-        "forum": "https://gitter.im/magicgen/wp-console",
+        "issues": "https://github.com/weknowinc/wp-console/issues",
+        "forum": "https://gitter.im/weknowinc/wp-console",
         "docs": "https://docs.wp-console.org/"
     },
     "require": {

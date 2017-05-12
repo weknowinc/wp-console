@@ -36,6 +36,9 @@ class Wordpress
         $wordpress = new WordpressConsoleCore($this->root, $this->appRoot, $this->site);
         $container = $wordpress->boot();
 
+        //$container->compile();
+
+
         return $container;
     }
 }

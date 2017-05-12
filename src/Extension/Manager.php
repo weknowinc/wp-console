@@ -233,7 +233,7 @@ class Manager
      *
      * @return \WP\Core\Extension\Extension
      */
-    private function getExtension($type, $name)
+    public function getExtension($type, $name)
     {
         if (!$this->extensions[$type]) {
             $this->discoverExtension($type);

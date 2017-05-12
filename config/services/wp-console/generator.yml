@@ -1,4 +1,9 @@
 services:
+  console.command_generator:
+    class: WP\Console\Generator\CommandGenerator
+    arguments: ['@console.extension_manager', '@console.translator_manager']
+    tags:
+      - { name: wordpress.generator }
   console.plugin_generator:
     class: WP\Console\Generator\PluginGenerator
     tags:
