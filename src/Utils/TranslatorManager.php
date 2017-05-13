@@ -2,12 +2,13 @@
 
 /**
  * @file
- * Contains \WP\Console\Utils\TranslatorManager.
+ * Contains \Drupal\Console\Utils\TranslatorManager.
  */
 
 namespace WP\Console\Utils;
 
 use WP\Console\Core\Utils\TranslatorManager as TranslatorManagerBase;
+use WP\Console\Extension\Manager;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Finder\Finder;
 
@@ -18,6 +19,23 @@ use Symfony\Component\Finder\Finder;
  */
 class TranslatorManager extends TranslatorManagerBase
 {
+    /**
+     * @var Manager
+     */
+    protected $extensionManager;
+
+    /**
+     * TranslatorManager constructor.
+     *
+     * @param Manager                       $extensionManager
+     */
+    public function __construct(
+        Manager $extensionManager
+    ) {
+        parent::__construct();
+        $this->extensionManager = $extensionManager;
+    }
+
     /**
      * @param $extensionPath
      */
@@ -51,12 +69,9 @@ class TranslatorManager extends TranslatorManagerBase
     /**
      * @param $module
      */
-    private function addResourceTranslationsByModule($module)
+    private function addResourceTranslationsByPlugin($plugin)
     {
-        if (!\Drupal::moduleHandler()->moduleExists($module)) {
-            return;
-        }
-        $extensionPath = \Drupal::moduleHandler()->getModule($module)->getPath();
+        $extensionPath = $this->extensionManager->getPlugin($plugin)->getPath();
         $this->addResourceTranslationsByExtensionPath(
             $extensionPath
         );
@@ -67,7 +82,7 @@ class TranslatorManager extends TranslatorManagerBase
      */
     private function addResourceTranslationsByTheme($theme)
     {
-        $extensionPath = \Drupal::service('theme_handler')->getTheme($theme)->getPath();
+        $extensionPath = $this->extensionManager->getTheme($theme)->getPath();
         $this->addResourceTranslationsByExtensionPath(
             $extensionPath
         );
@@ -79,8 +94,8 @@ class TranslatorManager extends TranslatorManagerBase
      */
     public function addResourceTranslationsByExtension($extension, $type)
     {
-        if ($type == 'module') {
-            $this->addResourceTranslationsByModule($extension);
+        if ($type == 'plugin') {
+            $this->addResourceTranslationsByPlugin($extension);
             return;
         }
         if ($type == 'theme') {

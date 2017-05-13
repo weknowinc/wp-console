@@ -159,9 +159,6 @@ class WordpressConsoleCore
         FileCacheFactory::setConfiguration($configuration);
         FileCacheFactory::setPrefix(Settings::getApcuPrefix('file_cache', $this->root));
 
-        $definition = $container->getDefinition('console.translator_manager');
-        $definition->setClass(TranslatorManager::class);
-
         /* Load plugin custom commands */
         /* @TODO Implemt WP\Console\Bootstrap\AddServicesCompilerPass
 

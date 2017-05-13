@@ -19,10 +19,12 @@ class WPCommandAnnotationReader
     {
         $annotation = [];
         $reader = new AnnotationReader();
+
         $wpCommandAnnotation = $reader->getClassAnnotation(
             new \ReflectionClass($class),
             'WP\\Console\\Annotations\\WPCommand'
         );
+
         if ($wpCommandAnnotation) {
             $annotation['extension'] = $wpCommandAnnotation->extension?:'';
             $annotation['extensionType'] = $wpCommandAnnotation->extensionType?:'';

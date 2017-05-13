@@ -25,7 +25,7 @@ class TranslatorManager
     /**
      * @var string
      */
-    private $language;
+    public $language;
 
     /**
      * @var Translator
@@ -179,7 +179,7 @@ class TranslatorManager
      * @param $resource
      * @param $resourceKey
      */
-    private function loadTranslationByFile($resource, $resourceKey = null)
+    public function loadTranslationByFile($resource, $resourceKey = null)
     {
         $resourceParsed = $this->parser->parse(file_get_contents($resource));
 

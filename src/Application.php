@@ -151,7 +151,6 @@ class Application extends BaseApplication
                 }
 
                 $annotation = $annotationCommandReader->readAnnotation($serviceDefinition->getClass());
-                
                 if ($annotation) {
                     $this->container->get('console.translator_manager')
                         ->addResourceTranslationsByExtension(

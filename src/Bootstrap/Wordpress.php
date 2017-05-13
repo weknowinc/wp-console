@@ -2,6 +2,7 @@
 
 namespace WP\Console\Bootstrap;
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use WP\Console\Core\Bootstrap\WordpressConsoleCore;
 use WP\Console\Utils\Site;
 use GuzzleHttp\Client;
@@ -36,8 +37,7 @@ class Wordpress
         $wordpress = new WordpressConsoleCore($this->root, $this->appRoot, $this->site);
         $container = $wordpress->boot();
 
-        //$container->compile();
-
+        AnnotationRegistry::registerLoader([$this->autoload, "loadClass"]);
 
         return $container;
     }
