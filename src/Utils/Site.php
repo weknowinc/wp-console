@@ -706,4 +706,37 @@ class Site
             return null;
         }
     }
+
+    public function getRoles()
+    {
+        $this->loadLegacyFile('wp-admin/includes/user.php');
+
+        if (function_exists('get_editable_roles')) {
+            return get_editable_roles();
+        } else {
+            return null;
+        }
+    }
+
+    public function getUserBy($field, $value )
+    {
+        $this->loadLegacyFile('wp-includes/pluggable.php');
+
+        if (function_exists('get_user_by')) {
+            return get_user_by($field, $value);
+        } else {
+            return null;
+        }
+    }
+
+    public function insertUser($userdata )
+    {
+        $this->loadLegacyFile('wp-includes/user.php');
+
+        if (function_exists('wp_insert_user')) {
+            return wp_insert_user($userdata);
+        } else {
+            return null;
+        }
+    }
 }

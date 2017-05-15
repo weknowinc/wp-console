@@ -11,6 +11,7 @@ options:
     author-url: 'Plugin author website'
     activate: 'Generate an activation function class'
     deactivate: 'Generate a deactivation function class'
+    uninstall: 'Generate the uninstall file'
 questions:
     plugin: 'Enter the new plugin name'
     machine-name: 'Enter the plugin machine name'
@@ -20,6 +21,7 @@ questions:
     author-url: 'Enter Plugin author website'
     activate: 'Do you want to generate an activation function class'
     deactivate: 'Do you want to generate a deactivation function class'
+    uninstall: 'Do you want to generate the uninstall file'
 warnings:
     module-unavailable: 'Warning The following modules are not already available in your local environment "%s"'
 errors:

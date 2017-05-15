@@ -41,7 +41,8 @@
         "phpseclib/phpseclib": "^2.0",
         "anolilab/wordpress-salt-generator": "^1.2",
         "twig/twig": "^1.31",
-        "doctrine/annotations": "^1.4"
+        "doctrine/annotations": "^1.4",
+        "fzaninotto/faker": "^1.6"
     },
     "bin": ["bin/wp-console"],
     "config": {

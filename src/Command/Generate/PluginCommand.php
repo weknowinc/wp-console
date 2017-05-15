@@ -146,6 +146,12 @@ class PluginCommand extends Command
                 '',
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.plugin.options.activate')
+            )
+            ->addOption(
+                'uninstall',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('commands.generate.plugin.options.uninstall')
             );
     }
 
@@ -173,6 +179,7 @@ class PluginCommand extends Command
         $authorURL = $input->getOption('author-url');
         $activate = $input->getOption('activate');
         $deactivate = $input->getOption('deactivate');
+        $uninstall = $input->getOption('uninstall');
 
         $package = str_replace(' ', '_', $plugin);
 
@@ -189,7 +196,8 @@ class PluginCommand extends Command
             $package,
             $className,
             $activate,
-            $deactivate
+            $deactivate,
+            $uninstall
         );
     }
 
@@ -312,6 +320,15 @@ class PluginCommand extends Command
                 true
             );
             $input->setOption('deactivate', $deactivate);
+        }
+
+        $uninstall = $input->getOption('uninstall');
+        if (!$uninstall) {
+            $uninstall = $io->confirm(
+                $this->trans('commands.generate.plugin.questions.uninstall'),
+                true
+            );
+            $input->setOption('uninstall', $uninstall);
         }
     }
 

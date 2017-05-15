@@ -1,0 +1,6 @@
+services:
+  console.create_users:
+    class: WP\Console\Command\Create\UsersCommand
+    arguments: ['@console.create_user_data', '@console.site']
+    tags:
+      - { name: wordpress.command }

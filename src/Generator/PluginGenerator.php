@@ -38,7 +38,8 @@ class PluginGenerator extends Generator
         $package,
         $className,
         $activate,
-        $deactivate
+        $deactivate,
+        $uninstall
     ) {
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
@@ -84,7 +85,7 @@ class PluginGenerator extends Generator
             'class_name_deactivator' => $className . 'Deactivator',
             'class_name_deactivator_path' => 'includes/' . $machineName . '-deactivator.php',
             'activate' => $activate,
-            'deactivate' => $deactivate
+            'deactivate' => $deactivate,
         ];
 
         $this->renderFile(
@@ -111,6 +112,14 @@ class PluginGenerator extends Generator
             $this->renderFile(
                 'plugin/includes/plugin-deactivator.php.twig',
                 $dir. '/' .  $parameters['class_name_deactivator_path'],
+                $parameters
+            );
+        }
+
+        if($uninstall) {
+            $this->renderFile(
+                'plugin/uninstall.php.twig',
+                $dir. '/uninstall.php',
                 $parameters
             );
         }

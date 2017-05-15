@@ -24,3 +24,6 @@ services:
   console.validator:
       class: WP\Console\Utils\Validator
       arguments: ['@console.extension_manager']
+  console.create_user_data:
+    class: WP\Console\Utils\Create\UserData
+    arguments: ['@console.site']
