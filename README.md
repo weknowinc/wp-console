@@ -26,7 +26,10 @@ chmod +x /usr/local/bin/wordpress
   * help                              Displays help for a command
   * init                              Copy configuration files.
   * list                              Lists all available commands
- 
+
+ **create**
+  * create:users                      Create dummy users for your WordPress application.
+
  **cache**
   * cache:flush                       Flush the Wordpress object cache
  
