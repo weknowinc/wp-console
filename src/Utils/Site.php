@@ -718,7 +718,7 @@ class Site
         }
     }
 
-    public function getUserBy($field, $value )
+    public function getUserBy($field, $value)
     {
         $this->loadLegacyFile('wp-includes/pluggable.php');
 
@@ -729,7 +729,7 @@ class Site
         }
     }
 
-    public function insertUser($userdata )
+    public function insertUser($userdata)
     {
         $this->loadLegacyFile('wp-includes/user.php');
 
@@ -738,5 +738,12 @@ class Site
         } else {
             return null;
         }
+    }
+
+    public function getShortCodes()
+    {
+        global $shortcode_tags;
+
+        return $shortcode_tags;
     }
 }

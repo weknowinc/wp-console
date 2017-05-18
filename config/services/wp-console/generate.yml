@@ -24,3 +24,8 @@ services:
     arguments: ['@console.theme_generator', '@console.validator', '@app.root', '@console.string_converter', '@http_client', '@console.site']
     tags:
       - { name: wordpress.command }
+  console.generate_shortcode:
+    class: WP\Console\Command\Generate\ShortcodeCommand
+    arguments: ['@console.shortcode_generator', '@console.extension_manager', '@console.site','@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }

@@ -1,0 +1,5 @@
+description: 'Displays current shortcodes in your WordPress application.'
+arguments:
+messages:
+    tag: 'Tag'
+    callback: 'Callback function'

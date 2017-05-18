@@ -23,3 +23,7 @@ services:
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }
+  console.shortcode_generator:
+      class: WP\Console\Generator\ShortcodeGenerator
+      tags:
+        - { name: wordpress.generator }
