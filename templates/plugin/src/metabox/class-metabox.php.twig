@@ -12,7 +12,7 @@ class {{ class_name }} {
 
     public function init() {
         add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
-{% if autosave is defined %}
+{% if autosave is not null %}
         add_action( 'save_post', array( $this, 'meta_boxes_save' ), 10, 2 );
 {% endif%}
     }
@@ -35,11 +35,11 @@ class {{ class_name }} {
      * Output the meta box.
      */
     public function {{ callback_function }}() {
-{% if wp_nonce is defined %}
+{% if wp_nonce is not null %}
         wp_nonce_field(basename(__FILE__), "meta-box-nonce");
 {% endif %}
 
-{% if fields_metabox %}
+{% if fields_metabox is not null %}
         ?>
 {% for fields in fields_metabox %}
             <p>
@@ -65,7 +65,7 @@ class {{ class_name }} {
 {% endif %}
     }
 
-{% if auto_save is defined %}
+{% if auto_save is not null %}
     /**
 	 * Save opening times meta box data.
 	 *
