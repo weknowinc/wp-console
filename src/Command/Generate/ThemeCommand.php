@@ -121,29 +121,29 @@ class ThemeCommand extends Command
             ->addOption(
                 'description',
                 '',
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_REQUIRED,
                 $this->trans('commands.generate.module.options.description')
             )
             ->addOption(
                 'author',
                 '',
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_REQUIRED,
                 $this->trans('commands.generate.theme.options.author')
             )
             ->addOption(
                 'author-url',
                 '',
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_REQUIRED,
                 $this->trans('commands.generate.theme.options.author-url')
             )
             ->addOption(
                 'screenshot',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.theme.options.screenshot')
             )->addOption(
                 'template-files',
-                '',
+                null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.theme.options.template-files')
             );
@@ -336,6 +336,32 @@ class ThemeCommand extends Command
              );
              $input->setOption('test', $test);
          }*/
+    }
+
+    public function themeQuestion(WPStyle $io, $status = 'all')
+    {
+        $extensionManager = $this->extensionManager->discoverthemes();
+
+        if ($status == 'all') {
+            $extensionManager->showDeactivated()->showActivated();
+        } elseif ($status) {
+            $extensionManager->showActivated();
+        } else {
+            $extensionManager->showDeactivated();
+        }
+
+        $themes = $extensionManager->getList(true);
+
+        if (empty($themes)) {
+            throw new \Exception('No extension available, execute the proper generator command to generate one.');
+        }
+
+        $theme = $io->choiceNoList(
+            $this->trans('commands.common.questions.theme'),
+            $themes
+        );
+
+        return $theme;
     }
     
     /**

@@ -79,10 +79,10 @@ class {{ class_name_taxonomy }}_custom_taxonomy {
 {% if rest.show_in_rest != 'no include' %}
             'show_in_rest'               => {{ rest.show_in_rest ? 'true': 'false' }},
 {% endif %}
-{% if rest.rest_base is defined %}
+{% if rest.rest_base is not null %}
             'rest_base'                  => '{{ rest.rest_base }}',
 {% endif %}
-{% if rest.rest_controller_class is defined %}
+{% if rest.rest_controller_class is not null %}
             'rest_controller_class'      => '{{ rest.rest_controller_class }}',
 {% endif %}
 {% endif %}
