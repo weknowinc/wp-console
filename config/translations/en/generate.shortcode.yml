@@ -1,0 +1,14 @@
+description: 'Generate a shortcode.'
+help: 'The <info>generate:shortcode</info> command helps you generates a new shortcode.'
+welcome: 'Welcome to the Wordpress shortcode generator'
+options:
+    plugin: 'The Plugin name'
+    tag: 'The shortcode tag name'
+questions:
+    plugin: 'Enter the plugin name'
+    tag: 'Enter the tag name'
+warnings:
+    tag-required: 'Tag is required'
+    tag-unavailable: 'Warning The following tag is already in usage in your environment "%s"'
+    tag-transformed: 'Tag "%s" was transformed to "%s" to avoid syntax issues'
+errors:

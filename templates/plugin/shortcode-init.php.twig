@@ -1,0 +1,13 @@
+{% block file_methods %}
+{% if not file_exists %}
+{% include 'plugin/php_tag.php.twig' %}
+{% endif %}
+function {{ plugin_shortcode_function }}()
+{
+    require_once plugin_dir_path( __FILE__ ) . '{{ class_name_path }}';
+    add_shortcode('{{ tag }}', array('{{ class_name }}', '{{ tag }}_shortcode'));
+}
+
+add_action('init', '{{ plugin_shortcode_function }}');
+
+{% endblock %}

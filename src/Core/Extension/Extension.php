@@ -83,7 +83,7 @@ class Extension implements \Serializable
      */
     public function getName()
     {
-        return basename($this->pathname, '.info.yml');
+        return basename($this->pathname, '.php');
     }
 
     /**

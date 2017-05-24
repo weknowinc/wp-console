@@ -12,6 +12,8 @@ commands:
       - gm
     generate:plugin:
       - gp
+    generate:shortcode:
+      - gs
     generate:taxonomy:
       - gta
     generate:theme:

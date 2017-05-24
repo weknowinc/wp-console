@@ -116,9 +116,6 @@ class CommandCommand extends Command
         $pluginNameSpace = $this->stringConverter->humanToCamelCase($plugin);
         $pluginCamelCaseMachineName = $this->stringConverter->createMachineName($this->stringConverter->humanToCamelCase($plugin));
 
-/*        echo $plugin . "\n";
-        echo $pluginNameSpace ."\n";
-        exit();*/
         $class = $input->getOption('class');
         $name = $input->getOption('name');
         $services = $input->getOption('services');

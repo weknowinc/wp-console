@@ -27,29 +27,30 @@ chmod +x /usr/local/bin/wordpress
   * init                              Copy configuration files.
   * list                              Lists all available commands
 
- **create**
-  * create:users                      Create dummy users for your WordPress application.
-
  **cache**
-  * cache:flush                       Flush the Wordpress object cache
+  * cache:flush (cf)                  Flush the Wordpress object cache
  
  **chain**
-  * chain:debug                       List available chain files.
+  * chain:debug (cd)                  List available chain files.
 
  **container**
    * container:debug                  Displays current services for an application..
 
+ **create**
+  * create:users                      Create dummy users for your WordPress application.
+
  **generate**
-  * generate:command                  Generate commands for the console.
-  * generate:metabox                  Generate a meta box.
+  * generate:command (gc)             Generate commands for the console.
+  * generate:metabox (gm)             Generate a meta box.
   * generate:plugin (gp)              Generate a plugin.
-  * generate:taxonomy                 Generate a custom taxonomy.
-  * generate:theme                    Generate a plugin.
+  * generate:shortcode (gs)           Generate a shortcode.  
+  * generate:taxonomy (gta)           Generate a custom taxonomy.
+  * generate:theme (gth)                   Generate a theme.
  
  **multisite**
   * multisite:install (mi)            Install a Wordpress multisite network
-  * multisite:debug                   List all sites in network available to a specific user
-  * multisite:new                     Add New Site a Wordpress multisite network
+  * multisite:debug (md)              List all sites in network available to a specific user
+  * multisite:new (mn)                Add New Site a Wordpress multisite network
  
  **plugin**
   * plugin:activate (pa)              Activate plugins or plugin in the application
@@ -57,11 +58,11 @@ chmod +x /usr/local/bin/wordpress
   * plugin:debug (pde)                Display current plugins available for application
  
  **site**
-  * site:install                      Install a Wordpress project
+  * site:install (si)                 Install a Wordpress project
  
  **theme**
-  * theme:activate                    Activate theme in the application
-  * theme:debug                       Display current themes available for application
+  * theme:activate (ta)               Activate theme in the application
+  * theme:debug (td)                  Display current themes available for application
 
 # How to contribute
 
