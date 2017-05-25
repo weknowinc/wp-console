@@ -331,12 +331,4 @@ class PluginCommand extends Command
             $input->setOption('uninstall', $uninstall);
         }
     }
-
-    /**
-     * @return PluginGenerator
-     */
-    protected function createGenerator()
-    {
-        return new PluginGenerator();
-    }
 }

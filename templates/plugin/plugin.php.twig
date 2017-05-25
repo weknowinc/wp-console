@@ -1,80 +1,82 @@
+{% extends "base/file.php.twig" %}
+{% block extra_info %}
+{% if not file_exists %}
 {% if plugin_uri is defined %}
-<?php
-/**
- * Plugin Name:     {{plugin}}
- * Plugin URI:      {{plugin_uri}}
- * Description:     {{description}}
- * Author:          {{author}}
- * Author URI:      {{author_uri}}
- * Text Domain:     {{plugin}}
- * Domain Path:     /languages
- * Version:         0.1.0
- *
- * @package         {{package}}
- */
+    * Plugin Name:     {{plugin}}
+    * Plugin URI:      {{plugin_uri}}
+    * Description:     {{description}}
+    * Author:          {{author}}
+    * Author URI:      {{author_uri}}
+    * Text Domain:     {{plugin}}
+    * Domain Path:     /languages
+    * Version:         0.1.0
+    *
+    * @package         {{package}}
 {% endif %}
-
-// If this file is accessed directory, then abort.
-if ( ! defined( 'WPINC' ) ) {
-    die;
-}
-
-{% if activate is defined %}
-/**
- * The code that runs during plugin activation.
- * This action is documented in {{ class_name_activator_path }}
- */
-function activate_plugin_name() {
-	require_once plugin_dir_path( __FILE__ ) . '{{ class_name_activator_path }}';
-	{{ class_name_activator }}::activate();
-}
-
-register_activation_hook( __FILE__, 'activate_plugin_name' );
 {% endif %}
-
-{% if deactivate is defined %}
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in {{ class_name_deactivator_path }}
- */
-function deactivate_plugin_name() {
-	require_once plugin_dir_path( __FILE__ ) . '{{ class_name_deactivator_path }}';
-	{{ class_name_deactivator }}::deactivate();
-}
-
-register_deactivation_hook( __FILE__, 'deactivate_plugin_name' );
+{%- endblock -%}
+{% block file_docblock %}
+{% if not file_exists %}
+ {{ parent() }}
 {% endif %}
+{%- endblock -%}
+{% block file_methods %}
+{% if activate is defined and activate %}
+    /**
+    * The code that runs during plugin activation.
+    * This action is documented in {{ class_name_activator_path }}
+    */
+    function activate_{{ machine_name }}()
+    {
+        require_once plugin_dir_path( __FILE__ ) . '{{ class_name_activator_path }}';
+        {{ class_name_activator }}::activate();
+    }
 
+    register_activation_hook( __FILE__, 'activate_{{ machine_name }}' );
+{% endif -%}
+{% if deactivate is defined and deactivate %}
+    /**
+    * The code that runs during plugin deactivation.
+    * This action is documented in {{ class_name_deactivator_path }}
+    */
+    function deactivate_{{ machine_name }}()
+    {
+        require_once plugin_dir_path( __FILE__ ) . '{{ class_name_deactivator_path }}';
+        {{ class_name_deactivator }}::deactivate();
+    }
+
+    register_deactivation_hook( __FILE__, 'deactivate_{{ machine_name }}' );
+{% endif -%}
 {% if metabox_class_name is defined %}
-// Include the files for rendering the display.
-include_once( 'admin/{{ metabox_class_name }}_meta_box.php' );
 
-/**
- * Starts the plugin by initializing the meta box {{ screen }}, its display, and then
- * sets the plugin in motion.
- */
+    // Include the files for rendering the display.
+    include_once( '{{ class_name_metabox_path }}' );
 
-function add_metabox_{{ metabox_class_name }}_{{ screen }}() {
-  $meta_box = new {{ metabox_class_name }}();
-    $meta_box->init();
-}
-add_metabox_{{ metabox_class_name }}_{{ screen }}();
+    /**
+    * Starts the plugin by initializing the meta box {{ screen }}, its display, and then
+    * sets the plugin in motion.
+    */
+    function add_metabox_{{ metabox_class_name }}_{{ screen }}()
+    {
+        $meta_box = new {{ metabox_class_name }}();
+        $meta_box->init();
+    }
 
-{% endif %}
-
+    add_metabox_{{ metabox_class_name }}_{{ screen }}();
+{% endif -%}
 {% if class_name_taxonomy is defined %}
-// Include the files for rendering the display.
-include_once( 'admin/{{ class_name_taxonomy }}_taxonomy.php' );
+    // Include the files for rendering the display.
+    include_once( '{{ class_name_taxonomy_path }}' );
 
-/**
-  * Starts the custom taxonomy
-  */
+    /**
+    * Starts the custom taxonomy
+    */
+    function add_custom_taxonomy_{{ class_name_taxonomy }}()
+    {
+        $taxonomy = new {{ class_name_taxonomy }}();
+        $taxonomy->init();
+    }
 
-function add_custom_taxonomy_{{ class_name_taxonomy }}() {
-    $taxonomy = new {{ class_name_taxonomy }}_custom_taxonomy();
-    $taxonomy->init();
-}
-
-add_custom_taxonomy_{{ class_name_taxonomy }}();
-
-{% endif %}
+    add_custom_taxonomy_{{ class_name_taxonomy }}();
+{% endif -%}
+{%- endblock -%}

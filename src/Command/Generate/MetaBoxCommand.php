@@ -26,7 +26,6 @@ class MetaBoxCommand extends Command
     use PluginTrait;
     use ConfirmationTrait;
     use CommandTrait;
-    use MetaboxTrait;
     
     /**
      * @var MetaBoxGenerator
@@ -175,7 +174,7 @@ class MetaBoxCommand extends Command
         $fields_metabox = $input->getOption('fields-metabox');
         $wp_nonce = $input->getOption('wp-nonce');
         $auto_save = $input->getOption('auto-save');
-        
+
         $this->generator->generate(
             $plugin,
             $class_name,
@@ -379,14 +378,14 @@ class MetaBoxCommand extends Command
 
             $multi_selection = [];
             if ($type == 'select' || $type == 'radio') {
-                if (!$io->confirm(
+                if ($io->confirm(
                     $this->trans('commands.generate.metabox.questions.field-metabox-multiple-options', $type),
-                    true
+                    false
                 )
                 ) {
-                    break;
+                    $multi_selection = $this->multiSelection($io, $type);
                 }
-                $multi_selection = $this->multiSelection($io, $type);
+
             }
 
             array_push(
@@ -404,7 +403,7 @@ class MetaBoxCommand extends Command
 
             if (!$io->confirm(
                 $this->trans('commands.generate.metabox.questions.field-metabox-add'),
-                true
+                false
             )
             ) {
                 break;
@@ -438,7 +437,7 @@ class MetaBoxCommand extends Command
             );
             if (!$io->confirm(
                 $this->trans('commands.generate.metabox.questions.field-metabox-multiple-options-add', $type),
-                true
+                false
             )
             ) {
                 break;
@@ -446,13 +445,5 @@ class MetaBoxCommand extends Command
         }
 
         return $multiple_options;
-    }
-    
-    /**
-     * @return MetaBoxGenerator
-     */
-    protected function createGenerator()
-    {
-        return new MetaBoxGenerator();
     }
 }

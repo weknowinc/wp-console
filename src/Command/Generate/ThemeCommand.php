@@ -337,38 +337,4 @@ class ThemeCommand extends Command
              $input->setOption('test', $test);
          }*/
     }
-
-    public function themeQuestion(WPStyle $io, $status = 'all')
-    {
-        $extensionManager = $this->extensionManager->discoverthemes();
-
-        if ($status == 'all') {
-            $extensionManager->showDeactivated()->showActivated();
-        } elseif ($status) {
-            $extensionManager->showActivated();
-        } else {
-            $extensionManager->showDeactivated();
-        }
-
-        $themes = $extensionManager->getList(true);
-
-        if (empty($themes)) {
-            throw new \Exception('No extension available, execute the proper generator command to generate one.');
-        }
-
-        $theme = $io->choiceNoList(
-            $this->trans('commands.common.questions.theme'),
-            $themes
-        );
-
-        return $theme;
-    }
-    
-    /**
-     * @return themeGenerator
-     */
-    protected function createGenerator()
-    {
-        return new themeGenerator();
-    }
 }

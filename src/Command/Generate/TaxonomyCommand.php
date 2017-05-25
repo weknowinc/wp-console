@@ -27,7 +27,6 @@ class TaxonomyCommand extends Command
     use PluginTrait;
     use ConfirmationTrait;
     use CommandTrait;
-    use TaxonomyTrait;
     
     /**
      * @var TaxonomyGenerator
@@ -581,13 +580,5 @@ class TaxonomyCommand extends Command
             ];
 
         return $rests;
-    }
-    
-    /**
-     * @return TaxonomyGenerator
-     */
-    protected function createGenerator()
-    {
-        return new TaxonomyGenerator();
     }
 }

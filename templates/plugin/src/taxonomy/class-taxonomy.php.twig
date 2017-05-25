@@ -1,93 +1,92 @@
+{% extends "base/class.php.twig" %}
 
-<?php
-/**
- * Represents a custom taxonomy to be displayed.
- */
-
-class {{ class_name_taxonomy }}_custom_taxonomy {
-
-    public function init() {
+{% block class_declaration %}
+    /**
+    * Represents a custom taxonomy to be displayed.
+    */
+    class {{ class_name_taxonomy }} {% endblock -%}
+{% block class_methods %}
+        public function init() {
 {% if child_theme %}
-     if ( ! function_exists( {{ function_name }}_taxonomy' ) {
-            add_action( 'init', array( $this, '{{ function_name }}_taxonomy') , 0 );
-     }
+            if ( ! function_exists( {{ function_name }}_taxonomy' ) {
+                add_action( 'init', array( $this, '{{ function_name }}_taxonomy') , 0 );
+            }
 {% else %}
             add_action( 'init', array( $this, '{{ function_name }}_taxonomy') , 0 );
 {% endif %}
-    }
+        }
 
-    function {{ function_name }}_taxonomy() {
+        function {{ function_name }}_taxonomy() {
 
-        $labels = array(
-            'name'                       => _x( '{{ name_plural }}', 'Taxonomy General Name', 'text_domain' ),
-            'singular_name'              => _x( '{{ name_singular }}', 'Taxonomy Singular Name', 'text_domain' ),
-
+            $labels = array(
+                'name'                       => _x( '{{ name_plural }}', 'Taxonomy General Name', 'text_domain' ),
+                'singular_name'              => _x( '{{ name_singular }}', 'Taxonomy Singular Name', 'text_domain' ),
 {% if labels is not null %}
 {% for index, label in labels %}
-            '{{ index }}'                => __( '{{ label }}',  'text_domain'),
+                '{{ index }}'                => __( '{{ label }}',  'text_domain'),
 {% endfor %}
 {% else %}
-            'menu_name'                  => __( 'Taxonomy', 'text_domain' ),
-            'all_items'                  => __( 'All {{ name_singular }}', 'text_domain' ),
-            'parent_item'                => __( 'Parent Item', 'text_domain' ),
-            'parent_item_colon'          => __( 'Parent Item:', 'text_domain' ),
-            'new_item_name'              => __( 'New Item Name', 'text_domain' ),
-            'add_new_item'               => __( 'Add New Item', 'text_domain' ),
-            'edit_item'                  => __( 'Edit Item', 'text_domain' ),
-            'update_item'                => __( 'Update Item', 'text_domain' ),
-            'view_item'                  => __( 'View Item', 'text_domain' ),
-            'separate_items_with_commas' => __( 'Separate {{ name_singular }} with commas', 'text_domain' ),
-            'add_or_remove_items'        => __( 'Add or remove {{ name_singular }}', 'text_domain' ),
-            'choose_from_most_used'      => __( 'Choose from the most used', 'text_domain' ),
-            'popular_items'              => __( 'Popular {{ name_singular }}', 'text_domain' ),
-            'search_items'               => __( 'Search {{ name_singular }}', 'text_domain' ),
-            'not_found'                  => __( 'Not Found', 'text_domain' ),
-            'no_terms'                   => __( 'No {{ name_singular }}', 'text_domain' ),
-            'items_list'                 => __( '{{ name_singular }} list', 'text_domain' ),
-            'items_list_navigation'      => __( '{{ name_singular }} list navigation', 'text_domain' ),
+                'menu_name'                  => __( 'Taxonomy', 'text_domain' ),
+                'all_items'                  => __( 'All {{ name_singular }}', 'text_domain' ),
+                'parent_item'                => __( 'Parent Item', 'text_domain' ),
+                'parent_item_colon'          => __( 'Parent Item:', 'text_domain' ),
+                'new_item_name'              => __( 'New Item Name', 'text_domain' ),
+                'add_new_item'               => __( 'Add New Item', 'text_domain' ),
+                'edit_item'                  => __( 'Edit Item', 'text_domain' ),
+                'update_item'                => __( 'Update Item', 'text_domain' ),
+                'view_item'                  => __( 'View Item', 'text_domain' ),
+                'separate_items_with_commas' => __( 'Separate {{ name_singular }} with commas', 'text_domain' ),
+                'add_or_remove_items'        => __( 'Add or remove {{ name_singular }}', 'text_domain' ),
+                'choose_from_most_used'      => __( 'Choose from the most used', 'text_domain' ),
+                'popular_items'              => __( 'Popular {{ name_singular }}', 'text_domain' ),
+                'search_items'               => __( 'Search {{ name_singular }}', 'text_domain' ),
+                'not_found'                  => __( 'Not Found', 'text_domain' ),
+                'no_terms'                   => __( 'No {{ name_singular }}', 'text_domain' ),
+                'items_list'                 => __( '{{ name_singular }} list', 'text_domain' ),
+                'items_list_navigation'      => __( '{{ name_singular }} list navigation', 'text_domain' ),
 {% endif %}
-        );
+            );
 {% if permalinks is not null %}
-        $rewrite = array(
-            'slug'                       => '{{ permalinks.slug }}',
-            'with_front'                 => {{ permalinks.with_front ? 'true': 'false' }},
-            'hierarchical'               => {{ permalinks.hierarchical ? 'true': 'false' }},
-        );
+            $rewrite = array(
+                'slug'                       => '{{ permalinks.slug }}',
+                'with_front'                 => {{ permalinks.with_front ? 'true': 'false' }},
+                'hierarchical'               => {{ permalinks.hierarchical ? 'true': 'false' }},
+            );
 {% endif %}
 {% if capabilities is not null %}
-        $capabilities = array(
-            'manage_terms'               => '{{capabilities.manage_terms }}',
-            'edit_terms'                 => '{{capabilities.edit_terms }}',
-            'delete_terms'               => '{{capabilities.delete_terms }}',
-            'assign_terms'               => '{{capabilities.assign_terms }}',
-        );
+            $capabilities = array(
+                'manage_terms'               => '{{capabilities.manage_terms }}',
+                'edit_terms'                 => '{{capabilities.edit_terms }}',
+                'delete_terms'               => '{{capabilities.delete_terms }}',
+                'assign_terms'               => '{{capabilities.assign_terms }}',
+            );
 {% endif %}
-        $args = array(
-            'labels'                     => $labels,
-            'hierarchical'               => {{ hierarchical ? 'true': 'false' }},
-            'public'                     => {{ visibility.public ? 'true': 'false' }},
-            'show_ui'                    => {{ visibility.show_ui ? 'true': 'false' }},
-            'show_in_nav_menus'          => {{ visibility.show_in_nav_menus ? 'true': 'false' }},
-            'show_tagcloud'              => {{ visibility.show_tagcloud ? 'true': 'false' }},
+            $args = array(
+                'labels'                     => $labels,
+                'hierarchical'               => {{ hierarchical ? 'true': 'false' }},
+                'public'                     => {{ visibility.public ? 'true': 'false' }},
+                'show_ui'                    => {{ visibility.show_ui ? 'true': 'false' }},
+                'show_in_nav_menus'          => {{ visibility.show_in_nav_menus ? 'true': 'false' }},
+                'show_tagcloud'              => {{ visibility.show_tagcloud ? 'true': 'false' }},
 {%  if permalinks is not null %}
-            'rewrite'                    => $rewrite,
+                'rewrite'                    => $rewrite,
 {% endif %}
 {% if capabilities is not null %}
-            'capabilities'               => $capabilities,
+                'capabilities'               => $capabilities,
 {% endif %}
 {% if rest is not null %}
 {% if rest.show_in_rest != 'no include' %}
-            'show_in_rest'               => {{ rest.show_in_rest ? 'true': 'false' }},
+                'show_in_rest'               => {{ rest.show_in_rest ? 'true': 'false' }},
 {% endif %}
 {% if rest.rest_base is not null %}
-            'rest_base'                  => '{{ rest.rest_base }}',
+                'rest_base'                  => '{{ rest.rest_base }}',
 {% endif %}
 {% if rest.rest_controller_class is not null %}
-            'rest_controller_class'      => '{{ rest.rest_controller_class }}',
+                'rest_controller_class'      => '{{ rest.rest_controller_class }}',
 {% endif %}
 {% endif %}
             );
 
-        register_taxonomy( '{{ taxonomy_key }}', array( 'post' ), $args );
-    }
-}
+            register_taxonomy( '{{ taxonomy_key }}', array( 'post' ), $args );
+        }
+{%- endblock -%}

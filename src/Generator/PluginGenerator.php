@@ -86,6 +86,7 @@ class PluginGenerator extends Generator
             'class_name_deactivator_path' => 'includes/' . $machineName . '-deactivator.php',
             'activate' => $activate,
             'deactivate' => $deactivate,
+            'file_exists' => false
         ];
 
         $this->renderFile(

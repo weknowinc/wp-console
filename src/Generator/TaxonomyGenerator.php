@@ -17,12 +17,12 @@ use WP\Console\Extension\Manager;
  */
 class TaxonomyGenerator extends Generator
 {
-    
+
     /**
      * @var Manager
      */
     protected $extensionManager;
-    
+
     /**
      * AuthenticationProviderGenerator constructor.
      *
@@ -30,11 +30,12 @@ class TaxonomyGenerator extends Generator
      */
     public function __construct(
         Manager $extensionManager
-    ) {
+    )
+    {
         $this->extensionManager = $extensionManager;
     }
-    
-    
+
+
     /**
      * Generator MetaBox
      *
@@ -70,7 +71,10 @@ class TaxonomyGenerator extends Generator
         $rest,
         $child_themes,
         $update_count_callback
-    ) {
+    )
+    {
+        $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
+
         $parameters = [
             'plugin' => $plugin,
             'class_name_taxonomy' => $class_name,
@@ -86,18 +90,20 @@ class TaxonomyGenerator extends Generator
             'capabilities' => $capabilities,
             'rest' => $rest,
             'child_theme' => $child_themes,
-            'update_count_callback' => $update_count_callback
+            'update_count_callback' => $update_count_callback,
+            'class_name_taxonomy_path' => 'admin/' . lcfirst($class_name) . '-taxonomy.php',
+            'file_exists' => file_exists($pluginFile)
         ];
 
         $this->renderFile(
             'plugin/src/taxonomy/class-taxonomy.php.twig',
-            $this->extensionManager->getPlugin($plugin)->getPath().'/admin/'.$class_name.'_taxonomy.php',
+            $this->extensionManager->getPlugin($plugin)->getPath() . '/admin/' . lcfirst($class_name) . '-taxonomy.php',
             $parameters
         );
-        
+
         $this->renderFile(
             'plugin/plugin.php.twig',
-            $this->extensionManager->getPlugin($plugin)->getPathname(),
+            $pluginFile,
             $parameters,
             FILE_APPEND
         );

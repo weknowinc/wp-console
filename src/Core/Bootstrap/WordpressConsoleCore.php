@@ -181,17 +181,20 @@ class WordpressConsoleCore
         foreach ($plugins as $plugin) {
             $pluginPath = $this->appRoot . '/' . $extensionManager->getPlugin($plugin['Name'])->getPath();
 
-            $finder->files()->in($pluginPath . '/src/Command');
+            if(file_exists($pluginPath . '/src/Command'))
+            {
+                $finder->files()->in($pluginPath . '/src/Command');
+                foreach ($finder as $command) {
+                    require_once $command->getRealPath();
+                }
 
-            foreach ($finder as $command) {
-                require_once $command->getRealPath();
+                $consoleServicesExtensionFile = $pluginPath . '/console.services.yml';
+
+                if (is_file($consoleServicesExtensionFile)) {
+                    $loader->load($consoleServicesExtensionFile);
+                }
             }
 
-            $consoleServicesExtensionFile = $pluginPath . '/console.services.yml';
-
-            if (is_file($consoleServicesExtensionFile)) {
-                $loader->load($consoleServicesExtensionFile);
-            }
         }
 
         $container->setParameter(
