@@ -151,7 +151,6 @@ class ChainCommand extends Command
         $fileSystem = new Filesystem();
         $file = calculateRealPath($file);
 
-
         if (!$fileSystem->exists($file)) {
             $io->error(
                 sprintf(
@@ -248,6 +247,7 @@ class ChainCommand extends Command
             $inlinePlaceHoldersReplacements,
             $chainContent
         );
+
         $inlinePlaceHolders = $inlinePlaceHoldersReplacements;
 
         $inlinePlaceHolderMap = [];
@@ -293,6 +293,9 @@ class ChainCommand extends Command
             $commands = $configData['commands'];
         }
 
+        $chainInlineOptions = $input->getOptions();
+        unset($chainInlineOptions['file']);
+
         foreach ($commands as $command) {
             $moduleInputs = [];
             $arguments = !empty($command['arguments']) ? $command['arguments'] : [];
@@ -306,20 +309,42 @@ class ChainCommand extends Command
                 $moduleInputs['--'.$key] = is_null($value) ? '' : $value;
             }
 
-            $parameterOptions = $input->getOptions();
-            unset($parameterOptions['file']);
-            foreach ($parameterOptions as $key => $value) {
-                if ($value===true) {
-                    $moduleInputs['--' . $key] = true;
+            // Get application global options
+            foreach ($this->getApplication()->getDefinition()->getOptions() as $option) {
+                $optionName = $option->getName();
+                if (array_key_exists($optionName, $chainInlineOptions)) {
+                    $optionValue = $chainInlineOptions[$optionName];
+                    // Set global option only if is not available in command options
+                    if (!isset($moduleInputs['--' . $optionName]) && $optionValue) {
+                        $moduleInputs['--' . $optionName] = $optionValue;
+                    }
                 }
             }
 
-            $this->chainQueue->addCommand(
-                $command['command'],
-                $moduleInputs,
-                $interactive,
-                $learning
-            );
+            $application = $this->getApplication();
+            $callCommand = $application->find($command['command']);
+
+            if (!$callCommand) {
+                continue;
+            }
+
+            $io->text($command['command']);
+            $io->newLine();
+
+            $input = new ArrayInput($moduleInputs);
+            if (!is_null($interactive)) {
+                $input->setInteractive($interactive);
+            }
+
+            $allowFailure = array_key_exists('allow_failure', $command)?$command['allow_failure']:false;
+            try {
+                $callCommand->run($input, $io);
+            } catch (\Exception $e) {
+                if (!$allowFailure) {
+                    $io->error($e->getMessage());
+                    return 1;
+                }
+            }
         }
 
         return 0;
