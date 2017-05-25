@@ -167,34 +167,35 @@ class WordpressConsoleCore
          */
         $extensionManager = $container->get('console.extension_manager');
 
-        $finder = new Finder();
+        if ($this->site->getConfig()) {
+            $finder = new Finder();
 
-        /**
-         * @var Extension[] $modules
-         */
-        $plugins = $extensionManager->discoverPlugins()
-            ->showCore()
-            ->showNoCore()
-            ->showActivated()
-            ->getList(false);
+            /**
+             * @var Extension[] $modules
+             */
+            $plugins = $extensionManager->discoverPlugins()
+                ->showCore()
+                ->showNoCore()
+                ->showActivated()
+                ->getList(false);
 
-        foreach ($plugins as $plugin) {
-            $pluginPath = $this->appRoot . '/' . $extensionManager->getPlugin($plugin['Name'])->getPath();
+            foreach ($plugins as $plugin) {
+                $pluginPath = $this->appRoot . '/' . $extensionManager->getPlugin($plugin['Name'])->getPath();
 
-            if(file_exists($pluginPath . '/src/Command'))
-            {
-                $finder->files()->in($pluginPath . '/src/Command');
-                foreach ($finder as $command) {
-                    require_once $command->getRealPath();
+                if (file_exists($pluginPath . '/src/Command')) {
+                    $finder->files()->in($pluginPath . '/src/Command');
+                    foreach ($finder as $command) {
+                        require_once $command->getRealPath();
+                    }
+
+                    $consoleServicesExtensionFile = $pluginPath . '/console.services.yml';
+
+                    if (is_file($consoleServicesExtensionFile)) {
+                        $loader->load($consoleServicesExtensionFile);
+                    }
                 }
 
-                $consoleServicesExtensionFile = $pluginPath . '/console.services.yml';
-
-                if (is_file($consoleServicesExtensionFile)) {
-                    $loader->load($consoleServicesExtensionFile);
-                }
             }
-
         }
 
         $container->setParameter(
