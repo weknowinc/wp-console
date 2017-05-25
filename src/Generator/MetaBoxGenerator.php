@@ -63,6 +63,8 @@ class MetaBoxGenerator extends Generator
         $wp_nonce,
         $auto_save
     ) {
+        $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
+
         $parameters = [
             'plugin' => $plugin,
             'metabox_class_name' => $class_name,
@@ -74,10 +76,12 @@ class MetaBoxGenerator extends Generator
             'priority' => $priority,
             'fields_metabox' => $fields_metabox,
             'wp_nonce' => $wp_nonce,
-            'auto_save' => $auto_save
+            'auto_save' => $auto_save,
+            'class_name_metabox_path' => 'admin/' . lcfirst($class_name) . '-metabox.php',
+            'file_exists' => file_exists($pluginFile)
         ];
         
-        $file = $this->extensionManager->getPlugin($plugin)->getPath().'/admin/'.$class_name.'_meta_box.php';
+        $file = $this->extensionManager->getPlugin($plugin)->getPath().'/admin/'.lcfirst($class_name).'-metabox.php';
         if (file_exists($file)) {
             if (!is_dir($file)) {
                 throw new \RuntimeException(
@@ -97,7 +101,7 @@ class MetaBoxGenerator extends Generator
         
         $this->renderFile(
             'plugin/plugin.php.twig',
-            $this->extensionManager->getPlugin($plugin)->getPathname(),
+            $pluginFile,
             $parameters,
             FILE_APPEND
         );

@@ -1,46 +1,49 @@
-<?php
+{% extends "base/class.php.twig" %}
 
-/**
- * Add Meta Box to "{{ screen  }}"  type
- */
+{% block class_declaration %}
+    /**
+    * Add Meta Box to "{{ screen  }}"  type
+    */
+    class {{ metabox_class_name }} {% endblock -%}
+{% block class_construct %}
+        /*
+        * Class constructor.
+        */
 
-class {{ class_name }} {
-
-    /*
-     * Class constructor.
-     */
-
-    public function init() {
-        add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
-{% if autosave is not null %}
-        add_action( 'save_post', array( $this, 'meta_boxes_save' ), 10, 2 );
+        public function init()
+        {
+            add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
+{% if auto_save is not null %}
+            add_action( 'save_post', array( $this, 'meta_boxes_save' ), 10, 2 );
 {% endif%}
-    }
+        }
+{% endblock %}
 
-    /**
-     * Add admin metabox.
-     */
-    public function add_metabox() {
-        add_meta_box(
-            '{{ metabox_id }}', // ID
-            '{{ title }}', // Title
-            array( $this, '{{ callback_function }}' ), // Callback to method to display HTML,
-            '{{ screen }}', // screen type
-            '{{ page_location }}', // Context, choose between 'normal', 'advanced', or 'side'
-            '{{ priority }}'  // Position, choose between 'high', 'core', 'default' or 'low'
-        );
-    }
+{% block class_methods %}
+        /**
+        * Add admin metabox.
+        */
+        public function add_metabox() {
+            add_meta_box(
+                '{{ metabox_id }}', // ID
+                '{{ title }}', // Title
+                array( $this, '{{ callback_function }}' ), // Callback to method to display HTML,
+                '{{ screen }}', // screen type
+                '{{ page_location }}', // Context, choose between 'normal', 'advanced', or 'side'
+                '{{ priority }}'  // Position, choose between 'high', 'core', 'default' or 'low'
+            );
+        }
 
-    /**
-     * Output the meta box.
-     */
-    public function {{ callback_function }}() {
+        /**
+        * Output the meta box.
+        */
+        public function {{ callback_function }}()
+        {
 {% if wp_nonce is not null %}
-        wp_nonce_field(basename(__FILE__), "meta-box-nonce");
+            wp_nonce_field(basename(__FILE__), "meta-box-nonce");
 {% endif %}
-
 {% if fields_metabox is not null %}
-        ?>
+            ?>
 {% for fields in fields_metabox %}
             <p>
                 <label>{{ fields.label }}</label>
@@ -59,38 +62,38 @@ class {{ class_name }} {
 {% endif %}
             </p>
 {% endfor %}
-        <?php
+            <?php
 {% else %}
             echo 'This is the meta box.';
 {% endif %}
     }
 
 {% if auto_save is not null %}
-    /**
-	 * Save opening times meta box data.
-	 *
-	 * @param  int     $post_id  The post ID
-	 * @param  object  $post     The post object
-	 */
-    public function meta_boxes_save( $post_id, $post ) {
+        /**
+	    * Save opening times meta box data.
+	    *
+	    * @param  int     $post_id  The post ID
+	    * @param  object  $post     The post object
+	    */
+        public function meta_boxes_save( $post_id, $post )
+        {
+            //Do nonce security check
+            if (!isset($_POST["meta-box-nonce"]) || !wp_verify_nonce($_POST["meta-box-nonce"], basename(__FILE__)))
+                return $post_id;
 
-      //Do nonce security check
-      if (!isset($_POST["meta-box-nonce"]) || !wp_verify_nonce($_POST["meta-box-nonce"], basename(__FILE__)))
-        return $post_id;
+            if(!current_user_can("edit_post", $post_id))
+                return $post_id;
 
-      if(!current_user_can("edit_post", $post_id))
-        return $post_id;
-
-      if(defined("DOING_AUTOSAVE") && DOING_AUTOSAVE)
-        return $post_id;
+            if(defined("DOING_AUTOSAVE") && DOING_AUTOSAVE)
+                return $post_id;
 
 {% for fields in fields_metabox %}
-      if(isset($_POST["{{ fields.id }}"]))
-        {
-            ${{ fields.id }}_value = $_POST["{{ fields.id }}"];
-            update_post_meta($post_id, "{{ fields.id }}", ${{ fields.id }}_value);
-        }
+            if(isset($_POST["{{ fields.id }}"]))
+            {
+                ${{ fields.id }}_value = $_POST["{{ fields.id }}"];
+                update_post_meta($post_id, "{{ fields.id }}", ${{ fields.id }}_value);
+            }
 {% endfor %}
-    }
+        }
 {% endif %}
-}
+{%- endblock -%}

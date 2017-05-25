@@ -1,31 +1,35 @@
-<?php
-/**
- * Fired during plugin activation
- *
- * @link       {{plugin_uri}}
- * @since      1.0.0
- *
- * @package    {{class_name_base}}
- * @subpackage {{class_name_base}}/includes
- */
-/**
- * Fired during plugin activation.
- *
- * This class defines all code necessary to run during the plugin's activation.
- *
- * @since      1.0.0
- * @package    {{class_name_base}}
- * @subpackage {{class_name_base}}/includes
- * @author     {{author}}
-*/
-class {{class_name_activator}} {
+{% extends "base/class.php.twig" %}
+
+{% block class_declaration %}
     /**
-    * Short Description. (use period)
+    * Fired during plugin activation
     *
-    * Long Description.
+    * @link       {{plugin_uri}}
+    * @since      1.0.0
     *
-    * @since    1.0.0
+    * @package    {{class_name_base}}
+    * @subpackage {{class_name_base}}/includes
     */
-    public static function activate() {
-    }
-}
+    /**
+    * Fired during plugin activation.
+    *
+    * This class defines all code necessary to run during the plugin's activation.
+    *
+    * @since      1.0.0
+    * @package    {{class_name_base}}
+    * @subpackage {{class_name_base}}/includes
+    * @author     {{author}}
+    */
+    class {{class_name_activator}} {% endblock -%}
+{% block class_methods %}
+        /**
+        * Short Description. (use period)
+        *
+        * Long Description.
+        *
+        * @since    1.0.0
+        */
+        public static function activate()
+        {
+        }
+{%- endblock -%}
