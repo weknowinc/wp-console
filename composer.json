@@ -52,6 +52,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
         "psr-4": {"WP\\Console\\": "src"}
     },
     "scripts": {
