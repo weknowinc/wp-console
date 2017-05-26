@@ -53,7 +53,7 @@
     "prefer-stable": true,
     "autoload": {
         "files": [
-            "src/functions.php"
+            "src/Core/functions.php"
         ],
         "psr-4": {"WP\\Console\\": "src"}
     },
