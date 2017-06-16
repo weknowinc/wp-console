@@ -77,7 +77,7 @@ $ git clone git@github.com:[your-git-user-here]/wp-console.git
 
 ## Configure a remote fork
 ```
-$ git remote add upstream git@bitbucket.org:weknowinc/wp-console.git
+$ git remote add upstream git@github.com:weknowinc/wp-console.git
 ```
 
 ## Sync your fork
