@@ -1,0 +1,109 @@
+{% extends "base/class.php.twig" %}
+
+{% block class_declaration %}
+    /**
+    * Represents a custom post type to be displayed.
+    */
+    class {{ class_name_post_type }} {% endblock -%}
+{% block class_methods %}
+    public function init() {
+{% if child_theme %}
+        if ( ! function_exists( '{{ function_name }}_post_type' )) {
+            add_action( 'init', array( $this, '{{ function_name }}_post_type') , 0 );
+        }
+{% else %}
+        add_action( 'init', array( $this, '{{ function_name }}_post_type') , 0 );
+{% endif %}
+    }
+
+    function {{ function_name }}_post_type() {
+
+        $labels = array(
+            'name'                  => _x( '{{ name_plural }}', 'Post Type General Name', 'text_domain' ),
+            'singular_name'         => _x( '{{ name_singular }}', 'Post Type Singular Name', 'text_domain' ),
+{% if labels is not null %}
+{% for index, label in labels %}
+            '{{ index }}'           => __( '{{ label }}',  'text_domain'),
+{% endfor %}
+{% else %}
+            'menu_name'             => __( 'Post Types', 'text_domain' ),
+            'name_admin_bar'        => __( 'Post Type', 'text_domain' ),
+            'archives'              => __( 'Item Archives', 'text_domain' ),
+            'attributes'            => __( 'Item Attributes', 'text_domain' ),
+            'parent_item_colon'     => __( 'Parent Item:', 'text_domain' ),
+            'all_items'             => __( 'All Items', 'text_domain' ),
+            'add_new_item'          => __( 'Add New Item', 'text_domain' ),
+            'add_new'               => __( 'Add New', 'text_domain' ),
+            'new_item'              => __( 'New Item', 'text_domain' ),
+            'edit_item'             => __( 'Edit Item', 'text_domain' ),
+            'update_item'           => __( 'Update Item', 'text_domain' ),
+            'view_item'             => __( 'View Item', 'text_domain' ),
+            'view_items'            => __( 'View Items', 'text_domain' ),
+            'search_items'          => __( 'Search Item', 'text_domain' ),
+            'not_found'             => __( 'Not found', 'text_domain' ),
+            'not_found_in_trash'    => __( 'Not found in Trash', 'text_domain' ),
+            'featured_image'        => __( 'Featured Image', 'text_domain' ),
+            'set_featured_image'    => __( 'Set featured image', 'text_domain' ),
+            'remove_featured_image' => __( 'Remove featured image', 'text_domain' ),
+            'use_featured_image'    => __( 'Use as featured image', 'text_domain' ),
+            'insert_into_item'      => __( 'Insert into item', 'text_domain' ),
+            'uploaded_to_this_item' => __( 'Uploaded to this item', 'text_domain' ),
+            'items_list'            => __( 'Items list', 'text_domain' ),
+            'items_list_navigation' => __( 'Items list navigation', 'text_domain' ),
+            'filter_items_list'     => __( 'Filter items list', 'text_domain' ),
+{% endif %}
+        );
+{% if permalinks is not null %}
+        $rewrite = array(
+            'slug'                  => '{{ permalinks.slug }}',
+            'with_front'            => {{ permalinks.with_front ? 'true': 'false' }},
+            'pages'                 => {{ permalinks.pages ? 'true': 'false' }},
+            'feeds'                 => {{ permalinks.feeds ? 'true': 'false' }},
+        );
+{% endif %}
+{% if capabilities is iterable %}
+        $capabilities = array(
+{% for key, value in capabilities %}
+            '{{ key }}' => '{{ value }}',
+{% endfor %}
+        );
+{% endif %}
+    $args = array(
+        'label'                 => __( 'Post Type', 'text_domain' ),
+        'description'           => __( '{{ description }}', 'text_domain' ),
+        'labels'                => $labels,
+        'supports'              => array({% for key, value in visibility %} {{ value }}, {% endfor %} ),
+        'taxonomies'            => array( 'category', 'post_tag' ),
+        'hierarchical'          => {{ hierarchical ? 'true': 'false' }},
+{% for key, value in visibility %}
+        '{{ key }}' => {{ value ? 'true': 'false' }},
+{% endfor %}
+        'can_export'            => {{ enable_export ? 'true': 'false' }},
+        'has_archive'           => {{ enable_archives ? 'true': 'false' }},
+        'exclude_from_search'   => {{ exclude_from_search ? 'true': 'false' }},
+        'publicly_queryable'    => true,
+    {%  if permalinks is not null %}
+        'rewrite'               => $rewrite,
+    {% endif %}
+    {% if capabilities is iterable %}
+        'capabilities'          => $capabilities,
+    {% else %}
+        'capabilities'          => '{{ capabilities }}',
+    {% endif %}
+    {% if rest is not null %}
+        {% if rest.show_in_rest is not null %}
+        'show_in_rest'          => {{ rest.show_in_rest ? 'true': 'false' }},
+        {% endif %}
+        {% if rest.rest_base is not null %}
+        'rest_base'             => '{{ rest.rest_base }}',
+        {% endif %}
+        {% if rest.rest_controller_class is not null %}
+        'rest_controller_class' => '{{ rest.rest_controller_class }}',
+        {% endif %}
+    {% endif %}
+    );
+
+    register_post_type( '{{ post_type_key }}', $args );
+    }
+{%- endblock -%}
+

@@ -79,4 +79,19 @@
 
     add_custom_taxonomy_{{ class_name_taxonomy }}();
 {% endif -%}
+{% if class_name_post_type is defined %}
+    // Include the files for rendering the display.
+    include_once( '{{ class_name_post_type_path }}' );
+
+    /**
+    * Starts the custom post type
+    */
+    function add_custom_post_type_{{ class_name_post_type }}()
+    {
+        $post_type = new {{ class_name_post_type }}();
+        $post_type->init();
+    }
+
+    add_custom_post_type_{{ class_name_post_type }}();
+{% endif -%}
 {%- endblock -%}

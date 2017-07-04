@@ -29,3 +29,8 @@ services:
     arguments: ['@console.shortcode_generator', '@console.extension_manager', '@console.site','@console.validator', '@console.string_converter']
     tags:
       - { name: wordpress.command }
+  console.generate_post_type:
+      class: WP\Console\Command\Generate\PostTypeCommand
+      arguments: ['@console.post_type_generator', '@console.extension_manager', '@console.validator', '@console.string_converter','@console.site']
+      tags:
+        - { name: wordpress.command }

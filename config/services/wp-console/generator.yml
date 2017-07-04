@@ -27,3 +27,8 @@ services:
       class: WP\Console\Generator\ShortcodeGenerator
       tags:
         - { name: wordpress.generator }
+  console.post_type_generator:
+      class: WP\Console\Generator\PostTypeGenerator
+      arguments: ['@console.extension_manager']
+      tags:
+        - { name: wordpress.generator }

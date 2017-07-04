@@ -1,0 +1,59 @@
+description: 'Generate a custom post type.'
+help: 'The <info>generate:post:type</info> command helps you generates a new custom post type.'
+welcome: 'Welcome to the Wordpress post type generator'
+options:
+    plugin: 'The Plugin name'
+    class-name: 'The taxonomy class name'
+    function-name: 'The function used in the code'
+    post-type-key: 'Key used in the code'
+    singular-name: 'PostType singular name'
+    plural-name: 'PostType plural name'
+    taxonomy: 'The taxonomies for PostType'
+    hierarchical: 'Hierarchical post type allows descendants'
+    labels: 'Labels for PostType'
+    supports:
+    exclude-from-search:
+    enable-export:
+    enable-archives:
+    enable-archives-custom:
+    options: 'Options for PostType'
+    visibility: 'Visibility the PostType'
+    permalinks: 'Permalinks for PostType'
+    capabilities: 'User capabilities to manage PostType'
+    rest: 'REST API for PostType'
+    child-themes: 'Support Child Themes'
+questions:
+    plugin: common.questions.plugin
+    class-name: 'Enter PostType class name'
+    function-name: 'Enter function used in the code'
+    post-type-key: 'Enter PostType key used in the code'
+    singular-name: 'Enter PostType singular name'
+    plural-name: 'Enter PostType plural name'
+    taxonomy: 'Enter The taxonomy for PostType'
+    hierarchical: 'Do you want add  Hierarchical PostType allows descendants?'
+    labels: 'Do you want add Labels for PostType?'
+    labels-add: 'Do you want add this label: '
+    labels-edit: 'Enter the name for: '
+    supports: 'Do you want add support for PostType?'
+    supports-edit: 'Do you want add this label: '
+    exclude-from-search: 'Do you want exclude from search for PostType?'
+    enable-export: 'Do you want enable export for PostType?'
+    enable-archives: 'Do you want enable archives for PostType?'
+    enable-archives-custom: "Enter the custom slug's name"
+    visibility: 'Do you want edit Visibility the PostType?'
+    visibility-options: 'Show this PostType in '
+    permalinks: 'Do you want add custom Permalinks for PostType?'
+    permalinks-slug: "Enter slug's name"
+    permalinks-options: 'Do you want add '
+    capabilities: 'Do you want edit user capabilities to manage PostType?'
+    capabilities-options: 'Enter '
+    rest: 'Do you want add REST API for PostType?'
+    show-rest: 'Include the PostType in the REST API?'
+    rest-base: 'Enter rest base'
+    rest-controller-class: 'Enter rest controller base'
+    child-themes: 'Do you want add Support Child Themes?'
+warnings:
+    module-unavailable: 'Warning The following modules are not already available in your local environment "%s"'
+errors:
+    invalid-core: 'The core version "%s" is invalid.'
+    directory-exists: 'The target directory "%s" is not empty.'
