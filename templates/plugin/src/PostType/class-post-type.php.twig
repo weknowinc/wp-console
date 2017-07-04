@@ -88,7 +88,7 @@
 {% if capabilities is iterable %}
             'capabilities'          => $capabilities,
 {% else %}
-            'capabilities'          => '{{ capabilities }}',
+            'capability_type'          => '{{ capabilities }}',
 {% endif %}
 {% if rest is not null %}
 {% if rest.show_in_rest is not null %}
