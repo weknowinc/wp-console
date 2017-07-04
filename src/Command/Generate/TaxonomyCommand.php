@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Command\Shared\PluginTrait;
+use WP\Console\Command\Shared\Taxonomy_PostTypeTrait;
 use WP\Console\Command\Shared\TaxonomyTrait;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\TaxonomyGenerator;
@@ -27,7 +28,9 @@ class TaxonomyCommand extends Command
     use PluginTrait;
     use ConfirmationTrait;
     use CommandTrait;
-    
+    use Taxonomy_PostTypeTrait;
+
+
     /**
      * @var TaxonomyGenerator
      */
@@ -267,7 +270,7 @@ class TaxonomyCommand extends Command
         if (!$function_name) {
             $function_name = $io->ask(
                 $this->trans('commands.generate.taxonomy.questions.function-name'),
-                $class_name.'_taxonomy'
+                $stringUtils->camelCaseToUnderscore($class_name)
             );
             $input->setOption('function-name', $function_name);
         }
@@ -331,8 +334,14 @@ class TaxonomyCommand extends Command
                 false
             )
             ) {
-                // @see \WP\Console\Command\Shared\TaxonomyTrait::labelsQuestion
-                    $labels = $this->labelsQuestion($io);
+                $labels = array(
+                    'menu_name', 'all_items', 'parent_item', 'parent_item_colon', 'new_item_name', 'add_new_item',
+                    'edit_item', 'update_item', 'view_item', 'separate_items_with_commas', 'add_or_remove_items',
+                    'choose_from_most_used', 'popular_items', 'search_items', 'not_found', 'no_terms', 'items_list',
+                    'items_list_navigation'
+                );
+                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::labelsQuestion
+                    $labels = $this->labelsQuestion($io, $labels);
                 $input->setOption('labels', $labels);
             }
         }
@@ -340,25 +349,25 @@ class TaxonomyCommand extends Command
         // --visibility
         $visibility = $input->getOption('visibility');
         if (!$visibility) {
+            $visibility = [
+                'public' => true,
+                'show_ui' => true,
+                'show_admin_column' => true,
+                'show_in_nav_menus' => true,
+                'show_tagcloud' => true
+            ];
+
             if ($io->confirm(
                 $this->trans('commands.generate.taxonomy.questions.visibility'),
                 false
             )
             ) {
-                // @see \WP\Console\Command\Shared\TaxonomyTrait::visibilityQuestion
-                $visibility = $this->visibilityQuestion($io);
-            } else {
-                $visibility = [
-                    'public' => true,
-                    'show_ui' => true,
-                    'show_admin_column' => true,
-                    'show_in_nav_menus' => true,
-                    'show_tagcloud' => true
-                ];
+                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::visiblityQuestion
+                $visibility = $this->visibilityQuestion($io, $visibility);
             }
             $input->setOption('visibility', $visibility);
         }
-        
+
         // --permalinks
         $options_permalinks= ['default', 'custom', 'no permalinks'];
         $permalinks = $input->getOption('permalinks');
@@ -368,8 +377,10 @@ class TaxonomyCommand extends Command
                 $options_permalinks
             ) == 'custom'
             ) {
-                // @see \WP\Console\Command\Shared\TaxonomyTrait::permalinksQuestion
-                $permalinks = $this->permalinksQuestion($io);
+                $permalinks_labels = [ 'slug', 'with_front', 'hierarchical'];
+
+                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::permalinksQuestion
+                $permalinks = $this->permalinksQuestion($io, $permalinks_labels);
                 $input->setOption('permalinks', $permalinks);
             }
         }
@@ -382,12 +393,14 @@ class TaxonomyCommand extends Command
                 false
             )
             ) {
-                // @see \WP\Console\Command\Shared\TaxonomyTrait::capabilitiesQuestion
-                $capabilities = $this->capabilitiesQuestion($io);
+                $capabilities_labels = ['edit_terms', 'delete_terms', 'manage_terms', 'assign_terms'];
+
+                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::capabilitiesQuestion
+                $capabilities = $this->capabilitiesQuestion($io, $capabilities_labels);
                 $input->setOption('capabilities', $capabilities);
             }
         }
-        
+
         // --rest
         $rest = $input->getOption('rest');
         if (!$rest) {
@@ -396,12 +409,12 @@ class TaxonomyCommand extends Command
                 false
             )
             ) {
-                // @see \WP\Console\Command\Shared\TaxonomyTrait::restQuestion
-                $rest = $this->restQuestion($io);
+                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::restQuestion
+                $rest = $this->restQuestion($io, 'Taxonomy', $input->getOption('taxonomy-key'));
                 $input->setOption('rest', $rest);
             }
         }
-        
+
         // --child themes
         $child_themes = $input->getOption('child-themes');
         if (!$child_themes) {
@@ -411,7 +424,7 @@ class TaxonomyCommand extends Command
             );
             $input->setOption('child-themes', $child_themes);
         }
-        
+
         // --update count callback
         $update_count_callback = $input->getOption('update-count-callback');
         if (!$update_count_callback) {
@@ -425,161 +438,5 @@ class TaxonomyCommand extends Command
                 $input->setOption('update-count-callback', $update_count_callback);
             }
         }
-    }
-
-    public function labelsQuestion(WPStyle $io)
-    {
-        $labels = array(
-            'menu_name', 'all_items', 'parent_item', 'parent_item_colon', 'new_item_name', 'add_new_item',
-            'edit_item', 'update_item', 'view_item', 'separate_items_with_commas', 'add_or_remove_items',
-            'choose_from_most_used', 'popular_items', 'search_items', 'not_found', 'no_terms', 'items_list',
-            'items_list_navigation'
-        );
-
-        $stringUtils = $this->stringConverter;
-        $label_array = [];
-        foreach ($labels as $label) {
-            if ($io->confirm(
-                $this->trans('commands.generate.taxonomy.questions.labels-add'). $label,
-                true
-            )
-            ) {
-                $result = $io->ask(
-                    $this->trans('commands.generate.taxonomy.questions.labels-edit'). $label,
-                    $stringUtils->camelCaseToHuman($label)
-                );
-
-                $label_array[$label] = $result;
-            }
-        }
-
-        return $label_array;
-    }
-
-    public function visibilityQuestion(WPStyle $io)
-    {
-        $visibility_public = $io->confirm(
-            $this->trans('commands.generate.taxonomy.questions.visibility-public'),
-            true
-        );
-
-        $visibility_show_ui = $io->confirm(
-            $this->trans('commands.generate.taxonomy.questions.visibility-show-ui'),
-            true
-        );
-
-        $visibility_show_admin_column = $io->confirm(
-            $this->trans('commands.generate.taxonomy.questions.visibility-show-admin-column'),
-            true
-        );
-
-        $visibility_show_in_nav_menus = $io->confirm(
-            $this->trans('commands.generate.taxonomy.questions.visibility-show-in-nav-menus'),
-            true
-        );
-
-        $visibility_show_tagcloud = $io->confirm(
-            $this->trans('commands.generate.taxonomy.questions.visibility_show_tagcloud'),
-            true
-        );
-
-        $visibility =
-            [
-                'public' => $visibility_public,
-                'show_ui' => $visibility_show_ui,
-                'show_admin_column' => $visibility_show_admin_column,
-                'show_in_nav_menus' => $visibility_show_in_nav_menus,
-                'show_tagcloud' => $visibility_show_tagcloud
-            ];
-
-        return $visibility;
-    }
-
-    public function permalinksQuestion(WPStyle $io)
-    {
-        $permalinks_url_slug = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.permalinks-url-slug'),
-            'taxonomy'
-        );
-
-        $permalinks_use_url_slug = $io->confirm(
-            $this->trans('commands.generate.taxonomy.questions.permalinks-use-url-slug'),
-            true
-        );
-
-        $permalinks_hierarchical_url_slug = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.permalinks-hierarchical-url-slug'),
-            false
-        );
-
-        $permalinks =
-            [
-                'slug' => $permalinks_url_slug,
-                'with_front' => $permalinks_use_url_slug,
-                'hierarchical' => $permalinks_hierarchical_url_slug,
-            ];
-
-        return $permalinks;
-    }
-
-    public function capabilitiesQuestion(WPStyle $io)
-    {
-        $capabilities_edit_terms = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.capabilities-edit-terms'),
-            'manage_categories'
-        );
-
-        $capabilities_delete_terms = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.capabilities-delete-terms'),
-            'manage_categories'
-        );
-
-        $capabilities_manage_terms = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.capabilities-manage-terms'),
-            'manage_categories'
-        );
-
-        $capabilities_assign_terms = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.capabilities-assign-terms'),
-            'edit_posts'
-        );
-
-        $capabilities =
-            [
-                'edit_terms' => $capabilities_edit_terms,
-                'delete_terms' => $capabilities_delete_terms,
-                'manage_terms' => $capabilities_manage_terms,
-                'assign_terms' => $capabilities_assign_terms
-            ];
-
-        return $capabilities;
-    }
-
-    public function restQuestion(WPStyle $io)
-    {
-        $option_show_rest = ['no include', 'Yes', 'No'];
-        $show_rest = $io->choiceNoList(
-            $this->trans('commands.generate.taxonomy.questions.show-rest'),
-            $option_show_rest
-        );
-
-        $rest_base = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.rest-base'),
-            ''
-        );
-
-        $rest_controller_class = $io->ask(
-            $this->trans('commands.generate.taxonomy.questions.rest-controller-class'),
-            'WP_REST_Terms_Controller'
-        );
-
-        $rests =
-            [
-                'show_in_rest' => $show_rest,
-                'rest_base' => $rest_base,
-                'rest_controller_class' => $rest_controller_class,
-            ];
-
-        return $rests;
     }
 }
