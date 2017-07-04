@@ -29,40 +29,43 @@ chmod +x /usr/local/bin/wordpress
 
  **cache**
   * cache:flush (cf)                  Flush the Wordpress object cache
- 
- **chain**
-  * chain:debug (cd)                  List available chain files.
 
  **container**
-   * container:debug                  Displays current services for an application..
+   * container:debug (cod)            Displays current services for an application..
 
  **create**
-  * create:users                      Create dummy users for your WordPress application.
+  * create:users (cu)                 Create dummy users for your WordPress application.
+
+ **debug**
+  * debug:chain (dc)                  List available chain files.
+  * debug:container (dco)             Displays current services for an application.
+  * debug:multisite (dm)              List all sites in network available to a specific user
+  * debug:plugin (dp)                 Display current plugins available for application
+  * debug:shortcode (ds)              Displays current shortcodes in your WordPress application.
+  * debug:theme (dt)                  Display current themes available for application
 
  **generate**
   * generate:command (gc)             Generate commands for the console.
   * generate:metabox (gm)             Generate a meta box.
   * generate:plugin (gp)              Generate a plugin.
+  * generate:post:type (gp)           commands.generate.posttype.description
   * generate:shortcode (gs)           Generate a shortcode.  
   * generate:taxonomy (gta)           Generate a custom taxonomy.
-  * generate:theme (gth)                   Generate a theme.
+  * generate:theme (gth)              Generate a theme.
  
  **multisite**
   * multisite:install (mi)            Install a Wordpress multisite network
-  * multisite:debug (md)              List all sites in network available to a specific user
   * multisite:new (mn)                Add New Site a Wordpress multisite network
  
  **plugin**
   * plugin:activate (pa)              Activate plugins or plugin in the application
   * plugin:deactivate (pd)            Deactivate plugins or plugin in the application
-  * plugin:debug (pde)                Display current plugins available for application
- 
+
  **site**
   * site:install (si)                 Install a Wordpress project
  
  **theme**
   * theme:activate (ta)               Activate theme in the application
-  * theme:debug (td)                  Display current themes available for application
 
 # How to contribute
 

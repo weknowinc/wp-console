@@ -1,40 +1,4 @@
 commands:
   aliases:
-    cache:flush:
-      - cf
-    chain:debug:
-      - cd
-    container:debug:
-      - cod
-    generate:command:
-      - gc
-    generate:metabox:
-      - gm
-    generate:plugin:
-      - gp
-    generate:shortcode:
-      - gs
-    generate:post:type:
-      - gpt
-    generate:taxonomy:
-      - gta
-    generate:theme:
-      - gth
-    multisite:debug:
-      - md
-    multisite:new:
-      - mn
-    multisite:install:
-      - mi
-    plugin:activate:
-      - pa
-    plugin:deactivate:
-      - pd
-    plugin:debug:
-      - pde
-    site:install:
-      - si
-    theme:activate:
-      - ta
-    theme:debug:
-      - td
+#    cache:flush:
+#      - flush

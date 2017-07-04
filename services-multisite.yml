@@ -1,10 +1,5 @@
 services:
   # WordpressConsole Commands
-  console.multisite_debug:
-    class: WP\Console\Command\Multisite\DebugCommand
-    arguments: ['@app.root', '@console.site']
-    tags:
-      - { name: wordpress.command }
   console.multisite_new:
     class: WP\Console\Command\Multisite\NewCommand
     arguments: ['@console.site', '@console.configuration_manager', '@app.root', '@console.silent_index_generator']

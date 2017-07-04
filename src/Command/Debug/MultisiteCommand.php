@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Command\Multisite\DebugCommand.
+ * Contains \WP\Console\Command\Debug\MultisiteCommand.
  */
 
-namespace WP\Console\Command\Multisite;
+namespace WP\Console\Command\Debug;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +20,7 @@ use WP\Console\Utils\Site;
  *
  * @package WP\Console\Command\Site
  */
-class DebugCommand extends Command
+class MultisiteCommand extends Command
 {
     use CommandTrait;
 
@@ -52,16 +52,17 @@ class DebugCommand extends Command
     public function configure()
     {
         $this
-            ->setName('multisite:debug')
-            ->setDescription($this->trans('commands.multisite.debug.description'))
-            ->setHelp($this->trans('commands.multisite.debug.help'))
+            ->setName('debug:multisite')
+            ->setDescription($this->trans('commands.debug.multisite.description'))
+            ->setHelp($this->trans('commands.debug.multisite.help'))
             ->addOption(
                 'user-id',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.multisite.debug.options.user-id'),
+                $this->trans('commands.debug.multisite.options.user-id'),
                 1
-            );
+            )
+            ->setAliases(['dm']);
         ;
     }
 
@@ -80,21 +81,21 @@ class DebugCommand extends Command
 
         $io->info(
             sprintf(
-                $this->trans('commands.multisite.debug.messages.user-sites'),
+                $this->trans('commands.debug.multisite.messages.user-sites'),
                 $currentUser->display_name,
                 $currentUser->ID
             )
         );
 
         $tableHeader = [
-            $this->trans('commands.multisite.debug.messages.id'),
-            $this->trans('commands.multisite.debug.messages.name'),
-            $this->trans('commands.multisite.debug.messages.url'),
-            $this->trans('commands.multisite.debug.messages.path'),
-            $this->trans('commands.multisite.debug.messages.archived'),
-            $this->trans('commands.multisite.debug.messages.mature'),
-            $this->trans('commands.multisite.debug.messages.spam'),
-            $this->trans('commands.multisite.debug.messages.deleted'),
+            $this->trans('commands.debug.multisite.messages.id'),
+            $this->trans('commands.debug.multisite.messages.name'),
+            $this->trans('commands.debug.multisite.messages.url'),
+            $this->trans('commands.debug.multisite.messages.path'),
+            $this->trans('commands.debug.multisite.messages.archived'),
+            $this->trans('commands.debug.multisite.messages.mature'),
+            $this->trans('commands.debug.multisite.messages.spam'),
+            $this->trans('commands.debug.multisite.messages.deleted'),
         ];
 
         $tableRows = [];

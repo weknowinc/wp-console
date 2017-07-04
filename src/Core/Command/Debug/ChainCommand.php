@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Core\Command\Chain\ChainDebugCommand.
+ * Contains \WP\Console\Core\Command\Debug\ChainCommand.
  */
 
-namespace WP\Console\Core\Command\Chain;
+namespace WP\Console\Core\Command\Debug;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +19,7 @@ use WP\Console\Core\Style\WPStyle;
  *
  * @package WP\Console\Core\Command\Chain
  */
-class ChainDebugCommand extends Command
+class ChainCommand extends Command
 {
     use CommandTrait;
 
@@ -47,8 +47,9 @@ class ChainDebugCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('chain:debug')
-            ->setDescription($this->trans('commands.chain.debug.description'));
+            ->setName('debug:chain')
+            ->setDescription($this->trans('commands.debug.chain.description'))
+            ->setAliases(['dc']);
     }
 
     /**
@@ -60,11 +61,11 @@ class ChainDebugCommand extends Command
         $files = $this->chainDiscovery->getChainFiles();
 
         foreach ($files as $directory => $chainFiles) {
-            $io->info($this->trans('commands.chain.debug.messages.directory'), false);
+            $io->info($this->trans('commands.debug.chain.messages.directory'), false);
             $io->comment($directory);
 
             $tableHeader = [
-                $this->trans('commands.chain.debug.messages.file')
+                $this->trans('commands.debug.chain.messages.file')
             ];
 
             $tableRows = [];

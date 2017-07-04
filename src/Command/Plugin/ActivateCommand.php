@@ -90,7 +90,8 @@ class ActivateCommand extends Command
                 'plugin',
                 InputArgument::IS_ARRAY,
                 $this->trans('commands.plugin.activate.arguments.plugin')
-            );
+            )
+            ->setAliases(['pa']);;
     }
 
     /**

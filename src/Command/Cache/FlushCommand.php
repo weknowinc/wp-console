@@ -46,7 +46,8 @@ class FlushCommand extends Command
     {
         $this
             ->setName('cache:flush')
-            ->setDescription($this->trans('commands.cache.flush.description'));
+            ->setDescription($this->trans('commands.cache.flush.description'))
+            ->setAliases(['cf']);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

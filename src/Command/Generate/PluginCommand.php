@@ -152,7 +152,8 @@ class PluginCommand extends Command
                 '',
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.plugin.options.uninstall')
-            );
+            )
+            ->setAliases(['gpl']);
     }
 
     /**

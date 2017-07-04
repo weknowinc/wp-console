@@ -83,7 +83,8 @@ class UsersCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.create.users.options.time-range')
-            );
+            )
+            ->setAliases(['cu']);
     }
 
     /**

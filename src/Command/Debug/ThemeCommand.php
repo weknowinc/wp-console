@@ -2,12 +2,11 @@
 
 /**
  * @file
- * Contains \WP\Console\Command\Theme\DebugCommand.
+ * Contains \WP\Console\Command\Debug\ThemeCommand.
  */
 
-namespace WP\Console\Command\Theme;
+namespace WP\Console\Command\Debug;
 
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +16,7 @@ use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Extension\Manager;
 
-class DebugCommand extends Command
+class ThemeCommand extends Command
 {
     use CommandTrait;
     
@@ -50,15 +49,15 @@ class DebugCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('theme:debug')
-            ->setDescription($this->trans('commands.theme.debug.description'))
+            ->setName('debug:theme')
+            ->setDescription($this->trans('commands.debug.theme.description'))
             ->addOption(
                 'status',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.theme.debug.options.status')
+                $this->trans('commands.debug.theme.options.status')
             )
-            ->setAliases(['td']);
+            ->setAliases(['dt']);
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -68,12 +67,12 @@ class DebugCommand extends Command
         $status = $input->getOption('status');
         
         $tableHeader = [
-            $this->trans('commands.theme.debug.messages.name'),
-            $this->trans('commands.theme.debug.messages.status'),
-            $this->trans('commands.theme.debug.messages.theme-uri'),
-            $this->trans('commands.theme.debug.messages.version'),
-            $this->trans('commands.theme.debug.messages.author'),
-            $this->trans('commands.theme.debug.messages.author-url')
+            $this->trans('commands.debug.theme.messages.name'),
+            $this->trans('commands.debug.theme.messages.status'),
+            $this->trans('commands.debug.theme.messages.theme-uri'),
+            $this->trans('commands.debug.theme.messages.version'),
+            $this->trans('commands.debug.theme.messages.author'),
+            $this->trans('commands.debug.theme.messages.author-url')
         ];
     
         $tableRows = [];

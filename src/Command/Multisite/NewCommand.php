@@ -94,7 +94,8 @@ class NewCommand extends Command
                 '',
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.multisite.new.options.network-mail')
-            );
+            )
+            ->setAliases(['mn']);
     }
 
     /**

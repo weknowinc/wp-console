@@ -90,7 +90,8 @@ class DeactivateCommand extends Command
                 'plugin',
                 InputArgument::IS_ARRAY,
                 $this->trans('commands.plugin.deactivate.arguments.plugin')
-            );
+            )
+            ->setAliases(['pld']);
     }
 
     /**

@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Command\ShortcodeDebugCommand.
+ * Contains \WP\Console\Command\Debug\ShortcodeCommand.
  */
 
-namespace WP\Console\Command;
+namespace WP\Console\Command\Debug;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,7 +22,7 @@ use WP\Console\Utils\Site;
  *
  * @package WP\Console\Command
  */
-class ShortcodeDebugCommand extends Command
+class ShortcodeCommand extends Command
 {
     use CommandTrait;
 
@@ -49,8 +49,9 @@ class ShortcodeDebugCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('shortcode:debug')
-            ->setDescription($this->trans('commands.shortcode.debug.description'));
+            ->setName('debug:shortcode')
+            ->setDescription($this->trans('commands.debug.shortcode.description'))
+            ->setAliases(['ds']);
     }
 
     /**
@@ -61,8 +62,8 @@ class ShortcodeDebugCommand extends Command
         $io = new WPStyle($input, $output);
 
         $tableHeader = [
-            $this->trans('commands.shortcode.debug.messages.tag'),
-            $this->trans('commands.shortcode.debug.messages.callback')
+            $this->trans('commands.debug.shortcode.messages.tag'),
+            $this->trans('commands.debug.shortcode.messages.callback')
         ];
 
         $shortcodes = $this->site->getShortCodes();

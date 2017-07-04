@@ -97,7 +97,8 @@ class ShortcodeCommand extends Command
                 '',
                 InputOption::VALUE_REQUIRED,
                 $this->trans('commands.generate.shortcode.options.tag')
-            );
+            )
+            ->setAliases(['gs']);
     }
 
     /**

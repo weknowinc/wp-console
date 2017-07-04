@@ -216,7 +216,6 @@ class ConfigurationManager
     public function appendCommandAliases()
     {
         $configurationDirectories = array_merge(
-            [$this->applicationDirectory  . 'config/dist/'],
             $this->configurationDirectories
         );
 

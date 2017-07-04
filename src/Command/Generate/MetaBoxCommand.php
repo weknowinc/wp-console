@@ -148,7 +148,8 @@ class MetaBoxCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.metabox.options.priority')
-            );
+            )
+            ->setAliases(['gm']);
     }
     
     /**

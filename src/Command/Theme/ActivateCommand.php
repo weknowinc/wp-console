@@ -92,7 +92,8 @@ class ActivateCommand extends Command
                 'theme',
                 InputArgument::IS_ARRAY,
                 $this->trans('commands.theme.activate.arguments.theme')
-            );
+            )
+            ->setAliases(['ta']);
     }
     
     /**

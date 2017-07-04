@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Command\ContainerDebugCommand.
+ * Contains \WP\Console\Command\Debug\ContainerCommand.
  */
 
-namespace WP\Console\Command;
+namespace WP\Console\Command\Debug;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,7 +21,7 @@ use WP\Console\Core\Style\WPStyle;
  *
  * @package WP\Console\Command
  */
-class ContainerDebugCommand extends Command
+class ContainerCommand extends Command
 {
     use ContainerAwareCommandTrait;
 
@@ -31,8 +31,8 @@ class ContainerDebugCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('container:debug')
-            ->setDescription($this->trans('commands.container.debug.description'))
+            ->setName('debug:container')
+            ->setDescription($this->trans('commands.debug.container.description'))
             ->addOption(
                 'parameters',
                 null,
@@ -43,7 +43,8 @@ class ContainerDebugCommand extends Command
                 'service',
                 InputArgument::OPTIONAL,
                 $this->trans('commands.container.debug.arguments.service')
-            );
+            )
+            ->setAliases(['dco']);
     }
 
     /**
@@ -72,8 +73,8 @@ class ContainerDebugCommand extends Command
         }
 
         $tableHeader = [
-            $this->trans('commands.container.debug.messages.service_id'),
-            $this->trans('commands.container.debug.messages.class_name')
+            $this->trans('commands.debug.container.messages.service_id'),
+            $this->trans('commands.debug.container.messages.class_name')
         ];
 
         $tableRows = $this->getServiceList();
@@ -101,32 +102,32 @@ class ContainerDebugCommand extends Command
 
         if ($serviceInstance) {
             $serviceDetail[] = [
-                $this->trans('commands.container.debug.messages.service'),
+                $this->trans('commands.debug.container.messages.service'),
                 $service
             ];
             $serviceDetail[] = [
-                $this->trans('commands.container.debug.messages.class'),
+                $this->trans('commands.debug.container.messages.class'),
                 get_class($serviceInstance)
             ];
             $serviceDetail[] = [
-                $this->trans('commands.container.debug.messages.interface'),
+                $this->trans('commands.debug.container.messages.interface'),
                 Yaml::dump(class_implements($serviceInstance))
             ];
             if ($parent = get_parent_class($serviceInstance)) {
                 $serviceDetail[] = [
-                    $this->trans('commands.container.debug.messages.parent'),
+                    $this->trans('commands.debug.container.messages.parent'),
                     $parent
                 ];
             }
             if ($vars = get_class_vars($serviceInstance)) {
                 $serviceDetail[] = [
-                    $this->trans('commands.container.debug.messages.variables'),
+                    $this->trans('commands.debug.container.messages.variables'),
                     Yaml::dump($vars)
                 ];
             }
             if ($methods = get_class_methods($serviceInstance)) {
                 $serviceDetail[] = [
-                    $this->trans('commands.container.debug.messages.methods'),
+                    $this->trans('commands.debug.container.messages.methods'),
                     Yaml::dump($methods)
                 ];
             }

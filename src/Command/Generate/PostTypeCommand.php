@@ -206,7 +206,8 @@ class PostTypeCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.posttype.options.child-themes')
-            );
+            )
+            ->setAliases(['gp']);
     }
 
     /**

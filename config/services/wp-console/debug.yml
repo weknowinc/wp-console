@@ -1,0 +1,26 @@
+services:
+  # WordpressConsole Commands
+  console.debug_container:
+    class: WP\Console\Command\Debug\ContainerCommand
+    tags:
+      - { name: wordpress.command }
+  console.debug_multisite:
+    class: WP\Console\Command\Debug\MultisiteCommand
+    arguments: ['@app.root', '@console.site']
+    tags:
+      - { name: wordpress.command }
+  console.debug_plugin:
+      class: WP\Console\Command\Debug\PluginCommand
+      arguments: ['@console.extension_manager', '@console.site']
+      tags:
+        - { name: wordpress.command }
+  console.debug_shortcode:
+      class: WP\Console\Command\Debug\ShortcodeCommand
+      arguments: ['@console.site']
+      tags:
+        - { name: wordpress.command }
+  console.debug_theme:
+      class: WP\Console\Command\Debug\ThemeCommand
+      arguments: ['@console.extension_manager', '@console.site']
+      tags:
+        - { name: wordpress.command }

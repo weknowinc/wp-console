@@ -181,7 +181,8 @@ class TaxonomyCommand extends Command
                 null,
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.taxonomy.options.update-count-callback')
-            );
+            )
+            ->setAliases(['gta']);
     }
     
     /**

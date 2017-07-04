@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \WP\Console\Command\Module\DebugCommand.
+ * Contains \WP\Console\Command\Debug\PluginCommand.
  */
 
-namespace WP\Console\Command\Plugin;
+namespace WP\Console\Command\Debug;
 
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +16,7 @@ use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Extension\Manager;
 
-class DebugCommand extends Command
+class PluginCommand extends Command
 {
     use CommandTrait;
 
@@ -49,14 +49,15 @@ class DebugCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('plugin:debug')
-            ->setDescription($this->trans('commands.plugin.debug.description'))
+            ->setName('debug:plugin')
+            ->setDescription($this->trans('commands.debug.plugin.description'))
             ->addOption(
                 'status',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.plugin.debug.options.status')
-            );
+                $this->trans('commands.debug.plugin.options.status')
+            )
+            ->setAliases(['dp']);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -66,12 +67,12 @@ class DebugCommand extends Command
         $status = $input->getOption('status');
 
         $tableHeader = [
-            $this->trans('commands.plugin.debug.messages.name'),
-            $this->trans('commands.plugin.debug.messages.status'),
-            $this->trans('commands.plugin.debug.messages.plugin-uri'),
-            $this->trans('commands.plugin.debug.messages.version'),
-            $this->trans('commands.plugin.debug.messages.author'),
-            $this->trans('commands.plugin.debug.messages.author-url')
+            $this->trans('commands.debug.plugin.messages.name'),
+            $this->trans('commands.debug.plugin.messages.status'),
+            $this->trans('commands.debug.plugin.messages.plugin-uri'),
+            $this->trans('commands.debug.plugin.messages.version'),
+            $this->trans('commands.debug.plugin.messages.author'),
+            $this->trans('commands.debug.plugin.messages.author-url')
         ];
 
         $tableRows = [];

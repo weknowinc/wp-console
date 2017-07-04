@@ -9,8 +9,3 @@ services:
       arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
       tags:
         - { name: wordpress.command }
-  plugin_debug:
-      class: WP\Console\Command\Plugin\DebugCommand
-      arguments: ['@console.extension_manager', '@console.site']
-      tags:
-        - { name: wordpress.command }

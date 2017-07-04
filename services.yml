@@ -5,8 +5,8 @@ services:
     arguments: ['@console.chain_queue', '@console.chain_discovery']
     tags:
       - { name: wordpress.command }
-  console.chain_debug:
-      class: WP\Console\Core\Command\Chain\ChainDebugCommand
+  console.debug_chain:
+      class: WP\Console\Core\Command\Debug\ChainCommand
       arguments: ['@console.chain_discovery']
       tags:
         - { name: wordpress.command }

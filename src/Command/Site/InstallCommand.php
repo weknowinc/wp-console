@@ -145,7 +145,8 @@ class InstallCommand extends Command
                 '',
                 InputOption::VALUE_NONE,
                 $this->trans('commands.site.install.options.force')
-            );
+            )
+            ->setAliases(['si']);
     }
 
     /**
