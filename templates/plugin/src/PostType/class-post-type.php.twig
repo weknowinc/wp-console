@@ -26,8 +26,8 @@
             '{{ index }}'           => __( '{{ label }}',  'text_domain'),
 {% endfor %}
 {% else %}
-            'menu_name'             => __( 'Post Types', 'text_domain' ),
-            'name_admin_bar'        => __( 'Post Type', 'text_domain' ),
+            'menu_name'             => __( '{{ name_plural }}', 'text_domain' ),
+            'name_admin_bar'        => __( '{{ name_plural }}', 'text_domain' ),
             'archives'              => __( 'Item Archives', 'text_domain' ),
             'attributes'            => __( 'Item Attributes', 'text_domain' ),
             'parent_item_colon'     => __( 'Parent Item:', 'text_domain' ),
@@ -68,39 +68,39 @@
 {% endfor %}
         );
 {% endif %}
-    $args = array(
-        'label'                 => __( 'Post Type', 'text_domain' ),
-        'description'           => __( '{{ description }}', 'text_domain' ),
-        'labels'                => $labels,
-        'supports'              => array({% for key, value in visibility %} {{ value }}, {% endfor %} ),
-        'taxonomies'            => array( 'category', 'post_tag' ),
+        $args = array(
+            'label'                 => __( 'Post Type', 'text_domain' ),
+            'description'           => __( '{{ description }}', 'text_domain' ),
+            'labels'                => $labels,
+            'supports'              => array({% for key, value in visibility %} {{ value }}, {% endfor %} ),
+            'taxonomies'            => array( 'category', 'post_tag' ),
         'hierarchical'          => {{ hierarchical ? 'true': 'false' }},
 {% for key, value in visibility %}
-        '{{ key }}' => {{ value ? 'true': 'false' }},
+            '{{ key }}'             => {{ value ? 'true': 'false' }},
 {% endfor %}
-        'can_export'            => {{ enable_export ? 'true': 'false' }},
-        'has_archive'           => {{ enable_archives ? 'true': 'false' }},
-        'exclude_from_search'   => {{ exclude_from_search ? 'true': 'false' }},
-        'publicly_queryable'    => true,
-    {%  if permalinks is not null %}
-        'rewrite'               => $rewrite,
-    {% endif %}
-    {% if capabilities is iterable %}
-        'capabilities'          => $capabilities,
-    {% else %}
-        'capabilities'          => '{{ capabilities }}',
-    {% endif %}
-    {% if rest is not null %}
-        {% if rest.show_in_rest is not null %}
-        'show_in_rest'          => {{ rest.show_in_rest ? 'true': 'false' }},
-        {% endif %}
-        {% if rest.rest_base is not null %}
-        'rest_base'             => '{{ rest.rest_base }}',
-        {% endif %}
-        {% if rest.rest_controller_class is not null %}
-        'rest_controller_class' => '{{ rest.rest_controller_class }}',
-        {% endif %}
-    {% endif %}
+            'can_export'            => {{ enable_export ? 'true': 'false' }},
+            'has_archive'           => {{ enable_archives ? 'true': 'false' }},
+            'exclude_from_search'   => {{ exclude_from_search ? 'true': 'false' }},
+            'publicly_queryable'    => true,
+{%  if permalinks is not null %}
+            'rewrite'               => $rewrite,
+{% endif %}
+{% if capabilities is iterable %}
+            'capabilities'          => $capabilities,
+{% else %}
+            'capabilities'          => '{{ capabilities }}',
+{% endif %}
+{% if rest is not null %}
+{% if rest.show_in_rest is not null %}
+            'show_in_rest'          => {{ rest.show_in_rest ? 'true': 'false' }},
+{% endif %}
+{% if rest.rest_base is not null %}
+           'rest_base'             => '{{ rest.rest_base }}',
+{% endif %}
+{% if rest.rest_controller_class is not null %}
+           'rest_controller_class' => '{{ rest.rest_controller_class }}',
+{% endif %}
+{% endif %}
     );
 
     register_post_type( '{{ post_type_key }}', $args );

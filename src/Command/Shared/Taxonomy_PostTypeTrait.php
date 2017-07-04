@@ -26,12 +26,14 @@ trait Taxonomy_PostTypeTrait
                 true
             )
             ) {
-                $value = $io->ask(
+                $value = $stringUtils->underscoreToCamelCase($label);
+                $value = $stringUtils->camelCaseToHuman($value);
+                $label_array[$label] = $io->ask(
                     $this->trans('commands.generate.posttype.questions.labels-edit'). $label,
-                    $stringUtils->underscoreToCamelCase($label)
+                    $value
                 );
 
-                $label_array[$label] = $stringUtils->camelCaseToUnderscore($stringUtils->humanToCamelCase($value));
+
             }
         }
 
