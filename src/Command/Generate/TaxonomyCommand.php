@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Command\Shared\PluginTrait;
-use WP\Console\Command\Shared\Taxonomy_PostTypeTrait;
+use WP\Console\Command\Shared\TaxonomyPostTypeTrait;
 use WP\Console\Command\Shared\TaxonomyTrait;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\TaxonomyGenerator;
@@ -28,7 +28,7 @@ class TaxonomyCommand extends Command
     use PluginTrait;
     use ConfirmationTrait;
     use CommandTrait;
-    use Taxonomy_PostTypeTrait;
+    use TaxonomyPostTypeTrait;
 
 
     /**
@@ -340,8 +340,8 @@ class TaxonomyCommand extends Command
                     'choose_from_most_used', 'popular_items', 'search_items', 'not_found', 'no_terms', 'items_list',
                     'items_list_navigation'
                 );
-                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::labelsQuestion
-                    $labels = $this->labelsQuestion($io, $labels);
+                // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::labelsQuestion
+                    $labels = $this->labelsQuestion($io, $labels, 'taxonomy');
                 $input->setOption('labels', $labels);
             }
         }
@@ -362,8 +362,8 @@ class TaxonomyCommand extends Command
                 false
             )
             ) {
-                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::visiblityQuestion
-                $visibility = $this->visibilityQuestion($io, $visibility);
+                // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::visiblityQuestion
+                $visibility = $this->visibilityQuestion($io, $visibility, 'taxonomy');
             }
             $input->setOption('visibility', $visibility);
         }
@@ -379,8 +379,8 @@ class TaxonomyCommand extends Command
             ) {
                 $permalinks_labels = [ 'slug', 'with_front', 'hierarchical'];
 
-                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::permalinksQuestion
-                $permalinks = $this->permalinksQuestion($io, $permalinks_labels);
+                // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::permalinksQuestion
+                $permalinks = $this->permalinksQuestion($io, $permalinks_labels, 'taxonomy');
                 $input->setOption('permalinks', $permalinks);
             }
         }
@@ -395,8 +395,8 @@ class TaxonomyCommand extends Command
             ) {
                 $capabilities_labels = ['edit_terms', 'delete_terms', 'manage_terms', 'assign_terms'];
 
-                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::capabilitiesQuestion
-                $capabilities = $this->capabilitiesQuestion($io, $capabilities_labels);
+                // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::capabilitiesQuestion
+                $capabilities = $this->capabilitiesQuestion($io, $capabilities_labels, 'taxonomy');
                 $input->setOption('capabilities', $capabilities);
             }
         }
@@ -409,8 +409,8 @@ class TaxonomyCommand extends Command
                 false
             )
             ) {
-                // @see \WP\Console\Command\Shared\Taxonomy_PostTypeTrait::restQuestion
-                $rest = $this->restQuestion($io, 'Taxonomy', $input->getOption('taxonomy-key'));
+                // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::restQuestion
+                $rest = $this->restQuestion($io, 'Taxonomy', $input->getOption('taxonomy-key'), 'taxonomy');
                 $input->setOption('rest', $rest);
             }
         }
