@@ -148,18 +148,6 @@ class PostTypeCommand extends Command
                 $this->trans('commands.generate.post.type.options.hierarchical')
             )
             ->addOption(
-                'labels',
-                '',
-                InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.post.type.options.labels')
-            )
-            ->addOption(
-                'supports',
-                '',
-                InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.post.type.options.supports')
-            )
-            ->addOption(
                 'exclude-from-search',
                 '',
                 InputOption::VALUE_REQUIRED,
@@ -178,9 +166,21 @@ class PostTypeCommand extends Command
                 $this->trans('commands.generate.post.type.options.enable-archives')
             )
             ->addOption(
-                'visibility',
-                '',
+                'labels',
+                null,
                 InputOption::VALUE_REQUIRED,
+                $this->trans('commands.generate.post.type.options.labels')
+            )
+            ->addOption(
+                'supports',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('commands.generate.post.type.options.supports')
+            )
+            ->addOption(
+                'visibility',
+                null,
+                InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.post.type.options.visibility')
             )
             ->addOption(
@@ -231,11 +231,11 @@ class PostTypeCommand extends Command
         $plural_name = $input->getOption('plural-name');
         $post_type = $input->getOption('taxonomy');
         $hierarchical = $input->getOption('hierarchical');
-        $labels = $input->getOption('labels');
-        $supports = $input->getOption('supports');
         $exclude_from_search = $input->getOption('exclude-from-search');
         $enable_export = $input->getOption('enable-export');
         $enable_archives = $input->getOption('enable-archives');
+        $labels = $input->getOption('labels');
+        $supports = $input->getOption('supports');
         $visibility = $input->getOption('visibility');
         $permalinks = $input->getOption('permalinks');
         $capabilities = $input->getOption('capabilities');
@@ -252,11 +252,11 @@ class PostTypeCommand extends Command
             $plural_name,
             $post_type,
             $hierarchical,
-            $labels,
-            $supports,
             $exclude_from_search,
             $enable_export,
             $enable_archives,
+            $labels,
+            $supports,
             $visibility,
             $permalinks,
             $capabilities,
@@ -272,7 +272,6 @@ class PostTypeCommand extends Command
     {
         $io = new WPStyle($input, $output);
 
-        $validator = $this->validator;
         $stringUtils = $this->stringConverter;
 
         // --plugin
@@ -363,7 +362,41 @@ class PostTypeCommand extends Command
                 $this->trans('commands.generate.post.type.questions.hierarchical'),
                 true
             );
-            $input->setOption('hierarchical', $hierarchical);
+            $input->setOption('hierarchical', ($hierarchical) ? 'true' : 'false' );
+        }
+
+        // --exclude from search
+        $exclude_from_search = $input->getOption('exclude-from-search');
+        if (!$exclude_from_search) {
+            $exclude_from_search = $io->confirm(
+                $this->trans('commands.generate.post.type.questions.exclude-from-search'),
+                false
+            );
+            $input->setOption('exclude-from-search', ($exclude_from_search) ? 'true' : 'false');
+        }
+
+        // --enable export
+        $enable_export = $input->getOption('enable-export');
+        if (!$enable_export) {
+            $enable_export = $io->confirm(
+                $this->trans('commands.generate.post.type.questions.enable-export'),
+                false
+            );
+            $input->setOption('enable-export', ($enable_export) ? 'true' : 'false');
+        }
+
+        // --enable archives
+        $enable_archives = $input->getOption('enable-archives');
+        if (!$enable_archives) {
+            $enable_archives = $io->choice(
+                $this->trans('commands.generate.post.type.questions.enable-archives'),
+                ['true', 'false', 'Custom']
+            );
+            if ($enable_archives == 'Custom') {
+                $enable_archives = $io->ask($this->trans('commands.generate.post.type.questions.enable-archives-custom'));
+            }
+
+            $input->setOption('enable-archives', $enable_archives);
         }
 
         // --labels
@@ -374,7 +407,7 @@ class PostTypeCommand extends Command
                 false
             )
             ) {
-                $labels = array(
+                $labels_options = array(
                     'menu_name', 'name_admin_bar', 'archives', 'attributes', 'parent_item_colon', 'all_items',
                     'add_new_item', 'add_new', 'new_item', 'edit_item', 'update_item', 'view_item', 'view_items',
                     'search_items', 'not_found', 'not_found_in_trash','featured_image', 'set_featured_image',
@@ -382,7 +415,7 @@ class PostTypeCommand extends Command
                     'items_list_navigation', 'filter_items_list'
                 );
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::labelsQuestion
-                $labels = $this->labelsQuestion($io, $labels, 'post.type');
+                $labels = $this->labelsQuestion($io, $labels_options, 'post.type');
                 $input->setOption('labels', $labels);
             }
         }
@@ -412,61 +445,24 @@ class PostTypeCommand extends Command
             $input->setOption('supports', $supports);
         }
 
-        // --exclude from search
-        $exclude_from_search = $input->getOption('exclude-from-search');
-        if (!$exclude_from_search) {
-            $exclude_from_search = $io->confirm(
-                $this->trans('commands.generate.post.type.questions.exclude-from-search'),
-                false
-            );
-            $input->setOption('exclude-from-search', $exclude_from_search);
-        }
-
-        // --enable export
-        $enable_export = $input->getOption('enable-export');
-        if (!$enable_export) {
-            $enable_export = $io->confirm(
-                $this->trans('commands.generate.post.type.questions.enable-export'),
-                false
-            );
-            $input->setOption('enable-export', $enable_export);
-        }
-
-        // --enable archives
-        $enable_archives = $input->getOption('enable-archives');
-        if (!$enable_archives) {
-            $enable_archives = $io->choice(
-                $this->trans('commands.generate.post.type.questions.enable-archives'),
-                ['true', 'false', 'Custom']
-            );
-            if ($enable_archives == 'Custom') {
-                $enable_archives = $io->ask($this->trans('commands.generate.post.type.questions.enable-archives-custom'));
-            } else {
-                $enable_archives = settype($enable_archives, 'boolean');
-            }
-
-            $input->setOption('enable-archives', $enable_archives);
-        }
-
         // --visibility
         $visibility = $input->getOption('visibility');
         if (!$visibility) {
-            $visibility = [
-                'public' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'menu_position' => 5,
-                'show_in_admin_bar' => true,
-                'show_in_nav_menus' => true
-            ];
-
             if ($io->confirm(
                 $this->trans('commands.generate.post.type.questions.visibility'),
                 false
             )
             ) {
+                $visibility_labels = [
+                    'public' => true,
+                    'show_ui' => true,
+                    'show_in_menu' => true,
+                    'menu_position' => 5,
+                    'show_in_admin_bar' => true,
+                    'show_in_nav_menus' => true
+                ];
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::visibilityQuestion
-                $visibility = $this->visibilityQuestion($io, $visibility, 'post.type');
+                $visibility = $this->visibilityQuestion($io, $visibility_labels, 'post.type');
             }
 
             $input->setOption('visibility', $visibility);
@@ -504,7 +500,7 @@ class PostTypeCommand extends Command
                 $capabilities = $this->capabilitiesQuestion($io, $capabilities_labels, 'post.type');
             } else {
                 $capabilities = $io->choice(
-                    $this->trans('commands.generate.post.type.questions.capabilities'),
+                    $this->trans('commands.generate.post.type.questions.capabilities-options').'capabilities',
                     ['page', 'post']
                 );
             }

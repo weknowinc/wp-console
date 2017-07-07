@@ -145,14 +145,14 @@ class TaxonomyCommand extends Command
             )
             ->addOption(
                 'labels',
-                '',
-                InputOption::VALUE_REQUIRED,
+                null,
+                InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.taxonomy.options.screen')
             )
             ->addOption(
                 'visibility',
-                '',
-                InputOption::VALUE_REQUIRED,
+                null,
+                InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.taxonomy.options.visibility')
             )
             ->addOption(
@@ -242,7 +242,6 @@ class TaxonomyCommand extends Command
     {
         $io = new WPStyle($input, $output);
         
-        $validator = $this->validator;
         $stringUtils = $this->stringConverter;
         
         // --plugin
@@ -323,7 +322,7 @@ class TaxonomyCommand extends Command
                 $this->trans('commands.generate.taxonomy.questions.hierarchical'),
                 true
             );
-            $input->setOption('hierarchical', $hierarchical);
+            $input->setOption('hierarchical', ($hierarchical) ? 'true' : 'false');
         }
         
         // --labels
@@ -349,21 +348,20 @@ class TaxonomyCommand extends Command
         // --visibility
         $visibility = $input->getOption('visibility');
         if (!$visibility) {
-            $visibility = [
-                'public' => true,
-                'show_ui' => true,
-                'show_admin_column' => true,
-                'show_in_nav_menus' => true,
-                'show_tagcloud' => true
-            ];
-
             if ($io->confirm(
                 $this->trans('commands.generate.taxonomy.questions.visibility'),
                 false
             )
             ) {
+                $visibility_labels = [
+                    'public' => true,
+                    'show_ui' => true,
+                    'show_admin_column' => true,
+                    'show_in_nav_menus' => true,
+                    'show_tagcloud' => true
+                ];
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::visiblityQuestion
-                $visibility = $this->visibilityQuestion($io, $visibility, 'taxonomy');
+                $visibility = $this->visibilityQuestion($io, $visibility_labels, 'taxonomy');
             }
             $input->setOption('visibility', $visibility);
         }

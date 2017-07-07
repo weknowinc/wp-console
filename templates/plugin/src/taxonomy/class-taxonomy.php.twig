@@ -49,8 +49,8 @@ class {{ class_name_taxonomy }} {% endblock -%}
 {% if permalinks is not null %}
         $rewrite = array(
             'slug'                       => '{{ permalinks.slug }}',
-            'with_front'                 => {{ permalinks.with_front ? 'true': 'false' }},
-            'hierarchical'               => {{ permalinks.hierarchical ? 'true': 'false' }},
+            'with_front'                 => {{ permalinks.with_front }},
+            'hierarchical'               => {{ permalinks.hierarchical }},
         );
 {% endif %}
 {% if capabilities is not null %}
@@ -63,11 +63,19 @@ class {{ class_name_taxonomy }} {% endblock -%}
 {% endif %}
         $args = array(
             'labels'                     => $labels,
-            'hierarchical'               => {{ hierarchical ? 'true': 'false' }},
-            'public'                     => {{ visibility.public ? 'true': 'false' }},
-            'show_ui'                    => {{ visibility.show_ui ? 'true': 'false' }},
-            'show_in_nav_menus'          => {{ visibility.show_in_nav_menus ? 'true': 'false' }},
-            'show_tagcloud'              => {{ visibility.show_tagcloud ? 'true': 'false' }},
+            'hierarchical'               => {{ hierarchical }},
+{% if visibility is not null %}
+{% for index, label in visibility %}
+            '{{ index }}'                => {{ label }},
+
+{% endfor %}
+{% else %}
+            'public'                     => true,
+            'show_ui'                    => true,
+            'show_admin_column'          => true,
+            'show_in_nav_menus'          => true,
+            'show_tagcloud'              => true,
+{% endif %}
 {%  if permalinks is not null %}
             'rewrite'                    => $rewrite,
 {% endif %}
@@ -75,8 +83,8 @@ class {{ class_name_taxonomy }} {% endblock -%}
             'capabilities'               => $capabilities,
 {% endif %}
 {% if rest is not null %}
-{% if rest.show_in_rest != 'no include' %}
-            'show_in_rest'               => {{ rest.show_in_rest ? 'true': 'false' }},
+{% if rest.show_in_rest is not null %}
+            'show_in_rest'               => {{ rest.show_in_rest }},
 {% endif %}
 {% if rest.rest_base is not null %}
             'rest_base'                  => '{{ rest.rest_base }}',

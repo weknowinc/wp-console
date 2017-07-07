@@ -48,11 +48,11 @@ class PostTypeGenerator extends Generator
      * @param $name_plural
      * @param $taxonomy
      * @param $hierarchical
-     * @param $labels
-     * @param $supports
      * @param $exclude_from_search
      * @param $enable_export
      * @param $enable_archives
+     * @param $labels
+     * @param $supports
      * @param $visibility
      * @param $permalinks
      * @param $capabilities
@@ -69,11 +69,11 @@ class PostTypeGenerator extends Generator
         $name_plural,
         $taxonomy,
         $hierarchical,
-        $labels,
-        $supports,
         $exclude_from_search,
         $enable_export,
         $enable_archives,
+        $labels,
+        $supports,
         $visibility,
         $permalinks,
         $capabilities,
@@ -93,11 +93,11 @@ class PostTypeGenerator extends Generator
             'name_plural' => $name_plural,
             'taxonomy' => $taxonomy,
             'hierarchical' => $hierarchical,
-            'labels' => $labels,
-            'supports' => $supports,
             'exclude_from_search' => $exclude_from_search,
             'enable_export' => $enable_export,
             'enable_archives' => $enable_archives,
+            'labels' => $labels,
+            'supports' => $supports,
             'visibility' => $visibility,
             'permalinks' => $permalinks,
             'capabilities' => $capabilities,
