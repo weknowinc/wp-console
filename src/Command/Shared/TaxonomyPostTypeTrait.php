@@ -42,10 +42,10 @@ trait TaxonomyPostTypeTrait
     {
         foreach ($labels_visibility as $index => $value) {
             if ($index != 'menu_position') {
-                $labels_visibility[$index] = $io->confirm(
+                $labels_visibility[$index] = ($io->confirm(
                     $this->trans('commands.generate.'.$translations.'.questions.visibility-options'). str_replace('show_in_', '', $index),
                     true
-                );
+                )) ? 'true' : 'false';
             }
 
             if ($index == 'show_in_menu' && $labels_visibility[$index]) {
@@ -71,10 +71,10 @@ trait TaxonomyPostTypeTrait
         $label_array = [];
         foreach ($permalinks as $permalink) {
             if ($permalink != 'slug') {
-                $label_array[$permalink] = $io->confirm(
+                $label_array[$permalink] = ($io->confirm(
                     $this->trans('commands.generate.'.$translations.'.questions.permalinks-options'). $permalink,
                     true
-                );
+                )) ? 'true' : 'false';
             } else {
                 $value = $io->ask(
                     $this->trans('commands.generate.'.$translations.'.questions.permalinks-slug'),
@@ -121,7 +121,7 @@ trait TaxonomyPostTypeTrait
 
         $rests =
             [
-                'show_in_rest' => $show_rest,
+                'show_in_rest' => ($show_rest) ? 'true' : 'false',
                 'rest_base' => $rest_base,
                 'rest_controller_class' => $rest_controller_class,
             ];

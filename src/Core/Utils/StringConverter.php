@@ -29,8 +29,8 @@ class StringConverter
      */
     public function createMachineName($name)
     {
-        $machine_name = preg_replace(self::REGEX_MACHINE_NAME_CHARS, '-', strtolower($name));
-        $machine_name = trim($machine_name, '-');
+        $machine_name = preg_replace(self::REGEX_MACHINE_NAME_CHARS, '_', strtolower($name));
+        $machine_name = trim($machine_name, '_');
 
         if (strlen($machine_name) > self::MAX_MACHINE_NAME) {
             $machine_name = substr($machine_name, 0, self::MAX_MACHINE_NAME);

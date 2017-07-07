@@ -48,7 +48,7 @@ chmod +x /usr/local/bin/wordpress
   * generate:command (gc)             Generate commands for the console.
   * generate:metabox (gm)             Generate a meta box.
   * generate:plugin (gp)              Generate a plugin.
-  * generate:post:type (gp)           commands.generate.posttype.description
+  * generate:post:type (gpt)          Generate a custom post type.
   * generate:shortcode (gs)           Generate a shortcode.  
   * generate:taxonomy (gta)           Generate a custom taxonomy.
   * generate:theme (gth)              Generate a theme.

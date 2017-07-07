@@ -37,7 +37,7 @@ questions:
     labels-add: 'Do you want add this label: '
     labels-edit: 'Enter the name for: '
     supports: 'Do you want add support for Post Type?'
-    supports-edit: 'Do you want add this label: '
+    supports-edit: 'Do you want add this support: '
     exclude-from-search: 'Do you want exclude from search for Post Type?'
     enable-export: 'Do you want enable export for Post Type?'
     enable-archives: 'Do you want enable archives for Post Type?'

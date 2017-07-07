@@ -56,15 +56,15 @@
 {% if permalinks is not null %}
         $rewrite = array(
             'slug'                  => '{{ permalinks.slug }}',
-            'with_front'            => {{ permalinks.with_front ? 'true': 'false' }},
-            'pages'                 => {{ permalinks.pages ? 'true': 'false' }},
-            'feeds'                 => {{ permalinks.feeds ? 'true': 'false' }},
+            'with_front'            => {{ permalinks.with_front }},
+            'pages'                 => {{ permalinks.pages }},
+            'feeds'                 => {{ permalinks.feeds }},
         );
 {% endif %}
 {% if capabilities is iterable %}
         $capabilities = array(
 {% for key, value in capabilities %}
-            '{{ key }}' => '{{ value }}',
+            '{{ key }}'             => '{{ value }}',
 {% endfor %}
         );
 {% endif %}
@@ -72,15 +72,32 @@
             'label'                 => __( 'Post Type', 'text_domain' ),
             'description'           => __( '{{ description }}', 'text_domain' ),
             'labels'                => $labels,
-            'supports'              => array({% for key, value in visibility %} {{ value }}, {% endfor %} ),
+            'supports'              => array({% for key, value in supports %} '{{ value }}', {% endfor %} ),
             'taxonomies'            => array( 'category', 'post_tag' ),
-        'hierarchical'          => {{ hierarchical ? 'true': 'false' }},
-{% for key, value in visibility %}
-            '{{ key }}'             => {{ value ? 'true': 'false' }},
+            'hierarchical'          => {{ hierarchical }},
+{% if visibility is not null %}
+{% for index, label in visibility %}
+{% if index == 'menu_position' %}
+            '{{ index }}'           => {{ label }},
+{% else %}
+            '{{ index }}'           => {{ label }},
+{% endif %}
 {% endfor %}
-            'can_export'            => {{ enable_export ? 'true': 'false' }},
-            'has_archive'           => {{ enable_archives ? 'true': 'false' }},
-            'exclude_from_search'   => {{ exclude_from_search ? 'true': 'false' }},
+{% else %}
+            'public'                => true,
+            'show_ui'               => true,
+            'show_in_menu'          => true,
+            'menu_position'         => 5,
+            'show_in_admin_bar'     => true,
+            'show_in_nav_menus'     => true,
+{% endif %}
+            'can_export'            => {{ enable_export }},
+{% if enable_archives == 'true' or enable_archives == 'false'  %}
+            'has_archive'           => {{ enable_archives }},
+{% else %}
+            'has_archive'           => '{{ enable_archives }}',
+{% endif %}
+            'exclude_from_search'   => {{ exclude_from_search }},
             'publicly_queryable'    => true,
 {%  if permalinks is not null %}
             'rewrite'               => $rewrite,
@@ -88,20 +105,20 @@
 {% if capabilities is iterable %}
             'capabilities'          => $capabilities,
 {% else %}
-            'capability_type'          => '{{ capabilities }}',
+            'capability_type'       => '{{ capabilities }}',
 {% endif %}
 {% if rest is not null %}
 {% if rest.show_in_rest is not null %}
-            'show_in_rest'          => {{ rest.show_in_rest ? 'true': 'false' }},
+            'show_in_rest'          => {{ rest.show_in_rest }},
 {% endif %}
 {% if rest.rest_base is not null %}
-           'rest_base'             => '{{ rest.rest_base }}',
+            'rest_base'             => '{{ rest.rest_base }}',
 {% endif %}
 {% if rest.rest_controller_class is not null %}
-           'rest_controller_class' => '{{ rest.rest_controller_class }}',
+            'rest_controller_class' => '{{ rest.rest_controller_class }}',
 {% endif %}
 {% endif %}
-    );
+        );
 
     register_post_type( '{{ post_type_key }}', $args );
     }
