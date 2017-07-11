@@ -32,3 +32,8 @@ services:
       arguments: ['@console.extension_manager']
       tags:
         - { name: wordpress.generator }
+  console.menu_generator:
+      class: WP\Console\Generator\MenuGenerator
+      arguments: ['@console.extension_manager']
+      tags:
+        - { name: wordpress.generator }

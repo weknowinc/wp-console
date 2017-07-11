@@ -94,4 +94,22 @@
 
     add_custom_post_type_{{ class_name_post_type }}();
 {% endif -%}
+
+{% if class_name_menu is defined %}
+
+    /**
+    * Create a menu,
+    * This action is documented in {{ class_name_menu_path }}
+    */
+    function add_menu_{{ class_name_menu }}()
+    {
+        // Include the files for rendering the display.
+        include_once( '{{ class_name_menu_path }}' );
+
+        $menu = new {{ class_name_menu }}();
+        $menu->init();
+    }
+
+    add_menu_{{ class_name_menu }}();
+{% endif -%}
 {%- endblock -%}
