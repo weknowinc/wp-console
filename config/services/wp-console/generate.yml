@@ -34,3 +34,8 @@ services:
       arguments: ['@console.post_type_generator', '@console.extension_manager', '@console.validator', '@console.string_converter','@console.site']
       tags:
         - { name: wordpress.command }
+  console.generate_menu:
+      class: WP\Console\Command\Generate\MenuCommand
+      arguments: ['@console.menu_generator', '@console.extension_manager', '@console.validator', '@console.string_converter','@console.site']
+      tags:
+        - { name: wordpress.command }
