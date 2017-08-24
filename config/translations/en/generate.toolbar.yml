@@ -1,0 +1,28 @@
+description: 'Generate a toolbar.'
+help: 'The <info>generate:menu</info> command helps you generates a new toolbar.'
+welcome: 'Welcome to the Wordpress toolbar generator'
+options:
+    plugin: 'The Plugin name'
+    class-name: 'The toolbar class name'
+    menu: 'The menu items'
+questions:
+    plugin: 'The plugin name.'
+    class-name: 'Enter menu class name'
+    menu: 'Do you want to add menu to toolbar?'
+    id: 'Enter the ID of the menu'
+    parent: 'Enter the ID of the parent menu'
+    title: 'Enter Text/HTML shown in the Toolbar'
+    href: 'Enter the "href" attribute for the link. If none set the menu will be a text menu'
+    group: 'Choose the option for menu group'
+    menu-add: 'Do you want to add another menu to toolbar?'
+    meta: 'Do you want to add meta to menu?'
+    html: 'Enter the HTML used for the menu <optional>'
+    class: 'Enter the class attribute for the list item containing the link or text. <optional>'
+    target: 'Enter the target attribute for the link. Will be set if "href" is present. <optional>'
+    onclick: 'Enter the onclick attribute for the link. Will be set if "href" is present. <optional>'
+    title: 'Enter the title attribute. Will be set to the link or a div containing a text node. <optional>'
+    tabindex: 'Enter the tabindex attribute. Will be set to the link or a div containing a text node. <optional>'
+warnings:
+    plugin-unavailable: 'Warning The following plugin are not already available in your local environment "%s"'
+errors:
+    directory-exists: 'The target directory "%s" is not empty.'

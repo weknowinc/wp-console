@@ -37,3 +37,8 @@ services:
       arguments: ['@console.extension_manager']
       tags:
         - { name: wordpress.generator }
+  console.toolbar_generator:
+      class: WP\Console\Generator\ToolbarGenerator
+      arguments: ['@console.extension_manager']
+      tags:
+        - { name: wordpress.generator }
