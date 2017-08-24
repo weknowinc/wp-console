@@ -21,7 +21,7 @@ options:
     template-search: 'Search template'
     template-404: '404 template'
     template-functions: 'Functions template'
-    screenshot: 'Screenshot of the theme'
+    screenshot: 'Screenshot of the theme (Must have 1200px 900px resolution)'
 questions:
     theme: 'Enter the new theme name'
     machine-name: 'Enter the theme machine name'
@@ -41,7 +41,7 @@ questions:
     template-search: 'Do you want add search template?'
     template-404: 'Do you want add 404 template?'
     template-functions: 'Do you want add functions template?'
-    screenshot: 'Enter the screenshot path'
+    screenshot: 'Enter the screenshot path (Must have 1200px 900px resolution)'
     test: 'Do you want to generate a unit test class'
 warnings:
     module-unavailable: 'Warning The following modules are not already available in your local environment "%s"'

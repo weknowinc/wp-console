@@ -149,7 +149,7 @@ class MetaBoxCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.generate.metabox.options.priority')
             )
-            ->setAliases(['gm']);
+            ->setAliases(['gmb']);
     }
     
     /**
@@ -398,7 +398,7 @@ class MetaBoxCommand extends Command
                     'description' => $description,
                     'placeholder' => $field_placeholder,
                     'default_value' => $default_value,
-                    'multiSelection' => $multi_selection
+                    'multi_selection' => $multi_selection
                 ]
             );
 

@@ -57,32 +57,23 @@ class TaxonomyCommand extends Command
     protected $twigtemplate;
     
     /**
-     * @var Site
-     */
-    protected $site;
-    
-    
-    /**
      * TaxonomyCommand constructor.
      *
      * @param TaxonomyGenerator $generator
      * @param Manager           $extensionManager
      * @param Validator         $validator
      * @param StringConverter   $stringConverter
-     * @param Site              $site
      */
     public function __construct(
         TaxonomyGenerator $generator,
         Manager $extensionManager,
         Validator $validator,
-        StringConverter $stringConverter,
-        Site $site
+        StringConverter $stringConverter
     ) {
         $this->generator = $generator;
         $this->extensionManager = $extensionManager;
         $this->validator = $validator;
         $this->stringConverter = $stringConverter;
-        $this->site = $site;
         parent::__construct();
     }
     
@@ -278,8 +269,7 @@ class TaxonomyCommand extends Command
         $taxonomy_key = $input->getOption('taxonomy-key');
         if (!$taxonomy_key) {
             $taxonomy_key = $io->ask(
-                $this->trans('commands.generate.taxonomy.questions.taxonomy_key'),
-                'taxonomy'
+                $this->trans('commands.generate.taxonomy.questions.taxonomy_key')
             );
             $taxonomy_key = $stringUtils->humanToCamelCase($taxonomy_key);
             $input->setOption('taxonomy-key', $taxonomy_key);

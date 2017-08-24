@@ -17,7 +17,6 @@ use WP\Console\Command\Shared\TaxonomyPostTypeTrait;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\PostTypeGenerator;
 use WP\Console\Core\Style\WPStyle;
-use WP\Console\Utils\Site;
 use WP\Console\Utils\Validator;
 use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Utils\StringConverter;
@@ -55,32 +54,23 @@ class PostTypeCommand extends Command
     protected $twigtemplate;
 
     /**
-     * @var Site
-     */
-    protected $site;
-
-
-    /**
      * TaxonomyCommand constructor.
      *
      * @param PostTypeGenerator $generator
      * @param Manager           $extensionManager
      * @param Validator         $validator
      * @param StringConverter   $stringConverter
-     * @param Site              $site
      */
     public function __construct(
         PostTypeGenerator $generator,
         Manager $extensionManager,
         Validator $validator,
-        StringConverter $stringConverter,
-        Site $site
+        StringConverter $stringConverter
     ) {
         $this->generator = $generator;
         $this->extensionManager = $extensionManager;
         $this->validator = $validator;
         $this->stringConverter = $stringConverter;
-        $this->site = $site;
         parent::__construct();
     }
 
@@ -308,8 +298,7 @@ class PostTypeCommand extends Command
         $post_type_key = $input->getOption('post-type-key');
         if (!$post_type_key) {
             $post_type_key = $io->ask(
-                $this->trans('commands.generate.post.type.questions.post-type-key'),
-                'post_type'
+                $this->trans('commands.generate.post.type.questions.post-type-key')
             );
             $post_type_key = $stringUtils->humanToCamelCase($post_type_key);
             $input->setOption('post-type-key', $post_type_key);

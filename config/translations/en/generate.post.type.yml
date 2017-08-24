@@ -24,7 +24,7 @@ options:
     rest: 'REST API for Post Type'
     child-themes: 'Support Child Themes'
 questions:
-    plugin: common.questions.plugin
+    plugin: 'Enter the plugin name'
     class-name: 'Enter Post Type class name'
     function-name: 'Enter function used in the code'
     post-type-key: 'Enter Post Type key used in the code'

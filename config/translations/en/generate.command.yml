@@ -6,6 +6,6 @@ options:
     class: 'The Class that describes the command. (Must end with the word ''Command'').'
     name: 'The Command name.'
 questions:
-    module: common.questions.module
+    plugin: 'Enter the plugin name'
     class: 'Enter the Command Class. (Must end with the word ''Command'').'
     name: 'Enter the Command name.'

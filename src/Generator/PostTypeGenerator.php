@@ -82,7 +82,7 @@ class PostTypeGenerator extends Generator
     )
     {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
-
+        var_export($pluginFile);
         $parameters = [
             'plugin' => $plugin,
             'class_name_post_type' => $class_name,

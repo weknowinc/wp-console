@@ -68,7 +68,6 @@ class MenuGenerator extends Generator
             'file_exists' => file_exists($pluginFile)
         ];
 
-        var_export($parameters);
         $dir = $this->extensionManager->getPlugin($plugin)->getPath(). '/' . $parameters['class_name_menu_path'];
 
         if (file_exists($dir)) {
@@ -81,7 +80,6 @@ class MenuGenerator extends Generator
                 );
             }
         }
-
 
         $this->renderFile(
             'plugin/src/Menu/menu.php.twig',
