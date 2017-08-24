@@ -16,7 +16,7 @@ services:
       - { name: wordpress.command }
   console.generate_taxonomy:
     class: WP\Console\Command\Generate\TaxonomyCommand
-    arguments: ['@console.taxonomy_generator', '@console.extension_manager', '@console.validator', '@console.string_converter','@console.site']
+    arguments: ['@console.taxonomy_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
     tags:
       - { name: wordpress.command }
   console.generate_theme:
@@ -31,11 +31,16 @@ services:
       - { name: wordpress.command }
   console.generate_post_type:
       class: WP\Console\Command\Generate\PostTypeCommand
-      arguments: ['@console.post_type_generator', '@console.extension_manager', '@console.validator', '@console.string_converter','@console.site']
+      arguments: ['@console.post_type_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
       tags:
         - { name: wordpress.command }
   console.generate_menu:
       class: WP\Console\Command\Generate\MenuCommand
-      arguments: ['@console.menu_generator', '@console.extension_manager', '@console.validator', '@console.string_converter','@console.site']
+      arguments: ['@console.menu_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+      tags:
+        - { name: wordpress.command }
+  console.generate_toolbar:
+      class: WP\Console\Command\Generate\ToolbarCommand
+      arguments: ['@console.toolbar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
       tags:
         - { name: wordpress.command }

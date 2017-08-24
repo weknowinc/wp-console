@@ -1,0 +1,37 @@
+{% extends "base/class.php.twig" %}
+
+{% block class_declaration %}
+    /**
+    * Represents a toolbar to be displayed.
+    */
+    class {{ class_name_toolbar }} {% endblock -%}
+{% block class_methods %}
+    public function init() {
+        add_action( 'init', array( $this, 'wp_before_admin_bar_render', 'custom_toolbar', 999));
+    }
+
+    // Add Toolbar Menus
+    function custom_toolbar() {
+    global $wp_admin_bar;
+{% if menu is defined %}
+{% for item in menu %}
+        $args = array(
+{% for key, value in item %}
+{% if key == 'title' %}
+            '{{ key }}'  => __('{{ value }}', 'text_domain'),
+{% elseif key == 'meta' %}
+            'meta' => array(
+{% for index, metas in value %}
+                '{{ index }}'  => '{{ metas }}',
+{% endfor %}
+            ),
+{% else %}
+            '{{ key }}'  => '{{ value }}',
+{% endif %}
+{% endfor %}
+        );
+{% endfor %}
+        $wp_admin_bar->add_menu( $args );
+{% endif %}
+    }
+{%- endblock -%}

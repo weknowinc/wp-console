@@ -94,7 +94,6 @@
 
     add_custom_post_type_{{ class_name_post_type }}();
 {% endif -%}
-
 {% if class_name_menu is defined %}
 
     /**
@@ -109,7 +108,19 @@
         $menu = new {{ class_name_menu }}();
         $menu->init();
     }
-
     add_menu_{{ class_name_menu }}();
 {% endif -%}
+{% if class_name_toolbar is defined %}
+    /**
+     * Starts the custom toolbar
+     */
+    function add_toolbar_{{ class_name_toolbar }}()
+    {
+        // Include the files for rendering the display.
+        include_once( '{{ class_name_toolbar_path }}' );
+        $toolbar = new {{ class_name_toolbar }}();
+        $toolbar->init();
+    }
+    add_toolbar_{{ class_name_toolbar }}();
+{% endif %}
 {%- endblock -%}
