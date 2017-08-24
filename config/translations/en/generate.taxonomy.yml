@@ -18,7 +18,7 @@ options:
     child-themes: 'Support Child Themes'
     update-count-callback: 'A function name that will be called when the count of an associated Post Type is updated'
 questions:
-    plugin: common.questions.plugin
+    plugin: 'Enter the plugin name'
     field-metabox-add: 'Do you want to add another field metabox'
     class-name: 'Enter taxonomy class name'
     function-name: 'Enter function used in the code'

@@ -9,7 +9,7 @@ options:
     description: 'The description to menu item'
     child-themes: 'Support Child Themes'
 questions:
-    plugin: common.questions.plugin
+    plugin: 'Enter the plugin name'
     class-name: 'Enter menu class name'
     function-name: 'Enter function used in the code'
     menu: 'Enter menu name'
