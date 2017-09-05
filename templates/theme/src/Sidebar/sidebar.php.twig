@@ -1,0 +1,30 @@
+{% extends "base/file.php.twig" %}
+{% block extra_info %}
+{% if not file_exists %}
+    * Custom sidebar to display
+{%- endif -%}
+{%- endblock -%}
+{% block file_docblock %}
+{% if not file_exists %}
+    {{ parent() }}
+{%- endif -%}
+{%- endblock -%}
+{% block file_methods %}
+function {{ function_name }}() {
+{% for key, item in sidebar_items %}
+
+    $args = array(
+{% for key, value in item %}
+{% if key == 'name' or key == 'description' %}
+        '{{ key }}'  => __('{{ value }}', 'text_domain'),
+{% else %}
+        '{{ key }}'  => '{{ value }}',
+{% endif %}
+{% endfor %}
+    );
+    register_sidebar( $args );
+{% endfor %}
+}
+add_action( 'widgets_init', '{{ function_name }}');
+
+{%- endblock -%}

@@ -42,3 +42,8 @@ services:
       arguments: ['@console.extension_manager']
       tags:
         - { name: wordpress.generator }
+  console.sidebar_generator:
+      class: WP\Console\Generator\SidebarGenerator
+      arguments: ['@console.extension_manager']
+      tags:
+        - { name: wordpress.generator }

@@ -39,8 +39,8 @@ services:
       arguments: ['@console.menu_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
       tags:
         - { name: wordpress.command }
-  console.generate_toolbar:
-      class: WP\Console\Command\Generate\ToolbarCommand
-      arguments: ['@console.toolbar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+  console.generate_sidebar:
+      class: WP\Console\Command\Generate\SidebarCommand
+      arguments: ['@console.sidebar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
       tags:
         - { name: wordpress.command }
