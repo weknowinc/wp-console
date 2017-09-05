@@ -190,10 +190,10 @@ class Site
 
         $wpdb->insert(
             $wpdb->blogs, array(
-            'site_id' => $networkId,
-            'domain' => $domain,
-            'path' => $path,
-            'registered' => current_time('mysql')
+                'site_id' => $networkId,
+                'domain' => $domain,
+                'path' => $path,
+                'registered' => current_time('mysql')
             )
         );
 
@@ -634,7 +634,7 @@ class Site
         }
     }
 
-            /**
+    /**
      * @param $option
      * @param $userID
      * @return mixed
@@ -671,7 +671,7 @@ class Site
             return null;
         }
     }
-    
+
     /**
      * @param string $theme_folder
      * @return null
@@ -679,12 +679,30 @@ class Site
     public function getThemes($theme_folder = '')
     {
         if (function_exists('wp_get_themes')) {
-            return wp_get_themes($theme_folder);
+            $themes = array_keys(wp_get_themes($theme_folder));
+            $theme_data = [];
+            foreach ($themes as $data) {
+                $theme =  wp_get_theme($data);
+                $theme_data [$data] = array(
+                    'Name' => $theme->get('Name'),
+                    'URI' => $theme->display('ThemeURI', true, false),
+                    'Description' => $theme->display('Description', true, false),
+                    'Author' => $theme->display('Author', true, false),
+                    'AuthorURI' => $theme->display('AuthorURI', true, false),
+                    'Version' => $theme->get('Version'),
+                    'Template' => $theme->get('Template'),
+                    'Status' => $theme->get('Status'),
+                    'Tags' => $theme->get('Tags'),
+                    'Title' => $theme->get('Name'),
+                    'AuthorName' => $theme->get('Author'),
+                );
+            }
+            return  $theme_data;
         } else {
             return null;
         }
     }
-    
+
     public function activateTheme($theme)
     {
         if (function_exists('switch_theme')) {
@@ -693,7 +711,7 @@ class Site
             return null;
         }
     }
-    
+
     public function isThemeActive($theme)
     {
         if (function_exists('wp_get_theme')) {

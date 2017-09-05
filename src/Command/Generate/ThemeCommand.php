@@ -328,14 +328,5 @@ class ThemeCommand extends Command
             );
         }
         $input->setOption('screenshot', $screenshot);
-        
-        /* $test = $input->getOption('test');
-         if (!$test) {
-             $test = $io->confirm(
-                 $this->trans('commands.generate.theme.questions.test'),
-                 true
-             );
-             $input->setOption('test', $test);
-         }*/
     }
 }

@@ -92,12 +92,12 @@ class ThemeCommand extends Command
             $themeStatus = ($this->site->isThemeActive($theme))?$this->trans('commands.common.status.enabled'): $this->trans('commands.common.status.disabled');
             
             $tableRows [] = [
-                $themeData->get('Name'),
+                $themeData['Name'],
                 $themeStatus,
-                $themeData->get('ThemeURI'),
-                $themeData->get('Version'),
-                $themeData->get('Author'),
-                $themeData->get('AuthorURI'),
+                $themeData['ThemeURI'],
+                $themeData['Version'],
+                $themeData['Author'],
+                $themeData['AuthorURI'],
             ];
         }
         
