@@ -18,9 +18,9 @@ class Extension extends BaseExtension
     public function getPath($fullPath = false)
     {
         if ($fullPath) {
-            return $this->root . '/' . parent::getPath();
+            return $this->root . parent::getPath();
         }
-        
+
         return parent::getPath();
     }
 }

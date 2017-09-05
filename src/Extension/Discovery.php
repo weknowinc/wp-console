@@ -85,8 +85,8 @@ class Discovery
                 return $plugins;
             } else {
                 /**
- * WordPress Plugin Administration API
-*/
+                 * WordPress Plugin Administration API
+                 */
                 $this->site->loadLegacyFile('wp-admin/includes/plugin.php');
                 $plugins = $this->site->getPlugins();
                 $this->fileCache->set($type, $plugins);
@@ -97,8 +97,8 @@ class Discovery
                 return $themes;
             } else {
                 /**
- * WordPress Theme Administration API
-*/
+                 * WordPress Theme Administration API
+                 */
                 $this->site->loadLegacyFile('wp-includes/theme.php');
                 $themes = $this->site->getThemes();
                 $this->fileCache->set($type, $themes);

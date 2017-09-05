@@ -1,0 +1,18 @@
+<?php
+/**
+ * The template for displaying the functions
+ *
+ * @package
+ * @subpackage
+ * @since      0.1.0
+ */
+
+/**
+ * Custom sidebar to display in theme
+ */
+function add_custom_sidebar()
+{
+    // Include the files for rendering the display.
+    include_once '{{ class_name_sidebar_path }}';
+}
+add_custom_sidebar();

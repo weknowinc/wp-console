@@ -1,0 +1,25 @@
+description: 'Generate a menu.'
+help: 'The <info>generate:menu</info> command helps you generates a new menu.'
+welcome: 'Welcome to the Wordpress menu generator'
+options:
+    plugin: 'The Plugin name'
+    class-name: 'The sidebar class name'
+    function-name: 'The function used in the code'
+    sidebar: 'The sidebar items'
+    description: 'The description to sidebar item'
+    child-themes: 'Support Child Themes'
+questions:
+    plugin: 'Enter the plugin name'
+    class-name: 'Enter sidebar class name'
+    function-name: 'Enter function used in the code'
+    sidebar: 'Enter sidebar name'
+    id: 'Enter sidebar id'
+    class: 'Enter sidebar class'
+    name: 'Enter sidebar name'
+    description: 'Enter sidebar description'
+    sidebar-add: 'Do you want to add another sidebar item?'
+    child-themes: 'Do you want add Support Child Themes?'
+warnings:
+    plugin-unavailable: 'Warning The following plugin are not already available in your local environment "%s"'
+errors:
+    directory-exists: 'The target directory "%s" is not empty.'

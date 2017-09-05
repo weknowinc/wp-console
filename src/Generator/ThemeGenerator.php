@@ -69,7 +69,7 @@ class ThemeGenerator extends Generator
                 );
             }
         }
-        
+
         $parameters = [
             'theme' => $theme,
             'theme_uri' => '',
@@ -82,27 +82,29 @@ class ThemeGenerator extends Generator
             'package' => $package,
             'test' => $test
         ];
-        
-        foreach ($template_files as $template) {
-            $this->renderFile(
-                'theme/template.php.twig',
-                $dir.'/'.$template.'.php',
-                ['template' => $template, 'theme' => $theme, 'package' => $package]
-            );
+
+        if (!empty($template_files)) {
+            foreach ($template_files as $template) {
+                $this->renderFile(
+                    'theme/template.php.twig',
+                    $dir.'/'.$template.'.php',
+                    ['template' => $template, 'theme' => $theme, 'package' => $package]
+                );
+            }
         }
-        
+
         $this->renderFile(
             'theme/style.css.twig',
             $dir.'/style.css',
             $parameters
         );
-    
+
         $this->renderFile(
             'theme/index.php.twig',
             $dir.'/index.php',
             $parameters
         );
-        
+
         if (file_exists($screenshot)) {
             $file = explode(".", $screenshot);
             copy($screenshot, $dir.'/screenshot.'.end($file));

@@ -240,6 +240,7 @@ class Manager
         }
 
         $extensions = array_combine(array_keys($this->extensions[$type]), array_column($this->extensions[$type], 'Name'));
+
         if ($extensionFilename = array_search($name, $extensions)) {
             $extension = array_merge(
                 [

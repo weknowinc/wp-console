@@ -97,6 +97,11 @@ class Extension implements \Serializable
             $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'plugins';
         }
 
+        if ($this->type == 'theme') {
+            $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'themes';
+            return $parentDir . DIRECTORY_SEPARATOR . $this->pathname;
+        }
+
         return $parentDir . DIRECTORY_SEPARATOR . dirname($this->pathname);
     }
 
@@ -111,6 +116,9 @@ class Extension implements \Serializable
             $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'plugins';
         }
 
+        if ($this->type == 'theme') {
+            $parentDir = basename(WP_CONTENT_DIR)  . DIRECTORY_SEPARATOR . 'themes';
+        }
         return $parentDir . DIRECTORY_SEPARATOR . $this->pathname;
     }
 

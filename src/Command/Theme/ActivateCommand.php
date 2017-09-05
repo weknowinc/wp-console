@@ -30,32 +30,32 @@ class ActivateCommand extends Command
 {
     use CommandTrait;
     use ThemeTrait;
-    
+
     /**
      * @var Site
      */
     protected $site;
-    
+
     /**
      * @var Validator
      */
     protected $validator;
-    
+
     /**
      * @var Manager
      */
     protected $extensionManager;
-    
+
     /**
      * @var string
      */
     protected $appRoot;
-    
+
     /**
      * @var ChainQueue
      */
     protected $chainQueue;
-    
+
     /**
      * InstallCommand constructor.
      *
@@ -79,7 +79,7 @@ class ActivateCommand extends Command
         $this->chainQueue = $chainQueue;
         parent::__construct();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -95,40 +95,37 @@ class ActivateCommand extends Command
             )
             ->setAliases(['ta']);
     }
-    
+
     /**
      * {@inheritdoc}
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-        
+
         $theme = $input->getArgument('theme');
         if (!$theme) {
             $theme = $this->themeQuestion($io, false);
             $input->setArgument('theme', $theme);
         }
     }
-    
+
     /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-        
+
         $theme = $input->getArgument('theme');
-        
+
         try {
             $extensions = $this->extensionManager->discoverthemes()->showDeactivated()->getList();
-            foreach ($extensions as $key => $value) {
-                if ($value->get('Name') == $theme) {
-                    $theme = $value->stylesheet;
-                }
-            }
-            
-            $this->site->activateTheme($theme);
-            
+            $extensions = array_combine(array_keys($extensions), array_column($extensions, 'Name'));
+
+            $themeFile = array_search($theme, $extensions);
+            $this->site->activateTheme($themeFile);
+
             $io->success(
                 sprintf(
                     $this->trans('commands.theme.activate.messages.success'),
@@ -137,10 +134,10 @@ class ActivateCommand extends Command
             );
         } catch (\Exception $e) {
             $io->error($e->getMessage());
-            
+
             return 1;
         }
-        
+
         // $this->chainQueue->addCommand('cache:rebuild', ['cache' => 'all']);
     }
 }
