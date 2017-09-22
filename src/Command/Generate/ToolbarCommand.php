@@ -7,7 +7,6 @@
 
 namespace WP\Console\Command\Generate;
 
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -106,7 +105,7 @@ class ToolbarCommand extends Command
         $io = new WPStyle($input, $output);
 
         $plugin = $input->getOption('plugin');
-        $class_name = $input->getOption('class-name');
+        $class_name = $this->validator->validateClassName($input->getOption('class-name'));
         $menu_items = $input->getOption('menu-items');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
@@ -154,7 +153,6 @@ class ToolbarCommand extends Command
         if (!$menu_items) {
             $menu_items = [];
             while (true) {
-
                 $toolbar_id = $io->ask($this->trans('commands.generate.toolbar.questions.id'));
                 $parent_id = $io->ask($this->trans('commands.generate.toolbar.questions.parent'));
                 $title = $io->ask($this->trans('commands.generate.toolbar.questions.title'));
@@ -180,7 +178,7 @@ class ToolbarCommand extends Command
                         }
                     }
 
-                    if(!empty($meta)){
+                    if (!empty($meta)) {
                         $options['meta'] = $meta;
                     }
                 }
@@ -190,7 +188,7 @@ class ToolbarCommand extends Command
                     unset($options['group']);
                 }
 
-                array_push( $menu_items, $options );
+                array_push($menu_items, $options);
 
                 if (!$io->confirm(
                     $this->trans('commands.generate.toolbar.questions.menu-add'),

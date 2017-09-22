@@ -121,7 +121,7 @@ class SidebarCommand extends Command
         $io = new WPStyle($input, $output);
 
         $theme = $input->getOption('theme');
-        $function_name = $input->getOption('function-name');
+        $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $sidebar_items = $input->getOption('sidebar-items');
         $child_themes = $input->getOption('child-themes');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
@@ -159,7 +159,10 @@ class SidebarCommand extends Command
         if (!$function_name) {
             $function_name = $io->ask(
                 $this->trans('commands.generate.sidebar.questions.function-name'),
-                'custom_sidebar'
+                'custom_sidebar',
+                function ($function_name) {
+                    return $this->validator->validateFunctionName($function_name);
+                }
             );
             $input->setOption('function-name', $function_name);
         }
