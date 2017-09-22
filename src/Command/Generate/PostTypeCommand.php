@@ -213,8 +213,8 @@ class PostTypeCommand extends Command
         }
 
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
-        $class_name = $input->getOption('class-name');
-        $function_name = $input->getOption('function-name');
+        $class_name = $this->validator->validateClassName($input->getOption('class-name'));
+        $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $post_type_key = $input->getOption('post-type-key');
         $description = $input->getOption('description');
         $singular_name = $input->getOption('singular-name');
@@ -289,7 +289,10 @@ class PostTypeCommand extends Command
         if (!$function_name) {
             $function_name = $io->ask(
                 $this->trans('commands.generate.post.type.questions.function-name'),
-                $stringUtils->camelCaseToUnderscore($class_name)
+                $stringUtils->camelCaseToUnderscore($class_name),
+                function ($function_name) {
+                    return $this->validator->validateFunctionName($function_name);
+                }
             );
             $input->setOption('function-name', $function_name);
         }
@@ -351,7 +354,7 @@ class PostTypeCommand extends Command
                 $this->trans('commands.generate.post.type.questions.hierarchical'),
                 true
             );
-            $input->setOption('hierarchical', ($hierarchical) ? 'true' : 'false' );
+            $input->setOption('hierarchical', ($hierarchical) ? 'true' : 'false');
         }
 
         // --exclude from search

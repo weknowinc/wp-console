@@ -11,6 +11,7 @@ use WP\Console\Extension\Manager;
 
 class Validator
 {
+    const REGEX_FUNCTION_NAME = '/^[a-z_\x7f-\xff]+$/';
     const REGEX_CLASS_NAME = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+$/';
     const REGEX_COMMAND_CLASS_NAME = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+Command$/';
     const REGEX_MACHINE_NAME = '/^[a-z0-9_]+$/';
@@ -35,6 +36,20 @@ class Validator
             return $plugin;
         } else {
             throw new \InvalidArgumentException(sprintf('Plugin name "%s" is invalid.', $plugin));
+        }
+    }
+
+    public function validateFunctionName($function_name)
+    {
+        if (preg_match(self::REGEX_FUNCTION_NAME, $function_name)) {
+            return $function_name;
+        } else {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Function name "%s" is invalid, it must starts with a lowercase letter or underscore, followed by any number of lowercase letters, or underscores.',
+                    $function_name
+                )
+            );
         }
     }
 

@@ -165,10 +165,10 @@ class MetaBoxCommand extends Command
         }
         
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
-        $class_name = $input->getOption('class-name');
+        $class_name = $this->validator->validateClassName($input->getOption('class-name'));
         $metabox_id = $input->getOption('metabox-id');
         $title = $input->getOption('title');
-        $callback_function = $input->getOption('callback-function');
+        $callback_function = $this->validator->validateFunctionName($input->getOption('callback-function'));
         $screen = $input->getOption('screen');
         $page_location = $input->getOption('page-location');
         $priority = $input->getOption('priority');
@@ -249,7 +249,10 @@ class MetaBoxCommand extends Command
         if (!$callback_function) {
             $callback_function = $io->ask(
                 $this->trans('commands.generate.metabox.questions.callback-function'),
-                str_replace(' ', '_', $plugin) .'_meta_box_callback'
+                str_replace(' ', '_', $plugin) .'_meta_box_callback',
+                function ($function_name) {
+                    return $this->validator->validateFunctionName($function_name);
+                }
             );
             $input->setOption('callback-function', $callback_function);
         }
@@ -386,7 +389,6 @@ class MetaBoxCommand extends Command
                 ) {
                     $multi_selection = $this->multiSelection($io, $type);
                 }
-
             }
 
             array_push(

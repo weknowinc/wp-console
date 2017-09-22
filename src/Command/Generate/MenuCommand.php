@@ -117,8 +117,8 @@ class MenuCommand extends Command
         $io = new WPStyle($input, $output);
 
         $plugin = $input->getOption('plugin');
-        $class_name = $input->getOption('class-name');
-        $function_name = $input->getOption('function-name');
+        $class_name = $this->validator->validateClassName($input->getOption('class-name'));
+        $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $menu_items = $input->getOption('menu-items');
         $child_themes = $input->getOption('child-themes');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
@@ -169,7 +169,10 @@ class MenuCommand extends Command
         if (!$function_name) {
             $function_name = $io->ask(
                 $this->trans('commands.generate.menu.questions.function-name'),
-                $this->stringConverter->camelCaseToUnderscore($class_name)
+                $this->stringConverter->camelCaseToUnderscore($class_name),
+                function ($function_name) {
+                    return $this->validator->validateFunctionName($function_name);
+                }
             );
             $input->setOption('function-name', $function_name);
         }

@@ -192,8 +192,8 @@ class TaxonomyCommand extends Command
         }
         
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
-        $class_name = $input->getOption('class-name');
-        $function_name = $input->getOption('function-name');
+        $class_name = $this->validator->validateClassName($input->getOption('class-name'));
+        $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $taxonomy_key = $input->getOption('taxonomy-key');
         $singular_name = $input->getOption('singular-name');
         $plural_name = $input->getOption('plural-name');
@@ -260,7 +260,10 @@ class TaxonomyCommand extends Command
         if (!$function_name) {
             $function_name = $io->ask(
                 $this->trans('commands.generate.taxonomy.questions.function-name'),
-                $stringUtils->camelCaseToUnderscore($class_name)
+                $stringUtils->camelCaseToUnderscore($class_name),
+                function ($function_name) {
+                    return $this->validator->validateFunctionName($function_name);
+                }
             );
             $input->setOption('function-name', $function_name);
         }

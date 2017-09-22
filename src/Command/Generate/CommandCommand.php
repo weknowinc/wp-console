@@ -7,7 +7,6 @@
 
 namespace WP\Console\Command\Generate;
 
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -117,7 +116,7 @@ class CommandCommand extends Command
         $pluginNameSpace = $this->stringConverter->humanToCamelCase($plugin);
         $pluginCamelCaseMachineName = $this->stringConverter->createMachineName($this->stringConverter->humanToCamelCase($plugin));
 
-        $class = $input->getOption('class');
+        $class = $this->validator->validateCommandName($input->getOption('class'));
         $name = $input->getOption('name');
         $services = $input->getOption('services');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
@@ -173,7 +172,8 @@ class CommandCommand extends Command
         if (!$name) {
             $name = $io->ask(
                 $this->trans('commands.generate.command.questions.name'),
-                sprintf('%s:default',
+                sprintf(
+                    '%s:default',
                     $this->stringConverter->createMachineName(
                         $this->stringConverter->humanToCamelCase($plugin)
                     )
@@ -183,10 +183,9 @@ class CommandCommand extends Command
         }
 
         $services = $input->getOption('services');
-        if(empty($services)) {
+        if (empty($services)) {
             $services = $this->servicesQuestion($io);
             $input->setOption('services', $services);
         }
-
     }
 }
