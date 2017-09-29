@@ -18,7 +18,7 @@ function {{ function_name }}() {
             QTags.addButton({% for key, value in item %}{% if key == "priority" %}{{ value }},{% else %}'{{ value }}',{% endif %}{% endfor %});
 {% endfor %}
         </script>
-        {#<?php#}
+        <?php
     }
 }
 add_action( 'admin_print_footer_scripts', '{{ function_name }}' );
