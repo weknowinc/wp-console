@@ -47,3 +47,8 @@ services:
       arguments: ['@console.extension_manager']
       tags:
         - { name: wordpress.generator }
+  console.quicktag_generator:
+      class: WP\Console\Generator\QuickTagGenerator
+      arguments: ['@console.extension_manager']
+      tags:
+        - { name: wordpress.generator }

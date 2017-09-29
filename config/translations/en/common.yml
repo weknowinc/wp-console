@@ -1,6 +1,7 @@
 options:
     plugin: 'The plugin name.'
     extension: 'The extension name.'
+    extension-type: 'The extension type.'
     services: 'Load services from the container.'
 status:
   checked: 'Yes'
@@ -15,6 +16,8 @@ questions:
     confirm: 'Do you confirm generation?'
     plugin: 'Enter the plugin name'
     theme: 'Enter the theme name'
+    extension: 'Enter the extension name'
+    extension-type: 'Enter the extension type'
     services:
             confirm: 'Do you want to load services from the container'
             message: "\nType the service name or use keyup or keydown.\nThis is optional, press <info>enter</info> to <info>continue</info>\n"

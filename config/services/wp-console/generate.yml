@@ -49,3 +49,8 @@ services:
       arguments: ['@console.sidebar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
       tags:
         - { name: wordpress.command }
+  console.generate_quicktag:
+      class: WP\Console\Command\Generate\QuickTagCommand
+      arguments: ['@console.quicktag_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+      tags:
+        - { name: wordpress.command }
