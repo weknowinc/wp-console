@@ -123,4 +123,18 @@
     }
     add_toolbar_{{ class_name_toolbar }}();
 {% endif %}
+{% if class_name_quicktag_path is defined %}
+    /**
+    * Starts the custom quicktag
+    */
+    function add_plugin_custom_quicktag()
+    {
+        wp_enqueue_script(
+            'add_plugin_custom_quicktag',
+            plugin_dir_url(__FILE__) . '{{ class_name_quicktag_path }}',
+            array('quicktags')
+        );
+    }
+    add_action('admin_print_scripts', 'add_plugin_custom_quicktag');
+{% endif %}
 {%- endblock -%}

@@ -1,0 +1,23 @@
+description: 'Generate a quicktag.'
+help: 'The <info>generate:quicktag</info> command helps you generates a new quicktag.'
+welcome: 'Welcome to the Wordpress quicktag generator'
+options:
+    extension: 'The name of the Extension (that will contain the command).'
+    function-name: 'The function used in the code'
+    quicktag-name: 'The quicktag items.'
+questions:
+    extension: 'Enter the extension name'
+    function-name: 'Enter function used in the code'
+    id: 'Enter the html id for the button.'
+    display: 'Enter the html value for the button.'
+    starting-tag: 'Enter the HTML starting tag or a callback function.'
+    ending-tag: 'Enter the HTML ending tag.'
+    key: 'Enter the shortcut access key for the button.'
+    title: 'Enter the html title value for the button.'
+    priority: 'Enter the button position in the toolbar.'
+    instance: 'Enter the limit the button to a specific instance of quicktags.'
+    quicktag-add: 'Do you want to add another quicktag item?'
+warnings:
+    plugin-unavailable: 'Warning The following plugin are not already available in your local environment "%s"'
+errors:
+    directory-exists: 'The target directory "%s" is not empty.'

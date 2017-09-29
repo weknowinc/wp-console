@@ -1,0 +1,3 @@
+{% for item in quicktag_items %}
+edButtons[edButtons.length] = new edButton({% for key, value in item %}{% if key == "priority" %}{{ value }},{% else %}'{{ value }}',{% endif %}{% endfor %});
+{% endfor %}
