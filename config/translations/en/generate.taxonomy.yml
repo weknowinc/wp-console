@@ -19,7 +19,7 @@ options:
     update-count-callback: 'A function name that will be called when the count of an associated Post Type is updated'
 questions:
     plugin: 'Enter the plugin name'
-    field-metabox-add: 'Do you want to add another field metabox'
+    field-metabox-add: 'Do you want to add another field Metabox'
     class-name: 'Enter taxonomy class name'
     function-name: 'Enter function used in the code'
     taxonomy_key: 'Enter taxonomy key used in the code'

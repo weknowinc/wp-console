@@ -64,44 +64,60 @@ class MetaBoxGenerator extends Generator
         $auto_save
     ) {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
+        $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
         $parameters = [
-            'plugin' => $plugin,
-            'metabox_class_name' => $class_name,
-            'metabox_id' => $metabox_id,
-            'title' => $title,
-            'callback_function' => $callback_function,
-            'screen' => $screen,
-            'page_location' => $page_location,
-            'priority' => $priority,
-            'fields_metabox' => $fields_metabox,
-            'wp_nonce' => $wp_nonce,
-            'auto_save' => $auto_save,
-            'class_name_metabox_path' => 'admin/' . lcfirst($class_name) . '-metabox.php',
-            'file_exists' => file_exists($pluginFile)
+            "plugin" => $plugin,
+            "class_name" => $class_name,
+            "metabox_id" => $metabox_id,
+            "title" => $title,
+            "callback_function" => $callback_function,
+            "screen" => $screen,
+            "page_location" => $page_location,
+            "priority" => $priority,
+            "fields_metabox" => $fields_metabox,
+            "wp_nonce" => $wp_nonce,
+            "auto_save" => $auto_save,
+            "class_name_path" => 'Metabox/' . lcfirst($class_name) . '.php',
+            "admin_metabox_path" => 'admin/partials/metaboxes-admin.php',
+            "file_exists" => file_exists($pluginFile),
+            "command_name" => 'metabox'
         ];
-        
-        $file = $this->extensionManager->getPlugin($plugin)->getPath().'/admin/'.lcfirst($class_name).'-metabox.php';
-        if (file_exists($file)) {
-            if (!is_dir($file)) {
+
+        $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
+        $file_path_admin = $dir.'/'.$parameters['admin_metabox_path'];
+
+        if (file_exists($file_path)) {
+            if (!is_dir($file_path)) {
                 throw new \RuntimeException(
                     sprintf(
-                        'Unable to generate the metaboxs , it already exist at "%s"',
-                        realpath($file)
+                        'Unable to generate the metaboxes , it already exist at "%s"',
+                        realpath($file_path)
                     )
                 );
             }
         }
+
+        if (!file_exists($file_path_admin)) {
+            $this->renderFile(
+                'plugin/plugin.php.twig',
+                $pluginFile,
+                $parameters,
+                FILE_APPEND
+            );
+        }
         
         $this->renderFile(
-            'plugin/src/metabox/class-metabox.php.twig',
-            $file,
+            'plugin/src/Metabox/class-metabox.php.twig',
+            $file_path,
             $parameters
         );
-        
+
+        $parameters['admin_file_exists'] = file_exists($file_path_admin);
+
         $this->renderFile(
-            'plugin/plugin.php.twig',
-            $pluginFile,
+            'plugin/src/class-admin.php.twig',
+            $file_path_admin,
             $parameters,
             FILE_APPEND
         );

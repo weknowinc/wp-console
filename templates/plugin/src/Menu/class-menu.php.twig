@@ -1,0 +1,29 @@
+{% extends "base/class.php.twig" %}
+{% block class_declaration %}
+/**
+ * Represents a menu to be displayed.
+ */
+class {{ class_name }} {% endblock -%}
+{% block class_methods %}
+    public function init() {
+{% if child_theme %}
+        if ( ! function_exists( '{{ function_name }}' )) {
+            add_action( 'init', array( $this, '{{ function_name }}'));
+        }
+{% else %}
+        add_action( 'init', array( $this, '{{ function_name }}'));
+{% endif %}
+    }
+
+    // Register Navigation Menus
+    function {{ function_name }}() {
+
+        $locations = array(
+{% for label in menu_items %}
+            '{{ label.menu }}'  => __('{{ label.description }}', 'text_domain'),
+{% endfor %}
+        );
+        register_nav_menus( $locations );
+    }
+{%- endblock -%}
+

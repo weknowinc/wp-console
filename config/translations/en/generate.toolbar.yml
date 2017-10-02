@@ -3,11 +3,11 @@ help: 'The <info>generate:menu</info> command helps you generates a new toolbar.
 welcome: 'Welcome to the Wordpress toolbar generator'
 options:
     plugin: 'The Plugin name'
-    class-name: 'The toolbar class name'
+    function-name: 'The toolbar function name'
     menu: 'The menu items'
 questions:
     plugin: 'The plugin name.'
-    class-name: 'Enter menu class name'
+    function-name: 'Enter menu function name'
     menu: 'Do you want to add menu to toolbar?'
     id: 'Enter the ID of the menu'
     parent: 'Enter the ID of the parent menu'

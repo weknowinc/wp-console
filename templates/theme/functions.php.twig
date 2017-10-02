@@ -1,3 +1,4 @@
+{%- if not function_exists -%}
 <?php
 /**
  * The template for displaying the functions
@@ -6,8 +7,10 @@
  * @subpackage
  * @since      0.1.0
  */
+{%- endif -%}
 
-{% if class_name_sidebar_path is defined %}
+{%- if not file_exists and class_name_sidebar_path is defined -%}
+
 /**
  * Custom sidebar to display in theme
  */
@@ -17,9 +20,10 @@ function add_custom_sidebar()
     include_once '{{ class_name_sidebar_path }}';
 }
 add_custom_sidebar();
-{% endif %}
+{%- endif -%}
 
-{% if class_name_quicktag_path is defined %}
+{%- if class_name_quicktag_path is defined -%}
+
 /**
  * Custom quicktag to display in theme
  */
@@ -29,4 +33,4 @@ function add_theme_custom_quicktag()
     include_once '{{ class_name_quicktag_path }}';
 }
 add_theme_custom_quicktag();
-{% endif %}
+{%- endif -%}

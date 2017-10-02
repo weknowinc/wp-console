@@ -1,37 +1,38 @@
-{% extends "base/class.php.twig" %}
-
-{% block class_declaration %}
-    /**
-    * Represents a toolbar to be displayed.
-    */
-    class {{ class_name_toolbar }} {% endblock -%}
-{% block class_methods %}
-    public function init() {
-        add_action( 'init', array( $this, 'wp_before_admin_bar_render', 'custom_toolbar', 999));
-    }
-
-    // Add Toolbar Menus
-    function custom_toolbar() {
+{% extends "base/file.php.twig" %}
+{% block extra_info %}
+{% if not admin_file_exists %}
+  * Functions with custom class {{ command_name }}
+{%- endif -%}
+{%- endblock -%}
+{% block file_docblock %}
+{% if not admin_file_exists %}
+{{ parent() }}
+{%- endif -%}
+{%- endblock -%}
+{% block file_methods %}
+// Display Toolbar
+function {{ function_name }}() {
     global $wp_admin_bar;
 {% if menu is defined %}
 {% for item in menu %}
-        $args = array(
+    $args = array(
 {% for key, value in item %}
 {% if key == 'title' %}
-            '{{ key }}'  => __('{{ value }}', 'text_domain'),
+        '{{ key }}'  => __('{{ value }}', 'text_domain'),
 {% elseif key == 'meta' %}
-            'meta' => array(
+        'meta' => array(
 {% for index, metas in value %}
-                '{{ index }}'  => '{{ metas }}',
+            '{{ index }}'  => '{{ metas }}',
 {% endfor %}
-            ),
+        ),
 {% else %}
-            '{{ key }}'  => '{{ value }}',
+        '{{ key }}'  => '{{ value }}',
 {% endif %}
 {% endfor %}
-        );
+    );
 {% endfor %}
-        $wp_admin_bar->add_menu( $args );
+    $wp_admin_bar->add_menu( $args );
 {% endif %}
-    }
+}
+add_action( 'wp_before_admin_bar_render', '{{ function_name }}', 999 );
 {%- endblock -%}

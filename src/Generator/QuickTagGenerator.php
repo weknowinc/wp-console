@@ -55,49 +55,56 @@ class QuickTagGenerator extends Generator
         $quicktag_items,
         $site
     ) {
-        if ($extension_type == "plugin") {
-            $extensionFile = $this->extensionManager->getPlugin($extension);
-            $dir = 'admin/js/QuickTag/quicktags.js';
-            $renderArray =['/plugin.php', 'src/QuickTag/quicktag.js', ''];
-        } else {
-            $extensionFile = $this->extensionManager->getTheme($extension);
-            $dir = 'src/QuickTag/quicktags.php';
-            $renderArray = ['/functions.php', 'src/QuickTag/quicktag.php', '/functions.php' ];
-        }
+
+        $extensionObject = $this->extensionManager->getWPExtension($extension_type, $extension);
+
+        $extensionFiles = [
+            "plugin" =>
+                [
+                    "dir"=> 'admin/js/QuickTag/quicktags.js',
+                    "render" => ['/plugin.php', 'src/QuickTag/quicktag.js', '']
+                ],
+            "theme" =>
+                [
+                    "dir"=> 'src/QuickTag/quicktags.php',
+                    "render" => ['/functions.php', 'src/QuickTag/quicktag.php', '/functions.php' ]
+                ]
+        ];
 
         $parameters = [
             $extension_type => $extension,
-            'function_name' => $function_name,
-            'quicktag_items' => $quicktag_items,
-            'class_name_quicktag_path' => $dir,
-            'file_exists' => file_exists($extensionFile->getPathname()),
-            'file_exists_quicktag' => file_exists($extensionFile->getPath().'/'.$dir)
+            "function_name" => $function_name,
+            "quicktag_items" => $quicktag_items,
+            "class_name_quicktag_path" => $extensionFiles[$extension_type]['dir'],
+            "file_exists" => file_exists($extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir']),
+            "function_exists" => file_exists($extensionObject->getPath().$extensionFiles['theme']['render'])
         ];
+        var_dump(file_exists($extensionObject->getPath().$extensionFiles['theme']['render']));
 
-        $site->loadLegacyFile($extensionFile->getPath().'/'.$dir);
+        $site->loadLegacyFile($extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir']);
 
         if (function_exists($function_name) && $extension_type == "theme") {
             throw new \RuntimeException(
                 sprintf(
                     'Unable to generate the quicktag , The function name already exist at "%s"',
-                    realpath($extensionFile->getPath().'/'.$dir)
+                    realpath($extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir'])
                 )
             );
         }
 
 
-        if (!file_exists($extensionFile->getPath().'/'.$dir)) {
+        if (!file_exists($extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir'])) {
             $this->renderFile(
-                $extension_type.$renderArray[0].'.twig',
-                $extensionFile->getPathname().$renderArray[2],
+                $extension_type.$extensionFiles[$extension_type]['render'][0].'.twig',
+                $extensionObject->getPathname().$extensionFiles[$extension_type]['render'][2],
                 $parameters,
                 FILE_APPEND
             );
         }
 
         $this->renderFile(
-            $extension_type.'/'.$renderArray[1].'.twig',
-            $extensionFile->getPath().'/'.$dir,
+            $extension_type.'/'.$extensionFiles[$extension_type]['render'][1].'.twig',
+            $extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir'],
             $parameters,
             FILE_APPEND
         );
