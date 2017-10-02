@@ -1,140 +1,125 @@
 {% extends "base/file.php.twig" %}
-{% block extra_info %}
-{% if not file_exists %}
-{% if plugin_uri is defined %}
-    * Plugin Name:     {{plugin}}
-    * Plugin URI:      {{plugin_uri}}
-    * Description:     {{description}}
-    * Author:          {{author}}
-    * Author URI:      {{author_uri}}
-    * Text Domain:     {{plugin}}
-    * Domain Path:     /languages
-    * Version:         0.1.0
-    *
-    * @package         {{package}}
-{% endif %}
-{% endif %}
+{%- block extra_info -%}
+{%- if not file_exists -%}
+{%- if plugin_uri is defined -%}
+ * Plugin Name:     {{plugin}}
+ * Plugin URI:      {{plugin_uri}}
+ * Description:     {{description}}
+ * Author:          {{author}}
+ * Author URI:      {{author_uri}}
+ * Text Domain:     {{plugin}}
+ * Domain Path:     /languages
+ * Version:         0.1.0
+ *
+ * @package         {{package}}
+{%- endif -%}
+{%- endif -%}
 {%- endblock -%}
-{% block file_docblock %}
-{% if not file_exists %}
- {{ parent() }}
-{% endif %}
+{%- block file_docblock -%}
+{%- if not file_exists -%}
+{{ parent() }}
+{%- endif -%}
 {%- endblock -%}
-{% block file_methods %}
-{% if activate is defined and activate %}
-    /**
-    * The code that runs during plugin activation.
-    * This action is documented in {{ class_name_activator_path }}
-    */
-    function activate_{{ machine_name }}()
-    {
-        require_once plugin_dir_path( __FILE__ ) . '{{ class_name_activator_path }}';
-        {{ class_name_activator }}::activate();
-    }
+{%- block file_methods -%}
+{%- if activate is defined and activate -%}
 
-    register_activation_hook( __FILE__, 'activate_{{ machine_name }}' );
-{% endif -%}
-{% if deactivate is defined and deactivate %}
-    /**
-    * The code that runs during plugin deactivation.
-    * This action is documented in {{ class_name_deactivator_path }}
-    */
-    function deactivate_{{ machine_name }}()
-    {
-        require_once plugin_dir_path( __FILE__ ) . '{{ class_name_deactivator_path }}';
-        {{ class_name_deactivator }}::deactivate();
-    }
+/**
+ * The code that runs during plugin activation.
+ * This action is documented in {{ class_name_activator_path }}
+ */
+function activate_{{ machine_name }}()
+{
+    require_once plugin_dir_path( __FILE__ ) . '{{ class_name_activator_path }}';
+    {{ class_name_activator }}::activate();
+}
+register_activation_hook( __FILE__, 'activate_{{ machine_name }}' );
+{%- endif -%}
+{%- if deactivate is defined and deactivate -%}
 
-    register_deactivation_hook( __FILE__, 'deactivate_{{ machine_name }}' );
-{% endif -%}
-{% if metabox_class_name is defined %}
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in {{ class_name_deactivator_path }}
+ */
+function deactivate_{{ machine_name }}()
+{
+    require_once plugin_dir_path( __FILE__ ) . '{{ class_name_deactivator_path }}';
+    {{ class_name_deactivator }}::deactivate();
+}
+register_deactivation_hook( __FILE__, 'deactivate_{{ machine_name }}' );
+{%- endif -%}
+{%- if admin_metabox_path is defined -%}
 
+/**
+ * This function render all metaboxes that are in admin/partials/metabox-admin.php
+ */
+function add_customs_metaboxes()
+{
     // Include the files for rendering the display.
-    include_once( '{{ class_name_metabox_path }}' );
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_metabox_path }}';
+}
+add_customs_metaboxes();
+{%- endif -%}
+{%- if admin_taxonomy_path is defined -%}
 
-    /**
-    * Starts the plugin by initializing the meta box {{ screen }}, its display, and then
-    * sets the plugin in motion.
-    */
-    function add_metabox_{{ metabox_class_name }}_{{ screen }}()
-    {
-        $meta_box = new {{ metabox_class_name }}();
-        $meta_box->init();
-    }
-
-    add_metabox_{{ metabox_class_name }}_{{ screen }}();
-{% endif -%}
-{% if class_name_taxonomy is defined %}
+/**
+ * This function render all taxonomies that are in admin/partials/taxonomies-admin.php
+ */
+function add_customs_taxonomies()
+{
     // Include the files for rendering the display.
-    include_once( '{{ class_name_taxonomy_path }}' );
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_taxonomy_path }}';
+}
+add_customs_taxonomies();
+{%- endif -%}
+{%- if admin_post_type_path is defined -%}
 
-    /**
-    * Starts the custom taxonomy
-    */
-    function add_custom_taxonomy_{{ class_name_taxonomy }}()
-    {
-        $taxonomy = new {{ class_name_taxonomy }}();
-        $taxonomy->init();
-    }
-
-    add_custom_taxonomy_{{ class_name_taxonomy }}();
-{% endif -%}
-{% if class_name_post_type is defined %}
+/**
+ * This function render all post_types that are in admin/partials/post-types-admin.php
+ */
+function add_customs_post_types()
+{
     // Include the files for rendering the display.
-    include_once( '{{ class_name_post_type_path }}' );
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_post_type_path }}';
+}
+add_customs_post_types();
+{%- endif -%}
+{%- if admin_menu_path is defined -%}
 
-    /**
-    * Starts the custom post type
-    */
-    function add_custom_post_type_{{ class_name_post_type }}()
-    {
-        $post_type = new {{ class_name_post_type }}();
-        $post_type->init();
-    }
+/**
+ * This function render all menus that are in admin/partials/menus-admin.php
+ */
+function add_customs_menus()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_menu_path }}';
+}
+add_customs_menus();
+{%- endif -%}
+{%- if admin_toolbar_path is defined -%}
 
-    add_custom_post_type_{{ class_name_post_type }}();
-{% endif -%}
-{% if class_name_menu is defined %}
+/**
+ * This function render all toolbars that are in admin/partials/toolbars-admin.php
+ */
+function add_customs_toolbars()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_toolbar_path }}';
+}
+add_customs_toolbars();
+{%- endif -%}
+{%- if class_name_quicktag_path is defined -%}
 
-    /**
-    * Create a menu,
-    * This action is documented in {{ class_name_menu_path }}
-    */
-    function add_menu_{{ class_name_menu }}()
-    {
-        // Include the files for rendering the display.
-        include_once( '{{ class_name_menu_path }}' );
-
-        $menu = new {{ class_name_menu }}();
-        $menu->init();
-    }
-    add_menu_{{ class_name_menu }}();
-{% endif -%}
-{% if class_name_toolbar is defined %}
-    /**
-     * Starts the custom toolbar
-     */
-    function add_toolbar_{{ class_name_toolbar }}()
-    {
-        // Include the files for rendering the display.
-        include_once( '{{ class_name_toolbar_path }}' );
-        $toolbar = new {{ class_name_toolbar }}();
-        $toolbar->init();
-    }
-    add_toolbar_{{ class_name_toolbar }}();
-{% endif %}
-{% if class_name_quicktag_path is defined %}
-    /**
-    * Starts the custom quicktag
-    */
-    function add_plugin_custom_quicktag()
-    {
-        wp_enqueue_script(
-            'add_plugin_custom_quicktag',
-            plugin_dir_url(__FILE__) . '{{ class_name_quicktag_path }}',
-            array('quicktags')
-        );
-    }
-    add_action('admin_print_scripts', 'add_plugin_custom_quicktag');
-{% endif %}
+/**
+ * Starts the custom quicktag
+ */
+function add_plugin_custom_quicktag()
+{
+    wp_enqueue_script(
+        'add_plugin_custom_quicktag',
+        plugin_dir_url(__FILE__) . '{{ class_name_quicktag_path }}',
+        array('quicktags')
+    );
+}
+add_action('admin_print_scripts', 'add_plugin_custom_quicktag');
+{%- endif -%}
 {%- endblock -%}

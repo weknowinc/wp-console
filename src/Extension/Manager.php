@@ -230,6 +230,17 @@ class Manager
     /**
      * @param string $type
      * @param string $name
+     * @return \WP\Console\Extension\Extension
+     */
+    public function getWPExtension($type, $name)
+    {
+        $extension = $this->getExtension($type, $name);
+        return $this->createExtension($extension);
+    }
+
+    /**
+     * @param string $type
+     * @param string $name
      *
      * @return \WP\Core\Extension\Extension
      */

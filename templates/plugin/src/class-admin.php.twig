@@ -1,0 +1,27 @@
+{% extends "base/file.php.twig" %}
+{%- block extra_info -%}
+{%- if not admin_file_exists -%}
+ * Functions with custom class {{ command_name }}
+{%- endif -%}
+{%- endblock -%}
+{%- block file_docblock -%}
+{%- if not admin_file_exists -%}
+{{ parent() }}
+{%- endif -%}
+{%- endblock -%}
+{%- block file_methods -%}
+
+/**
+* Return a custom {{ command_name }} class
+* This action is documented in {{ class_name_path }}
+*/
+function add_{{ command_name }}_{{ class_name }}()
+{
+// Include the files for rendering the display.
+include_once plugin_dir_path( __FILE__ ) . '{{ class_name_path }}';
+
+$item = new {{ class_name }}();
+$item->init();
+}
+add_{{ command_name }}_{{ class_name }}();
+{%- endblock -%}

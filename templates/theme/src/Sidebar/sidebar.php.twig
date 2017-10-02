@@ -1,13 +1,13 @@
 {% extends "base/file.php.twig" %}
 {% block extra_info %}
 {% if not file_exists %}
-    * Custom sidebar to display
+ * Custom sidebar to display
 {%- endif -%}
 {%- endblock -%}
 {% block file_docblock %}
 {% if not file_exists %}
-    {{ parent() }}
-{%- endif -%}
+{{ parent() }}
+{% endif %}
 {%- endblock -%}
 {% block file_methods %}
 function {{ function_name }}() {

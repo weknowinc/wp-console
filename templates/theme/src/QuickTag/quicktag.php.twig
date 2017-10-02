@@ -1,15 +1,16 @@
 {% extends "base/file.php.twig" %}
 {% block extra_info %}
-{% if not file_exists_quicktag %}
-    * Custom sidebar to display
-{% endif %}
+{%- if not file_exists -%}
+ * Custom sidebar to display
+{%- endif -%}
 {% endblock %}
 {% block file_docblock %}
-{% if not file_exists_quicktag %}
-    {{ parent() }}
-{% endif %}
+{%- if not file_exists -%}
+{{ parent() }}
+{%- endif -%}
 {% endblock %}
 {% block file_methods %}
+
 function {{ function_name }}() {
     if ( wp_script_is( 'quicktags' ) ) {
         ?>

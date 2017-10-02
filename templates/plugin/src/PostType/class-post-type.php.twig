@@ -1,10 +1,10 @@
 {% extends "base/class.php.twig" %}
 
 {% block class_declaration %}
-    /**
-    * Represents a custom post type to be displayed.
-    */
-    class {{ class_name_post_type }} {% endblock -%}
+/**
+ * Represents a custom post type to be displayed.
+ */
+class {{ class_name }} {% endblock -%}
 {% block class_methods %}
     public function init() {
 {% if child_theme %}

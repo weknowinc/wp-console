@@ -18,6 +18,7 @@ use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Generator\ToolbarGenerator;
+use WP\Console\Utils\Site;
 use WP\Console\Utils\Validator;
 
 class ToolbarCommand extends Command
@@ -47,23 +48,31 @@ class ToolbarCommand extends Command
     protected $stringConverter;
 
     /**
+     * @var Site
+     */
+    protected $site;
+
+    /**
      * ToolbarCommand constructor.
      *
      * @param ToolbarGenerator $generator
      * @param Manager          $extensionManager
      * @param Validator        $validator
      * @param StringConverter  $stringConverter
+     * @param Site             $site
      */
     public function __construct(
         ToolbarGenerator $generator,
         Manager $extensionManager,
         Validator $validator,
-        StringConverter $stringConverter
+        StringConverter $stringConverter,
+        Site $site
     ) {
         $this->generator = $generator;
         $this->extensionManager = $extensionManager;
         $this->validator = $validator;
         $this->stringConverter = $stringConverter;
+        $this->site = $site;
         parent::__construct();
     }
 
@@ -83,10 +92,10 @@ class ToolbarCommand extends Command
                 $this->trans('commands.common.options.plugin')
             )
             ->addOption(
-                'class-name',
+                'function-name',
                 '',
                 InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.toolbar.options.class-name')
+                $this->trans('commands.generate.toolbar.options.function-name')
             )
             ->addOption(
                 'menu-items',
@@ -105,7 +114,7 @@ class ToolbarCommand extends Command
         $io = new WPStyle($input, $output);
 
         $plugin = $input->getOption('plugin');
-        $class_name = $this->validator->validateClassName($input->getOption('class-name'));
+        $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $menu_items = $input->getOption('menu-items');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
@@ -116,8 +125,9 @@ class ToolbarCommand extends Command
 
         $this->generator->generate(
             $plugin,
-            $class_name,
-            $menu_items
+            $function_name,
+            $menu_items,
+            $this->site
         );
     }
 
@@ -135,17 +145,17 @@ class ToolbarCommand extends Command
             $input->setOption('plugin', $plugin);
         }
 
-        // --class name
-        $class_name = $input->getOption('class-name');
-        if (!$class_name) {
-            $class_name = $io->ask(
-                $this->trans('commands.generate.toolbar.questions.class-name'),
-                'DefaultToolbar',
-                function ($class_name) {
-                    return $this->validator->validateClassName($class_name);
+        // --function name
+        $function_name = $input->getOption('function-name');
+        if (!$function_name) {
+            $function_name = $io->ask(
+                $this->trans('commands.generate.toolbar.questions.function-name'),
+                'default_toolbar',
+                function ($function_name) {
+                    return $this->validator->validateFunctionName($function_name);
                 }
             );
-            $input->setOption('class-name', $class_name);
+            $input->setOption('function-name', $function_name);
         }
 
         // --menu
@@ -154,9 +164,9 @@ class ToolbarCommand extends Command
             $menu_items = [];
             while (true) {
                 $toolbar_id = $io->ask($this->trans('commands.generate.toolbar.questions.id'));
-                $parent_id = $io->ask($this->trans('commands.generate.toolbar.questions.parent'));
+                $parent_id = $io->askEmpty($this->trans('commands.generate.toolbar.questions.parent'));
                 $title = $io->ask($this->trans('commands.generate.toolbar.questions.title'));
-                $href = $io->ask($this->trans('commands.generate.toolbar.questions.href'));
+                $href = $io->askEmpty($this->trans('commands.generate.toolbar.questions.href'));
                 $menu_group = $io->choice($this->trans('commands.generate.toolbar.questions.group'), ['No include', 'true', 'false']);
 
                 $options =
@@ -186,6 +196,13 @@ class ToolbarCommand extends Command
 
                 if ($menu_group == 'No include') {
                     unset($options['group']);
+                }
+
+                //Delete empty options
+                foreach ($options as $key => $value) {
+                    if (empty($value)) {
+                        unset($options[$key]);
+                    }
                 }
 
                 array_push($menu_items, $options);

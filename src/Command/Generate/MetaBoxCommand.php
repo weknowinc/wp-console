@@ -213,7 +213,7 @@ class MetaBoxCommand extends Command
         if (!$class_name) {
             $class_name = $io->ask(
                 $this->trans('commands.generate.metabox.questions.class-name'),
-                $stringUtils->humanToCamelCase($plugin).'MetaBox',
+                $stringUtils->humanToCamelCase($plugin).'Metabox',
                 function ($value) use ($stringUtils) {
                     if (!strlen(trim($value))) {
                         throw new \Exception('The Class name can not be empty');
@@ -229,7 +229,7 @@ class MetaBoxCommand extends Command
         if (!$metabox_id) {
             $metabox_id = $io->ask(
                 $this->trans('commands.generate.metabox.questions.metabox-id'),
-                str_replace(' ', '_', $plugin) .'_meta_box'
+                $stringUtils->camelCaseToUnderscore($class_name) . '_meta_box'
             );
         }
         $input->setOption('metabox-id', $metabox_id);
@@ -239,7 +239,7 @@ class MetaBoxCommand extends Command
         if (!$title) {
             $title = $io->ask(
                 $this->trans('commands.generate.metabox.questions.title'),
-                ucwords($stringUtils->camelCaseToHuman($plugin)).' Meta Box'
+                ucwords($stringUtils->camelCaseToHuman($class_name)).' Meta Box'
             );
         }
         $input->setOption('title', $title);
@@ -249,7 +249,7 @@ class MetaBoxCommand extends Command
         if (!$callback_function) {
             $callback_function = $io->ask(
                 $this->trans('commands.generate.metabox.questions.callback-function'),
-                str_replace(' ', '_', $plugin) .'_meta_box_callback',
+                $stringUtils->camelCaseToUnderscore($class_name) . '_meta_box_callback',
                 function ($function_name) {
                     return $this->validator->validateFunctionName($function_name);
                 }
@@ -299,7 +299,6 @@ class MetaBoxCommand extends Command
                 true
             )
             ) {
-                // @see \WP\Console\Command\Shared\MetaboxTrait::fieldsMetaboxQuestion
                 $fields_metabox = $this->fieldMetaboxQuestion($io);
                 $input->setOption('fields-metabox', $fields_metabox);
             }

@@ -42,50 +42,60 @@ class ToolbarGenerator extends Generator
     /**
      * Generate.
      * @param string  $plugin
-     * @param string  $class_name
+     * @param string  $function_name
      * @param string  $menu
+     * @param Site    $site
      */
     public function generate(
         $plugin,
-        $class_name,
-        $menu
+        $function_name,
+        $menu,
+        $site
     )
     {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
-        $dir = $this->extensionManager->getPlugin($plugin)->getPath(). '/admin/'.$class_name.'.php';
+        $dir = $this->extensionManager->getPlugin($plugin)->getPath();
+
 
         $parameters = [
-            'plugin' => $plugin,
-            'class_name_toolbar' => $class_name,
-            'menu' => $menu,
-            'class_name_toolbar_path' => 'admin/'.$class_name.'.php',
-            'file_exists' => file_exists($pluginFile),
-            'toolbar_file_exists' => file_exists($dir)
+            "plugin" => $plugin,
+            "function_name" => $function_name,
+            "menu" => $menu,
+            "admin_toolbar_path" => 'admin/partials/toolbars-admin.php',
+            "file_exists" => file_exists($pluginFile),
+
+            "command_name" => 'toolbar'
+
         ];
 
-        if (file_exists($dir)) {
-            if (!is_dir($dir)) {
-                throw new \RuntimeException(
-                    sprintf(
-                        'Unable to generate the toolbar , it already exist at "%s"',
-                        realpath($dir)
-                    )
-                );
-            }
-        }
+        $file_path_admin = $dir.'/'.$parameters['admin_toolbar_path'];
+        $parameters['admin_file_exists'] = file_exists($file_path_admin);
 
-        if($dir) {
+        if (!file_exists($file_path_admin)) {
             $this->renderFile(
                 'plugin/plugin.php.twig',
                 $pluginFile,
                 $parameters,
                 FILE_APPEND
             );
+        } else {
+            $site->loadLegacyFile($file_path_admin);
+
+            if (function_exists($function_name)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to generate the sidebar , The function name already exist at "%s"',
+                        realpath($file_path_admin)
+                    )
+                );
+            }
         }
+
         $this->renderFile(
             'plugin/src/Toolbar/toolbar.php.twig',
-            $dir,
-            $parameters
+            $file_path_admin,
+            $parameters,
+            FILE_APPEND
         );
     }
 }

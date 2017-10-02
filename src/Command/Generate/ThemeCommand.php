@@ -322,9 +322,8 @@ class ThemeCommand extends Command
         // --screenshot
         $screenshot = $input->getOption('screenshot');
         if (!$screenshot) {
-            $screenshot = $io->ask(
-                $this->trans('commands.generate.theme.questions.screenshot'),
-                ''
+            $screenshot = $io->askEmpty(
+                $this->trans('commands.generate.theme.questions.screenshot')
             );
         }
         $input->setOption('screenshot', $screenshot);

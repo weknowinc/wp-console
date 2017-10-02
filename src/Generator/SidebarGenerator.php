@@ -59,17 +59,18 @@ class SidebarGenerator extends Generator
         $extensions = array_combine(array_keys($discoverThemes), array_column($discoverThemes, 'Name'));
         $themeName = array_search($theme, $extensions);
 
-        $class_name_sidebar = $themeName.'Sidebar/'.$themeName.'Sidebar.php';
+        $class_name_sidebar = 'admin/partials/Sidebar/'.$themeName.'Sidebar.php';
         $themeFile = $this->extensionManager->getTheme($theme)->getPathname();
         $dir = $this->extensionManager->getTheme($theme)->getPath().'/'.$class_name_sidebar;
 
         $parameters = [
-            'theme' => $theme,
-            'function_name' => $function_name,
-            'sidebar_items' => $sidebar_items,
-            'child_theme' => $child_themes,
-            'class_name_sidebar_path' => $class_name_sidebar,
-            'file_exists' => file_exists($dir)
+            "theme" => $theme,
+            "function_name" => $function_name,
+            "sidebar_items" => $sidebar_items,
+            "child_theme" => $child_themes,
+            "class_name_sidebar_path" => $class_name_sidebar,
+            "file_exists" => file_exists($dir),
+            "function_exists" => file_exists($themeFile.'/functions.php')
         ];
 
         $site->loadLegacyFile($dir);
@@ -82,15 +83,13 @@ class SidebarGenerator extends Generator
                 )
             );
         }
-
-        if (!file_exists($themeFile.'/functions.php') && !file_exists($dir)) {
-            $this->renderFile(
-                'theme/functions.php.twig',
-                $themeFile.'/functions.php',
-                $parameters,
-                FILE_APPEND
-            );
-        }
+var_dump(file_exists($themeFile.'/functions.php'));
+        $this->renderFile(
+            'theme/functions.php.twig',
+            $themeFile.'/functions.php',
+            $parameters,
+            FILE_APPEND
+        );
 
         $this->renderFile(
             'theme/src/Sidebar/sidebar.php.twig',
