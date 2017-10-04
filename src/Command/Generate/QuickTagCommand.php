@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \WP\Console\quicktag\Generate\QuickTagCommand.
+ * Contains \WP\ConsolCommand\Generate\QuickTagCommand.
  */
 
 namespace WP\Console\Command\Generate;
@@ -14,7 +14,6 @@ use Symfony\Component\Console\Command\Command;
 use WP\Console\Command\Shared\ContainerAwareCommandTrait;
 use WP\Console\Command\Shared\ExtensionTrait;
 use WP\Console\Command\Shared\PluginTrait;
-use WP\Console\Command\Shared\ServicesTrait;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Generator\QuickTagGenerator;
 use WP\Console\Core\Utils\StringConverter;
@@ -28,7 +27,6 @@ class QuickTagCommand extends Command
     use ContainerAwareCommandTrait;
     use ConfirmationTrait;
     use PluginTrait;
-    use ServicesTrait;
     use ExtensionTrait;
 
     /**

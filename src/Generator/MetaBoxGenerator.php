@@ -46,7 +46,7 @@ class MetaBoxGenerator extends Generator
      * @param $screen,
      * @param $page_location,
      * @param $priority,
-     * @param $fields_metabox
+     * @param $metabox_fields
      * @param $wp_nonce
      * @param $auto_save
      */
@@ -59,7 +59,7 @@ class MetaBoxGenerator extends Generator
         $screen,
         $page_location,
         $priority,
-        $fields_metabox,
+        $metabox_fields,
         $wp_nonce,
         $auto_save
     ) {
@@ -75,7 +75,7 @@ class MetaBoxGenerator extends Generator
             "screen" => $screen,
             "page_location" => $page_location,
             "priority" => $priority,
-            "fields_metabox" => $fields_metabox,
+            "metabox_fields" => $metabox_fields,
             "wp_nonce" => $wp_nonce,
             "auto_save" => $auto_save,
             "class_name_path" => 'Metabox/' . lcfirst($class_name) . '.php',

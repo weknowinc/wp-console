@@ -5,7 +5,11 @@
  */
 class {{ class_name }} {% endblock -%}
 {% block class_methods %}
-    public function init() {
+    /**
+    * Class constructor.
+    */
+    public function __construct()
+    {
 {% if child_theme %}
         if ( ! function_exists( '{{ function_name }}' )) {
             add_action( 'init', array( $this, '{{ function_name }}'));
@@ -16,8 +20,8 @@ class {{ class_name }} {% endblock -%}
     }
 
     // Register Navigation Menus
-    function {{ function_name }}() {
-
+    function {{ function_name }}()
+    {
         $locations = array(
 {% for label in menu_items %}
             '{{ label.menu }}'  => __('{{ label.description }}', 'text_domain'),

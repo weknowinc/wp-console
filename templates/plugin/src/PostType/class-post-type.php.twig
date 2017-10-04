@@ -6,7 +6,10 @@
  */
 class {{ class_name }} {% endblock -%}
 {% block class_methods %}
-    public function init() {
+    /**
+    * Class constructor.
+    */
+    public function __construct() {
 {% if child_theme %}
         if ( ! function_exists( '{{ function_name }}_post_type' )) {
             add_action( 'init', array( $this, '{{ function_name }}_post_type') , 0 );
@@ -15,9 +18,11 @@ class {{ class_name }} {% endblock -%}
         add_action( 'init', array( $this, '{{ function_name }}_post_type') , 0 );
 {% endif %}
     }
-
-    function {{ function_name }}_post_type() {
-
+    /**
+     * Create the new post_type
+     */
+    function {{ function_name }}_post_type()
+    {
         $labels = array(
             'name'                  => _x( '{{ name_plural }}', 'Post Type General Name', 'text_domain' ),
             'singular_name'         => _x( '{{ name_singular }}', 'Post Type Singular Name', 'text_domain' ),
@@ -120,7 +125,7 @@ class {{ class_name }} {% endblock -%}
 {% endif %}
         );
 
-    register_post_type( '{{ post_type_key }}', $args );
+        register_post_type( '{{ post_type_key }}', $args );
     }
 {%- endblock -%}
 

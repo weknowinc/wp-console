@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 use WP\Console\Command\Shared\ConfirmationTrait;
+use WP\Console\Command\Shared\FieldsTypeTrait;
 use WP\Console\Command\Shared\MetaboxTrait;
 use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Extension\Manager;
@@ -26,6 +27,7 @@ class MetaBoxCommand extends Command
     use PluginTrait;
     use ConfirmationTrait;
     use CommandTrait;
+    use FieldsTypeTrait;
     
     /**
      * @var MetaBoxGenerator
@@ -132,10 +134,10 @@ class MetaBoxCommand extends Command
                 $this->trans('commands.generate.metabox.options.priority')
             )
             ->addOption(
-                'fields-metabox',
+                'metabox-fields',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.metabox.options.fields-metabox')
+                $this->trans('commands.generate.metabox.options.metabox-fields')
             )
             ->addOption(
                 'wp-nonce',
@@ -172,7 +174,7 @@ class MetaBoxCommand extends Command
         $screen = $input->getOption('screen');
         $page_location = $input->getOption('page-location');
         $priority = $input->getOption('priority');
-        $fields_metabox = $input->getOption('fields-metabox');
+        $metabox_fields = $input->getOption('metabox-fields');
         $wp_nonce = $input->getOption('wp-nonce');
         $auto_save = $input->getOption('auto-save');
 
@@ -185,7 +187,7 @@ class MetaBoxCommand extends Command
             $screen,
             $page_location,
             $priority,
-            $fields_metabox,
+            $metabox_fields,
             $wp_nonce,
             $auto_save
         );
@@ -213,7 +215,7 @@ class MetaBoxCommand extends Command
         if (!$class_name) {
             $class_name = $io->ask(
                 $this->trans('commands.generate.metabox.questions.class-name'),
-                $stringUtils->humanToCamelCase($plugin).'Metabox',
+                'DefaultMetabox',
                 function ($value) use ($stringUtils) {
                     if (!strlen(trim($value))) {
                         throw new \Exception('The Class name can not be empty');
@@ -229,7 +231,7 @@ class MetaBoxCommand extends Command
         if (!$metabox_id) {
             $metabox_id = $io->ask(
                 $this->trans('commands.generate.metabox.questions.metabox-id'),
-                $stringUtils->camelCaseToUnderscore($class_name) . '_meta_box'
+                $stringUtils->camelCaseToUnderscore($class_name)
             );
         }
         $input->setOption('metabox-id', $metabox_id);
@@ -239,7 +241,7 @@ class MetaBoxCommand extends Command
         if (!$title) {
             $title = $io->ask(
                 $this->trans('commands.generate.metabox.questions.title'),
-                ucwords($stringUtils->camelCaseToHuman($class_name)).' Meta Box'
+                ucwords($stringUtils->camelCaseToHuman($class_name))
             );
         }
         $input->setOption('title', $title);
@@ -249,7 +251,7 @@ class MetaBoxCommand extends Command
         if (!$callback_function) {
             $callback_function = $io->ask(
                 $this->trans('commands.generate.metabox.questions.callback-function'),
-                $stringUtils->camelCaseToUnderscore($class_name) . '_meta_box_callback',
+                $stringUtils->camelCaseToUnderscore($class_name) . '_callback',
                 function ($function_name) {
                     return $this->validator->validateFunctionName($function_name);
                 }
@@ -291,36 +293,35 @@ class MetaBoxCommand extends Command
         $input->setOption('priority', $priority);
         
         
-        // --field metabox
-        $fields_metabox = $input->getOption('fields-metabox');
-        if (!$fields_metabox) {
+        // -- metabox fields
+        $metabox_fields = $input->getOption('metabox-fields');
+        if (!$metabox_fields) {
             if ($io->confirm(
-                $this->trans('commands.generate.metabox.questions.fields-metabox'),
+                $this->trans('commands.generate.metabox.questions.fields.generate-fields'),
                 true
             )
             ) {
-                $fields_metabox = $this->fieldMetaboxQuestion($io);
-                $input->setOption('fields-metabox', $fields_metabox);
+                // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
+                $metabox_fields = $this->fieldsQuestion($io, 'metabox');
+                $input->setOption('metabox-fields', $metabox_fields);
             }
         }
         
-        if (!empty($fields_metabox)) {
+        if (!empty($metabox_fields)) {
             // --wp nonce
             $wp_nonce = $input->getOption('wp-nonce');
             if (!$wp_nonce) {
-                if ($io->confirm(
+                $wp_nonce = $io->confirm(
                     $this->trans('commands.generate.metabox.questions.wp-nonce'),
                     true
-                )
-                ) {
-                    $input->setOption('wp-nonce', $wp_nonce);
-                }
+                );
+                $input->setOption('wp-nonce', $wp_nonce);
             }
             
             // --auto save
             $auto_save = $input->getOption('auto-save');
             if (!$auto_save) {
-                if ($io->confirm(
+                if ($auto_save = $io->confirm(
                     $this->trans('commands.generate.metabox.questions.auto-save'),
                     true
                 )
@@ -331,121 +332,5 @@ class MetaBoxCommand extends Command
         }
     }
 
-    public function fieldMetaboxQuestion(WPStyle $io)
-    {
-        $stringConverter = $this->stringConverter;
 
-        $fields = [];
-        $fields_options = ['select' ,'checkbox', 'color', 'date', 'email', 'file', 'image', 'month', 'number',
-            'radio','search', 'submit', 'tel', 'text', 'time', 'url', 'week'];
-
-        while (true) {
-            $type = $io->choiceNoList(
-                $this->trans('commands.generate.metabox.questions.field-type'),
-                $fields_options,
-                ''
-            );
-
-
-            $id = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-id'),
-                '',
-                function ($id) use ($stringConverter) {
-                    return $stringConverter->camelCaseToUnderscore($id);
-                }
-            );
-
-            $label = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-label'),
-                ''
-            );
-
-            $description = $io->ask(
-                $this->trans('commands.generate.metabox.questions.field-description'),
-                ''
-            );
-
-            $field_placeholder = '';
-            $default_value = '';
-            if ($type != 'select' && $type != 'radio') {
-                $field_placeholder = $io->ask(
-                    $this->trans('commands.generate.metabox.questions.field-placeholder'),
-                    ''
-                );
-
-                $default_value = $io->ask(
-                    $this->trans('commands.generate.metabox.questions.field-default-value'),
-                    ''
-                );
-            }
-
-            $multi_selection = [];
-            if ($type == 'select' || $type == 'radio') {
-                if ($io->confirm(
-                    $this->trans('commands.generate.metabox.questions.field-metabox-multiple-options', $type),
-                    false
-                )
-                ) {
-                    $multi_selection = $this->multiSelection($io, $type);
-                }
-            }
-
-            array_push(
-                $fields,
-                [
-                    'type' => $type,
-                    'id' => $id,
-                    'label' => $label,
-                    'description' => $description,
-                    'placeholder' => $field_placeholder,
-                    'default_value' => $default_value,
-                    'multi_selection' => $multi_selection
-                ]
-            );
-
-            if (!$io->confirm(
-                $this->trans('commands.generate.metabox.questions.field-metabox-add'),
-                false
-            )
-            ) {
-                break;
-            }
-        }
-
-        return $fields;
-    }
-
-    private function multiSelection(WPStyle $io, $type)
-    {
-        $multiple_options = [];
-        while (true) {
-            $multiple_options_label = $io->ask(
-                $this->trans('commands.generate.metabox.questions.multiple-options-label'),
-                ''
-            );
-
-
-            $multiple_options_value = $io->ask(
-                $this->trans('commands.generate.metabox.questions.multiple-options-value'),
-                ''
-            );
-
-            array_push(
-                $multiple_options,
-                [
-                    'label' => $multiple_options_label,
-                    'value' => $multiple_options_value
-                ]
-            );
-            if (!$io->confirm(
-                $this->trans('commands.generate.metabox.questions.field-metabox-multiple-options-add', $type),
-                false
-            )
-            ) {
-                break;
-            }
-        }
-
-        return $multiple_options;
-    }
 }

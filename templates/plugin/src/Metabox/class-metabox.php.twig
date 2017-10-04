@@ -1,5 +1,5 @@
 {% extends "base/class.php.twig" %}
-{% block class_declaration %}
+{%- block class_declaration -%}
 /**
  * Add Meta Box to "{{ screen  }}"  type
  */
@@ -8,10 +8,21 @@ class {{ class_name }} {% endblock -%}
     /**
      * Class constructor.
      */
-    public function init()
+    public function __construct()
     {
-        add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
-{% if auto_save is not null %}
+        if ( is_admin() ) {
+            add_action( 'load-post.php',     array( $this, 'init_metabox' ) );
+            add_action( 'load-post-new.php', array( $this, 'init_metabox' ) );
+        }
+    }
+
+    /**
+     * Meta box initialization.
+     */
+    public function init_metabox()
+    {
+        add_action( 'add_meta_boxes', array( $this, 'add_metabox'  ));
+{% if auto_save %}
         add_action( 'save_post', array( $this, 'meta_boxes_save' ), 10, 2 );
 {% endif%}
     }
@@ -22,7 +33,8 @@ class {{ class_name }} {% endblock -%}
     /**
      * Add admin metabox.
      */
-    public function add_metabox() {
+    public function add_metabox()
+    {
         add_meta_box(
             '{{ metabox_id }}', // ID
             '{{ title }}', // Title
@@ -38,28 +50,31 @@ class {{ class_name }} {% endblock -%}
      */
     public function {{ callback_function }}()
     {
-{% if wp_nonce is not null %}
+{% if wp_nonce %}
         wp_nonce_field(basename(__FILE__), "meta-box-nonce");
 {% endif %}
-{% if fields_metabox is not null %}
+{% if metabox_fields is not null %}
         ?>
-{% for fields in fields_metabox %}
-            <p>
-                <label>{{ fields.label }}</label>
+{% for fields in metabox_fields %}
+        <p>
+            <label>{{ fields.label }}</label>
 {% if fields.type == 'select'%}
-                <select name="{{ fields.description }}" id="{{ fields.id }}" >
-{% for options in fields.multiSelection %}
-                    <option value="{{ options.value }}">{{ options.label }}</option>
+            <select name="{{ fields.description }}" id="{{ fields.id }}" >
+{% for options in fields.multi_selection %}
+                <option value="{{ options.value }}">{{ options.label }}</option>
 {% endfor %}
-                </select>
-{% elseif fields.type == 'radio' %}
-{% for options in fields.multiSelection %}
-                <input type="radio" name="{{ fields.id }}" value="{{ options.value }}"> {{ options.label }}<br>
+            </select>
+{% elseif fields.type == 'radio' or fields.type == 'checkbox' %}
+{% for options in fields.multi_selection %}
+            <input type="{{ fields.type }}" name="{{ fields.id }}" value="{{ options.value }}"> {{ options.label }}<br>
 {% endfor %}
+{% elseif fields.type == 'image' %}
+            <img src="{{ fields.src_image }}" alt="{{ fields.description }}" />
 {% else %}
-                <input type="{{ fields.type }}" name="{{ fields.description }}" id="{{ fields.id }}" placeholder="{{ fields.placeholder }}" value="{{ fields.default_value }}" />
+{% else %}
+            <input type="{{ fields.type }}" name="{{ fields.description }}" id="{{ fields.id }}" placeholder="{{ fields.placeholder }}" value="{{ fields.default_value }}" />
 {% endif %}
-            </p>
+        </p>
 {% endfor %}
         <?php
 {% else %}
@@ -67,7 +82,7 @@ class {{ class_name }} {% endblock -%}
 {% endif %}
     }
 
-{% if auto_save is not null %}
+{% if auto_save %}
     /**
 	 * Save opening times meta box data.
 	 *
@@ -86,7 +101,7 @@ class {{ class_name }} {% endblock -%}
          if(defined("DOING_AUTOSAVE") && DOING_AUTOSAVE)
              return $post_id;
 
-{% for fields in fields_metabox %}
+{% for fields in metabox_fields %}
          if(isset($_POST["{{ fields.id }}"])) {
              ${{ fields.id }}_value = $_POST["{{ fields.id }}"];
              update_post_meta($post_id, "{{ fields.id }}", ${{ fields.id }}_value);

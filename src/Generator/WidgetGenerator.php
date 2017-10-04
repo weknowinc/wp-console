@@ -86,7 +86,7 @@ class WidgetGenerator extends Generator
                 );
             }
         }
-var_dump($parameters);
+
         if (!file_exists($file_path_admin)) {
             $this->renderFile(
                 'plugin/plugin.php.twig',
