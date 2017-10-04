@@ -3,7 +3,7 @@ services:
     class: WP\Console\Command\Generate\CommandCommand
     arguments: ['@console.command_generator', '@console.extension_manager', '@console.validator', '@console.string_converter' ]
     tags:
-       - { name: wordpress.command }
+      - { name: wordpress.command }
   console.generate_plugin:
     class: WP\Console\Command\Generate\PluginCommand
     arguments: ['@console.plugin_generator', '@console.validator', '@app.root', '@console.string_converter', '@http_client', '@console.site']
@@ -29,28 +29,33 @@ services:
     arguments: ['@console.shortcode_generator', '@console.extension_manager', '@console.site','@console.validator', '@console.string_converter']
     tags:
       - { name: wordpress.command }
-  console.generate_post_type:
-      class: WP\Console\Command\Generate\PostTypeCommand
-      arguments: ['@console.post_type_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
-      tags:
-        - { name: wordpress.command }
+  console.generate_post_typegit 
+    class: WP\Console\Command\Generate\PostTypeCommand
+    arguments: ['@console.post_type_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }
   console.generate_menu:
-      class: WP\Console\Command\Generate\MenuCommand
-      arguments: ['@console.menu_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Generate\MenuCommand
+    arguments: ['@console.menu_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }
   console.generate_toolbar:
-      class: WP\Console\Command\Generate\ToolbarCommand
-      arguments: ['@console.toolbar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Generate\ToolbarCommand
+    arguments: ['@console.toolbar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+    tags:
+      - { name: wordpress.command }
   console.generate_sidebar:
-      class: WP\Console\Command\Generate\SidebarCommand
-      arguments: ['@console.sidebar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Generate\SidebarCommand
+    arguments: ['@console.sidebar_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+    tags:
+      - { name: wordpress.command }
   console.generate_quicktag:
-      class: WP\Console\Command\Generate\QuickTagCommand
-      arguments: ['@console.quicktag_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Generate\QuickTagCommand
+    arguments: ['@console.quicktag_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+    tags:
+      - { name: wordpress.command }
+  console.generate_widget:
+    class: WP\Console\Command\Generate\WidgetCommand
+    arguments: ['@console.widget_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }

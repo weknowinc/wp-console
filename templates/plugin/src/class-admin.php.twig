@@ -10,18 +10,28 @@
 {%- endif -%}
 {%- endblock -%}
 {%- block file_methods -%}
+{% if command_name == 'widget' %}
+// Register and load the widget
+function add_{{ command_name }}_{{ class_name }}()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) . '{{ class_name_path }}';
 
+    register_widget( '{{ class_name }}' );
+}
+add_action( 'widgets_init', 'add_{{ command_name }}_{{ class_name }}' );
+{% else %}
 /**
 * Return a custom {{ command_name }} class
 * This action is documented in {{ class_name_path }}
 */
 function add_{{ command_name }}_{{ class_name }}()
 {
-// Include the files for rendering the display.
-include_once plugin_dir_path( __FILE__ ) . '{{ class_name_path }}';
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) . '{{ class_name_path }}';
 
-$item = new {{ class_name }}();
-$item->init();
+    new {{ class_name }}();
 }
 add_{{ command_name }}_{{ class_name }}();
+{% endif %}
 {%- endblock -%}

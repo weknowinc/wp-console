@@ -122,4 +122,16 @@ function add_plugin_custom_quicktag()
 }
 add_action('admin_print_scripts', 'add_plugin_custom_quicktag');
 {%- endif -%}
+{%- if admin_widget_path is defined -%}
+
+/**
+ * This function render all toolbars that are in admin/partials/widgets-admin.php
+ */
+function add_customs_widgets()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_widget_path }}';
+}
+add_customs_widgets();
+{%- endif -%}
 {%- endblock -%}
