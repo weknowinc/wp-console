@@ -1,0 +1,96 @@
+{% extends "base/class.php.twig" %}
+{%- block class_declaration %}
+/**
+ * Adds {{ class_name }} widget.
+ */
+class {{ class_name }} extends WP_Widget {% endblock -%}
+
+{% block class_construct %}
+    /**
+    * Sets up the widgets name etc
+    */
+    public function __construct()
+    {
+        $widget_ops = array(
+            'classname' => '{{ widget_class_name }}',
+            'description' => '{{ description }}',
+        );
+
+        parent::__construct( '{{ widget_id }}', '{{ title }}', $widget_ops );
+    }
+
+{% endblock %}
+
+{% block class_methods %}
+    /**
+    * Outputs the content of the widget
+    *
+    * @param array $args
+    * @param array $instance
+    */
+    public function widget( $args, $instance )
+    {
+        // outputs the content of the widget
+       $title = apply_filters( 'widget_title', $instance['title'] );
+
+       // before and after widget arguments are defined by themes
+       echo $args['before_widget'];
+       if ( ! empty( $title ) )
+       echo $args['before_title'] . $title . $args['after_title'];
+
+       // This is where you run the code and display the output
+       echo $args['after_widget'];
+    }
+
+    /**
+    * Outputs the options form on admin
+    *
+    * @param array $instance The widget options
+    */
+    public function form( $instance )
+    {
+        // outputs the options form on admin
+{% if widget_fields is not null %}
+        ?>
+{% for fields in widget_fields %}
+        <p>
+            <label>{{ fields.label }}</label>
+{% if fields.type == 'select'%}
+            <select name="{{ fields.description }}" id="{{ fields.id }}" >
+{% for options in fields.multi_selection %}
+                <option value="{{ options.value }}">{{ options.label }}</option>
+{% endfor %}
+            </select>
+{% elseif fields.type == 'radio' or fields.type == 'checkbox' %}
+{% for options in fields.multi_selection %}
+            <input type="{{ fields.type }}" name="{{ fields.id }}" value="{{ options.value }}"> {{ options.label }}<br>
+{% endfor %}
+{% elseif fields.type == 'image' %}
+            <img src="{{ fields.src_image }}" alt="{{ fields.description }}" />
+{% else %}
+            <input type="{{ fields.type }}" name="{{ fields.description }}" id="{{ fields.id }}" placeholder="{{ fields.placeholder }}" value="{{ fields.default_value }}" />
+{% endif %}
+        </p>
+{% endfor %}
+        <?php
+{% else %}
+        echo 'This is the meta box.';
+{% endif %}
+    }
+
+    /**
+    * Processing widget options on save
+    *
+    * @param array $new_instance The new options
+    * @param array $old_instance The previous options
+    *
+    * @return array
+    */
+    public function update( $new_instance, $old_instance )
+    {
+        // processes widget options to be saved
+        $instance = array();
+
+        return $instance;
+    }
+{% endblock %}

@@ -6,7 +6,10 @@
  */
 class {{ class_name }} {% endblock -%}
 {% block class_methods %}
-    public function init() {
+    /**
+     * Class constructor.
+     */
+    public function __construct() {
 {% if child_theme %}
         if ( ! function_exists( '{{ function_name }}_taxonomy' )) {
             add_action( 'init', array( $this, '{{ function_name }}_taxonomy') , 0 );
@@ -16,6 +19,9 @@ class {{ class_name }} {% endblock -%}
 {% endif %}
     }
 
+    /**
+     * Create a new taxonomy
+     */
     function {{ function_name }}_taxonomy() {
 
         $labels = array(

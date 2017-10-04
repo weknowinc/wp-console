@@ -1,6 +1,6 @@
-description: 'Generate a menu.'
-help: 'The <info>generate:menu</info> command helps you generates a new menu.'
-welcome: 'Welcome to the Wordpress menu generator'
+description: 'Generate a sidebar.'
+help: 'The <info>generate:sidebar</info> command help you generate a new sidebar.'
+welcome: 'Welcome to the Wordpress sidebar generator'
 options:
     plugin: 'The Plugin name'
     class-name: 'The sidebar class name'

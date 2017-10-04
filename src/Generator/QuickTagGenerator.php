@@ -79,7 +79,6 @@ class QuickTagGenerator extends Generator
             "file_exists" => file_exists($extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir']),
             "function_exists" => file_exists($extensionObject->getPath().$extensionFiles['theme']['render'])
         ];
-        var_dump(file_exists($extensionObject->getPath().$extensionFiles['theme']['render']));
 
         $site->loadLegacyFile($extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir']);
 

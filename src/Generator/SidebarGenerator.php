@@ -83,7 +83,7 @@ class SidebarGenerator extends Generator
                 )
             );
         }
-var_dump(file_exists($themeFile.'/functions.php'));
+
         $this->renderFile(
             'theme/functions.php.twig',
             $themeFile.'/functions.php',

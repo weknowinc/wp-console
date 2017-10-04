@@ -24,31 +24,36 @@ services:
     tags:
       - { name: wordpress.generator }
   console.shortcode_generator:
-      class: WP\Console\Generator\ShortcodeGenerator
-      tags:
-        - { name: wordpress.generator }
+    class: WP\Console\Generator\ShortcodeGenerator
+    tags:
+      - { name: wordpress.generator }
   console.post_type_generator:
-      class: WP\Console\Generator\PostTypeGenerator
-      arguments: ['@console.extension_manager']
-      tags:
-        - { name: wordpress.generator }
+    class: WP\Console\Generator\PostTypeGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
   console.menu_generator:
-      class: WP\Console\Generator\MenuGenerator
-      arguments: ['@console.extension_manager']
-      tags:
-        - { name: wordpress.generator }
+    class: WP\Console\Generator\MenuGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
   console.toolbar_generator:
-      class: WP\Console\Generator\ToolbarGenerator
-      arguments: ['@console.extension_manager']
-      tags:
-        - { name: wordpress.generator }
+    class: WP\Console\Generator\ToolbarGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
   console.sidebar_generator:
-      class: WP\Console\Generator\SidebarGenerator
-      arguments: ['@console.extension_manager']
-      tags:
-        - { name: wordpress.generator }
+    class: WP\Console\Generator\SidebarGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
   console.quicktag_generator:
-      class: WP\Console\Generator\QuickTagGenerator
-      arguments: ['@console.extension_manager']
-      tags:
-        - { name: wordpress.generator }
+    class: WP\Console\Generator\QuickTagGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
+  console.widget_generator:
+    class: WP\Console\Generator\WidgetGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }
