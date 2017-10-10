@@ -11,9 +11,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Yaml\Yaml;
-use WP\Console\Command\Shared\ContainerAwareCommandTrait;
+use WP\Console\Core\Command\ContainerAwareCommand;
 use WP\Console\Core\Style\WPStyle;
 
 /**
@@ -21,9 +20,8 @@ use WP\Console\Core\Style\WPStyle;
  *
  * @package WP\Console\Command
  */
-class ContainerCommand extends Command
+class ContainerCommand extends ContainerAwareCommand
 {
-    use ContainerAwareCommandTrait;
 
     /**
      * {@inheritdoc}

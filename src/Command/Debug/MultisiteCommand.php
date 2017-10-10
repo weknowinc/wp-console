@@ -10,8 +10,7 @@ namespace WP\Console\Command\Debug;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
-use WP\Console\Command\Shared\CommandTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
@@ -22,8 +21,6 @@ use WP\Console\Utils\Site;
  */
 class MultisiteCommand extends Command
 {
-    use CommandTrait;
-
     protected $appRoot;
 
     /**

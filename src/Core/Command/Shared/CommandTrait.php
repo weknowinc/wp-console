@@ -5,14 +5,14 @@
  * Contains WP\Console\Command\Shared\CommandTrait.
  */
 
-namespace WP\Console\Command\Shared;
+namespace WP\Console\Core\Command\Shared;
 
 use WP\Console\Core\Utils\TranslatorManager;
 
 /**
  * Class CommandTrait
  *
- * @package WP\Console\Command
+ * @package WP\Console\Core\Command
  */
 trait CommandTrait
 {

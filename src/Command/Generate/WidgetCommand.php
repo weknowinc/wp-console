@@ -10,21 +10,18 @@ namespace WP\Console\Command\Generate;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
-use WP\Console\Command\Shared\ContainerAwareCommandTrait;
 use WP\Console\Command\Shared\FieldsTypeTrait;
 use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Command\Shared\ConfirmationTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Generator\WidgetGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
 use WP\Console\Core\Style\WPStyle;
-use WP\Console\Utils\Site;
 use WP\Console\Utils\Validator;
 
 class WidgetCommand extends Command
 {
-    use ContainerAwareCommandTrait;
     use ConfirmationTrait;
     use PluginTrait;
     use FieldsTypeTrait;
@@ -52,10 +49,10 @@ class WidgetCommand extends Command
     /**
      * WidgetCommand constructor.
      *
-     * @param WidgetGenerator   $generator
-     * @param Manager           $extensionManager
-     * @param Validator         $validator
-     * @param StringConverter   $stringConverter
+     * @param WidgetGenerator $generator
+     * @param Manager         $extensionManager
+     * @param Validator       $validator
+     * @param StringConverter $stringConverter
      */
     public function __construct(
         WidgetGenerator $generator,
@@ -240,7 +237,6 @@ class WidgetCommand extends Command
                 $widget_fields = $this->fieldsQuestion($io, 'widget');
                 $input->setOption('widget-fields', $widget_fields);
             }
-
         }
     }
 }

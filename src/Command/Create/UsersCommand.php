@@ -11,9 +11,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\CreateTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Utils\Create\UserData;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
@@ -25,7 +24,6 @@ use WP\Console\Utils\Site;
  */
 class UsersCommand extends Command
 {
-    use CommandTrait;
     use CreateTrait;
 
     /**
@@ -41,8 +39,8 @@ class UsersCommand extends Command
     /**
      * UsersCommand constructor.
      *
-     * @param UserData  $createUserData
-     * @param Site       $site
+     * @param UserData $createUserData
+     * @param Site     $site
      */
     public function __construct(
         UserData $createUserData,

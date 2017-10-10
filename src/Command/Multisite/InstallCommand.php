@@ -11,21 +11,19 @@ use Anolilab\Wordpress\SaltGenerator\Generator as SaltGenerator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
+use WP\Console\Core\Command\Command;
 use WP\Console\Core\Utils\ArgvInputReader;
 use WP\Console\Core\Generator\SiteInstallGenerator;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\DatabaseTrait;
 use WP\Console\Core\Utils\ChainQueue;
 
 class InstallCommand extends Command
 {
-    use CommandTrait;
     use DatabaseTrait;
 
     /**

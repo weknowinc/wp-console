@@ -9,11 +9,7 @@ namespace WP\Console\Command\Debug;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Yaml\Yaml;
-use WP\Console\Command\Shared\CommandTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
@@ -24,7 +20,6 @@ use WP\Console\Utils\Site;
  */
 class ShortcodeCommand extends Command
 {
-    use CommandTrait;
 
     /**
      * @var Site
@@ -34,7 +29,7 @@ class ShortcodeCommand extends Command
     /**
      * UsersCommand constructor.
      *
-     * @param Site       $site
+     * @param Site $site
      */
     public function __construct(
         Site $site
@@ -69,7 +64,7 @@ class ShortcodeCommand extends Command
         $shortcodes = $this->site->getShortCodes();
 
         $rows = [];
-        foreach($shortcodes as $tag => $callback) {
+        foreach ($shortcodes as $tag => $callback) {
             $rows[] = ['tag' => $tag , 'callback' => $callback];
         }
 
@@ -77,6 +72,4 @@ class ShortcodeCommand extends Command
 
         return 0;
     }
-
-
 }
