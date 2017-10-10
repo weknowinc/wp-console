@@ -11,10 +11,10 @@ services:
       - { name: wordpress.command }
   # Installer services
   console.chain_queue:
-      class: WP\Console\Core\Utils\ChainQueue
+    class: WP\Console\Core\Utils\ChainQueue
   console.chain_discovery:
-      class: WP\Console\Core\Utils\ChainDiscovery
-      arguments: ['@?console.root', '@console.configuration_manager']
+    class: WP\Console\Core\Utils\ChainDiscovery
+    arguments: ['@app.root', '@console.configuration_manager']
   console.configuration_manager:
     class: WP\Console\Core\Utils\ConfigurationManager
   console.help:
@@ -27,13 +27,13 @@ services:
     tags:
       - { name: wordpress.command }
   console.renderer:
-     class: WP\Console\Core\Utils\TwigRenderer
-     arguments: ['@console.translator_manager', '@console.string_converter']
+    class: WP\Console\Core\Utils\TwigRenderer
+    arguments: ['@console.translator_manager', '@console.string_converter']
   console.show_file:
     class: WP\Console\Core\Utils\ShowFile
     arguments: ['@app.root', '@console.translator_manager']
   console.string_converter:
-     class: WP\Console\Core\Utils\StringConverter
+    class: WP\Console\Core\Utils\StringConverter
   console.translator_manager:
     class: WP\Console\Utils\TranslatorManager
     arguments: ['@console.extension_manager']
@@ -41,8 +41,8 @@ services:
     class: WP\Console\Utils\Site
     arguments: ['@app.root', '@http_client']
   console.extension_manager:
-      class: WP\Console\Extension\Manager
-      arguments: ['@console.site', '@app.root']
+    class: WP\Console\Extension\Manager
+    arguments: ['@console.site', '@app.root']
   console.annotation_command_reader:
     class: WP\Console\Annotations\WPCommandAnnotationReader
   console.annotation_validator:
