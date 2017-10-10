@@ -7,14 +7,12 @@
 
 namespace WP\Console\Command\Generate;
 
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Command\Shared\ConfirmationTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Generator\ShortcodeGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
@@ -24,7 +22,6 @@ use WP\Console\Utils\Validator;
 
 class ShortcodeCommand extends Command
 {
-    use CommandTrait;
     use PluginTrait;
     use ConfirmationTrait;
 
@@ -57,10 +54,10 @@ class ShortcodeCommand extends Command
      * CommandCommand constructor.
      *
      * @param ShortcodeGenerator $generator
-     * @param Manager          $extensionManager
-     * @param Site          $site
-     * @param Validator        $validator
-     * @param StringConverter  $stringConverter
+     * @param Manager            $extensionManager
+     * @param Site               $site
+     * @param Validator          $validator
+     * @param StringConverter    $stringConverter
      */
     public function __construct(
         ShortcodeGenerator $generator,
@@ -156,15 +153,15 @@ class ShortcodeCommand extends Command
             $tag = $io->ask(
                 $this->trans('commands.generate.shortcode.questions.tag'),
                 '',
-                function ($tag) use($shortcodes, $io) {
-                    if(empty($tag)) {
+                function ($tag) use ($shortcodes, $io) {
+                    if (empty($tag)) {
                         throw new \InvalidArgumentException(
                             sprintf(
                                 $this->trans('commands.generate.shortcode.warnings.tag-required'),
                                 $tag
                             )
                         );
-                    } elseif(array_key_exists($tag, $shortcodes)) {
+                    } elseif (array_key_exists($tag, $shortcodes)) {
                         throw new \InvalidArgumentException(
                             sprintf(
                                 $this->trans('commands.generate.shortcode.warnings.tag-unavailable'),
@@ -175,13 +172,13 @@ class ShortcodeCommand extends Command
 
                     $tagMachineNameCamelCase = $this->stringConverter->createMachineName($this->stringConverter->humanToCamelCase($tag));
 
-                    if($tag != $tagMachineNameCamelCase) {
+                    if ($tag != $tagMachineNameCamelCase) {
                         $io->warning(
-                           sprintf(
-                            $this->trans('commands.generate.shortcode.warnings.tag-transformed'),
-                            $tag,
-                            $tagMachineNameCamelCase
-                           )
+                            sprintf(
+                                $this->trans('commands.generate.shortcode.warnings.tag-transformed'),
+                                $tag,
+                                $tagMachineNameCamelCase
+                            )
                         );
                     }
                     return $tagMachineNameCamelCase;
@@ -189,6 +186,5 @@ class ShortcodeCommand extends Command
             );
             $input->setOption('tag', $tag);
         }
-
     }
 }

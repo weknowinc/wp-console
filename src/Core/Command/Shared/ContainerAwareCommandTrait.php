@@ -5,7 +5,7 @@
  * Contains WP\Console\Core\Command\Shared\ContainerAwareCommandTrait.
  */
 
-namespace WP\Console\Command\Shared;
+namespace WP\Console\Core\Command\Shared;
 
 /**
  * Class CommandTrait

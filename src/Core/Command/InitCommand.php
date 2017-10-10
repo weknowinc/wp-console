@@ -12,8 +12,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Console\Command\Command;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Core\Generator\InitGenerator;
 use WP\Console\Core\Utils\ShowFile;
@@ -26,7 +24,6 @@ use WP\Console\Core\Style\WPStyle;
  */
 class InitCommand extends Command
 {
-    use CommandTrait;
 
     /**
      * @var ShowFile

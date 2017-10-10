@@ -10,18 +10,15 @@ namespace WP\Console\Command\Multisite;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
+use WP\Console\Core\Command\Command;
 use WP\Console\Core\Generator\SilentIndexGenerator;
-use WP\Console\Core\Utils\ArgvInputReader;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\DatabaseTrait;
 
 class NewCommand extends Command
 {
-    use CommandTrait;
     use DatabaseTrait;
 
     /**
@@ -267,11 +264,15 @@ class NewCommand extends Command
 
             $this->site->multisiteWelcomeNotification($id, $userID, $password, $networkTitle, array( 'public' => 1 ));
 
+            // Get and reset WP_CONTENT_DIR --wp-content-dir if this exit in command options
+            $wp_content_dir =  $input->getParameterOption('--wp-content-dir');
+            $WP_CONTENT_DIR = $wp_content_dir?$wp_content_dir:WP_CONTENT_DIR;
+
             // Check if WP_CONTENT_DIR exist
-            if (!is_dir(WP_CONTENT_DIR)) {
-                $this->generator->generate($this->appRoot, WP_CONTENT_DIR);
-                $this->generator->generate($this->appRoot, WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'plugins');
-                $this->generator->generate($this->appRoot, WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes');
+            if (!is_dir($WP_CONTENT_DIR)) {
+                $this->generator->generate($this->appRoot, $WP_CONTENT_DIR);
+                $this->generator->generate($this->appRoot, $WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'plugins');
+                $this->generator->generate($this->appRoot, $WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes');
                 $io->info(
                     $this->trans('commands.multisite.new.messages.content-dir-created')
                 );

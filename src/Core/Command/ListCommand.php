@@ -7,13 +7,11 @@
 
 namespace WP\Console\Core\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Helper\DescriptorHelper;
 use WP\Console\Core\Style\WPStyle;
 
@@ -24,7 +22,6 @@ use WP\Console\Core\Style\WPStyle;
  */
 class ListCommand extends Command
 {
-    use CommandTrait;
 
     /**
      * {@inheritdoc}

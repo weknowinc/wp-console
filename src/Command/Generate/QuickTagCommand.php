@@ -10,11 +10,10 @@ namespace WP\Console\Command\Generate;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
-use WP\Console\Command\Shared\ContainerAwareCommandTrait;
 use WP\Console\Command\Shared\ExtensionTrait;
 use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Command\Shared\ConfirmationTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Generator\QuickTagGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
@@ -24,7 +23,6 @@ use WP\Console\Utils\Validator;
 
 class QuickTagCommand extends Command
 {
-    use ContainerAwareCommandTrait;
     use ConfirmationTrait;
     use PluginTrait;
     use ExtensionTrait;

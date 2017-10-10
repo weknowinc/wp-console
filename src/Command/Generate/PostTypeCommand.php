@@ -10,22 +10,20 @@ namespace WP\Console\Command\Generate;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Command\Shared\TaxonomyPostTypeTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\PostTypeGenerator;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Core\Utils\StringConverter;
 
 class PostTypeCommand extends Command
 {
     use PluginTrait;
     use ConfirmationTrait;
-    use CommandTrait;
     use TaxonomyPostTypeTrait;
 
     /**

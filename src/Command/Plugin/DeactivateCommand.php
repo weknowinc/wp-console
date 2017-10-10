@@ -10,9 +10,8 @@ namespace WP\Console\Command\Plugin;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
-use WP\Console\Command\Shared\CommandTrait;
 use WP\Console\Command\Shared\PluginTrait;
+use WP\Console\Core\Command\Command;
 use WP\Console\Utils\Site;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
@@ -26,7 +25,6 @@ use WP\Console\Core\Utils\ChainQueue;
  */
 class DeactivateCommand extends Command
 {
-    use CommandTrait;
     use pluginTrait;
 
     /**
