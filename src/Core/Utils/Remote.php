@@ -27,10 +27,9 @@ class Remote
     /**
      * Remote constructor.
      *
-     * @param $translator
+     * @param TranslatorManagerInterface $translator
      */
-    public function __construct(
-        TranslatorManagerInterface $translator
+    public function __construct($translator
     ) {
         $this->translator = $translator;
     }

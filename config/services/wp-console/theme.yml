@@ -1,6 +1,6 @@
 services:
   theme_activate:
-      class: WP\Console\Command\Theme\ActivateCommand
-      arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Theme\ActivateCommand
+    arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
+    tags:
+      - { name: wordpress.command }

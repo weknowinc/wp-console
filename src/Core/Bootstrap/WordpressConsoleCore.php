@@ -122,10 +122,11 @@ class WordpressConsoleCore
             }
         }
 
+        $appRoot = $this->appRoot?$this->appRoot:$this->root;
         // Set service app.root
         $container->set(
             'app.root',
-            $this->appRoot
+            $appRoot
         );
 
         $container->get('console.translator_manager')

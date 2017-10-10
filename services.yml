@@ -1,29 +1,31 @@
 services:
   # WordpressConsoleCore Services
+  console.root:
+    class: SplString
   console.chain:
     class: WP\Console\Core\Command\Chain\ChainCommand
     arguments: ['@console.chain_queue', '@console.chain_discovery']
     tags:
       - { name: wordpress.command }
   console.debug_chain:
-      class: WP\Console\Core\Command\Debug\ChainCommand
-      arguments: ['@console.chain_discovery']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Core\Command\Debug\ChainCommand
+    arguments: ['@console.chain_discovery']
+    tags:
+      - { name: wordpress.command }
   console.exec:
-      class: WP\Console\Core\Command\Exec\ExecCommand
-      arguments: ['@console.shell_process']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Core\Command\Exec\ExecCommand
+    arguments: ['@console.shell_process']
+    tags:
+      - { name: wordpress.command }
   console.remote:
-      class: WP\Console\Core\Utils\Remote
-      arguments: ['@console.translator_manager']
+    class: WP\Console\Core\Utils\Remote
+    arguments: ['@console.translator_manager']
   console.shell_process:
-      class: WP\Console\Core\Utils\ShellProcess
-      arguments: ['@app.root', '@console.translator_manager']
+    class: WP\Console\Core\Utils\ShellProcess
+    arguments: ['@app.root', '@console.translator_manager']
   console.validator:
-      class: WP\Console\Utils\Validator
-      arguments: ['@console.extension_manager']
+    class: WP\Console\Utils\Validator
+    arguments: ['@console.extension_manager']
   console.create_user_data:
     class: WP\Console\Utils\Create\UserData
     arguments: ['@console.site']
