@@ -200,9 +200,6 @@ class Application extends BaseApplication
             'list',
             'server'
         ];
-        //        $languages = $this->container->get('console.configuration_manager')
-        //            ->getConfiguration()
-        //            ->get('application.languages');
 
         $data = [];
         foreach ($singleCommands as $singleCommand) {
