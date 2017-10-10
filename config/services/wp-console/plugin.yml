@@ -1,11 +1,11 @@
 services:
   plugin_activate:
-      class: WP\Console\Command\Plugin\ActivateCommand
-      arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Plugin\ActivateCommand
+    arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
+    tags:
+      - { name: wordpress.command }
   plugin_deactivate:
-      class: WP\Console\Command\Plugin\DeactivateCommand
-      arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Plugin\DeactivateCommand
+    arguments: ['@console.site', '@console.validator','@console.extension_manager', '@app.root', '@console.chain_queue']
+    tags:
+      - { name: wordpress.command }

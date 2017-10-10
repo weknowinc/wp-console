@@ -127,7 +127,6 @@ class Application extends BaseApplication
         $aliases = $this->container->get('console.configuration_manager')
             ->getConfiguration()
             ->get('application.commands.aliases')?:[];
-
         foreach ($consoleCommands as $name) {
             if (!$this->container->has($name)) {
                 continue;
@@ -140,7 +139,6 @@ class Application extends BaseApplication
 
                 continue;
             }
-
             if (!$command) {
                 continue;
             }
@@ -177,7 +175,10 @@ class Application extends BaseApplication
             }
 
             if (array_key_exists($command->getName(), $aliases)) {
-                $commandAliases = $aliases[$command->getName()];
+                $commandAliases = array_unique(array_merge(
+                    $command->getAliases()?$command->getAliases():[],
+                    array_key_exists($command->getName(), $aliases)?$aliases[$command->getName()]:[]
+                ));
                 if (!is_array($commandAliases)) {
                     $commandAliases = [$commandAliases];
                 }

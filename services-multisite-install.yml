@@ -1,10 +1,10 @@
 services:
   # Installer services
   console.multisite_install:
-      class: WP\Console\Command\Multisite\InstallCommand
-      arguments: ['@console.site', '@console.configuration_manager', '@app.root', '@console.site_install_generator', '@console.chain_queue']
-      tags:
-        - { name: wordpress.command }
+    class: WP\Console\Command\Multisite\InstallCommand
+    arguments: ['@console.site', '@console.configuration_manager', '@app.root', '@console.site_install_generator', '@console.chain_queue']
+    tags:
+      - { name: wordpress.command }
   # WordpressConsole Commands
   # WordpressConsoleCore Generators
   console.site_install_generator:
