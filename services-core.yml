@@ -17,6 +17,10 @@ services:
       arguments: ['@?console.root', '@console.configuration_manager']
   console.configuration_manager:
     class: WP\Console\Core\Utils\ConfigurationManager
+  console.help:
+    class: WP\Console\Core\Command\HelpCommand
+    tags:
+      - { name: wordpress.command }
   console.init:
     class: WP\Console\Core\Command\InitCommand
     arguments: ['@console.show_file', '@console.configuration_manager', '@console.init_generator', '@app.root', '@?console.root']
