@@ -13,11 +13,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
-use WP\Console\Command\Shared\CommandTrait;
-use WP\Console\Command\Shared\InputTrait;
+use WP\Console\Core\Command\Command;
+use WP\Console\Core\Command\Shared\InputTrait;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\ChainQueue;
 use WP\Console\Core\Utils\ChainDiscovery;
@@ -29,7 +28,6 @@ use WP\Console\Core\Utils\ChainDiscovery;
  */
 class ChainCommand extends Command
 {
-    use CommandTrait;
     use InputTrait;
 
     /**
