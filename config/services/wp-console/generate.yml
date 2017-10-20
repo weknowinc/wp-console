@@ -59,3 +59,8 @@ services:
     arguments: ['@console.widget_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
     tags:
       - { name: wordpress.command }
+  console.generate_user_contactmethods:
+    class: WP\Console\Command\Generate\UserContactMethodsCommand
+    arguments: ['@console.user_contactmethods_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+    tags:
+      - { name: wordpress.command }
