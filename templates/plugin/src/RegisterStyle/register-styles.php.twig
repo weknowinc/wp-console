@@ -1,0 +1,29 @@
+{% extends "base/file.php.twig" %}
+{% block extra_info %}
+{% if not admin_file_exists %}
+  * Functions with custom class {{ command_name }}
+{%- endif -%}
+{%- endblock -%}
+{% block file_docblock %}
+{% if not admin_file_exists %}
+  {{ parent() }}
+{%- endif -%}
+{%- endblock -%}
+{% block file_methods %}
+// Register Style
+function {{ function_name }}() {
+{% if styles_items is defined %}
+{% for item in styles_items %}
+
+{% if item.deregister %}
+    wp_deregister_style( '{{ item.name }}' );
+{% endif %}
+    wp_register_style( '{{ item.name }}', '{{ item.url }}', array({% for label in item.dependencies %} '{{ label }}', {% endfor %}), '{{ item.version }}', '{{ item.media }}' );
+{% if item.enqueue %}
+    wp_enqueue_style( '{{ item.name }}' );
+{% endif %}
+{% endfor %}
+{% endif %}
+}
+add_action( '{{ hook }}', '{{ function_name }}' );
+{%- endblock -%}

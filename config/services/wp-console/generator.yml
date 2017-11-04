@@ -57,3 +57,8 @@ services:
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }
+  console.register_style_generator:
+    class: WP\Console\Generator\RegisterStyleGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }

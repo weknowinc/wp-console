@@ -59,3 +59,8 @@ services:
     arguments: ['@console.widget_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
     tags:
       - { name: wordpress.command }
+  console.generate_register_style:
+    class: WP\Console\Command\Generate\RegisterStyleCommand
+    arguments: ['@console.register_style_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+    tags:
+      - { name: wordpress.command }
