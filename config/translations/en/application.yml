@@ -30,6 +30,7 @@ messages:
     files:
         generated: 'Generated or updated files'
         copied: 'Copied files'
+    lines-code: 'Generated lines of code: %s'
     learning:
         route: "In order to to create pages it is necessary to define routes for them.\nA route maps a URL path to a controller. It defines what function\nor method will be called when a URL is accessed.\nIf the user accesses http://wordpress.dev/{{ route.path }}."
     autocomplete: |
