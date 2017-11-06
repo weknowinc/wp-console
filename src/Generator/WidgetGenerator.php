@@ -38,13 +38,13 @@ class WidgetGenerator extends Generator
     /**
      * Generator Widget
      *
-     * @param $plugin
-     * @param $class_name
-     * @param $widget_id
-     * @param $title
-     * @param $description
-     * @param $widget_class_name
-     * @param $widget_fields
+     * @param string $plugin
+     * @param string $class_name
+     * @param string $widget_id
+     * @param string $title
+     * @param string $description
+     * @param string $widget_class_name
+     * @param array $widget_items
      */
     public function generate(
         $plugin,
@@ -53,7 +53,7 @@ class WidgetGenerator extends Generator
         $title,
         $description,
         $widget_class_name,
-        $widget_fields
+        $widget_items
 
     ) {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
@@ -66,7 +66,7 @@ class WidgetGenerator extends Generator
             "title" => $title,
             "description" => $description,
             "widget_class_name" => $widget_class_name,
-            "widget_fields" => $widget_fields,
+            "widget_items" => $widget_items,
             "class_name_path" => 'Widget/' . lcfirst($class_name) . '.php',
             "admin_widget_path" => 'admin/partials/widgets-admin.php',
             "file_exists" => file_exists($pluginFile),

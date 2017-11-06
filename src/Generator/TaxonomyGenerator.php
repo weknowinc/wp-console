@@ -39,21 +39,21 @@ class TaxonomyGenerator extends Generator
     /**
      * Generator MetaBox
      *
-     * @param $plugin
-     * @param $class_name
-     * @param $function_name
-     * @param $taxonomy_key
-     * @param $name_singular
-     * @param $name_plural
-     * @param $post_type
-     * @param $hierarchical
-     * @param $labels
-     * @param $visibility
-     * @param $permalinks
-     * @param $capabilities
-     * @param $rest
-     * @param $child_themes
-     * @param $update_count_callback
+     * @param string $plugin
+     * @param string $class_name
+     * @param string $function_name
+     * @param string $taxonomy_key
+     * @param string $name_singular
+     * @param string $name_plural
+     * @param array $post_type
+     * @param boolean $hierarchical
+     * @param array $labels
+     * @param array $visibility
+     * @param array $permalinks
+     * @param array $capabilities
+     * @param array $rest
+     * @param boolean $child_themes
+     * @param string $update_count_callback
      */
     public function generate(
         $plugin,

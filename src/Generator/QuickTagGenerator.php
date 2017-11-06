@@ -45,8 +45,8 @@ class QuickTagGenerator extends Generator
      * @param string $extension_type
      * @param string $extension
      * @param string $function_name
-     * @param string $quicktag_items
-     * @param string $site
+     * @param array $quicktag_items
+     * @param Site $site
      */
     public function generate(
         $extension_type,
@@ -76,7 +76,7 @@ class QuickTagGenerator extends Generator
             "function_name" => $function_name,
             "quicktag_items" => $quicktag_items,
             "class_name_quicktag_path" => $extensionFiles[$extension_type]['dir'],
-            "file_exists" => file_exists($extensionObject->getPath().'/'.$extensionFiles[$extension_type]['dir']),
+            "file_exists" => file_exists($extensionObject->getPathName()),
             "function_exists" => file_exists($extensionObject->getPath().$extensionFiles['theme']['render'])
         ];
 

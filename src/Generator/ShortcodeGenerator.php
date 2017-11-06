@@ -8,7 +8,6 @@
 namespace WP\Console\Generator;
 
 use WP\Console\Core\Generator\Generator;
-use WP\Console\Utils\Site;
 
 /**
  * Class PluginGenerator
@@ -19,13 +18,13 @@ class ShortcodeGenerator extends Generator
 {
     /**
      * @param Site        $site
-     * @param $plugin
-     * @param $machineName
-     * @param $dir
-     * @param $description
-     * @param $author
-     * @param $authorUrl
-     * @param $test
+     * @param string $plugin
+     * @param string $machineName
+     * @param string $dir
+     * @param string $description
+     * @param string $author
+     * @param string $authorUrl
+     * @param boolean $test
      */
     public function generate(
         $tag,

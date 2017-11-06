@@ -27,7 +27,7 @@ trait FieldsTypeTrait
         $count = 0;
         while (true) {
             $type = $io->choiceNoList(
-                $this->trans('commands.generate.'.$command.'.questions.fields.type'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.type'),
                 $fields_options,
                 NULL,
                 TRUE
@@ -38,12 +38,12 @@ trait FieldsTypeTrait
             }
 
             $label = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.fields.label'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.label'),
                 null
             );
 
             $id = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.fields.id'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.id'),
                 $this->stringConverter->createMachineName($label),
                 function ($id) use ($stringConverter) {
                     return $stringConverter->createMachineName($id);
@@ -51,7 +51,7 @@ trait FieldsTypeTrait
             );
 
             $description = $io->askEmpty(
-                $this->trans('commands.generate.'.$command.'.questions.fields.description')
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.description')
             );
 
             array_push(
@@ -66,11 +66,11 @@ trait FieldsTypeTrait
 
             if ($type != 'select' && $type != 'radio' && $type != 'checkbox') {
                 $placeholder = $io->askEmpty(
-                    $this->trans('commands.generate.'.$command.'.questions.fields.placeholder')
+                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.placeholder')
                 );
 
                 $default_value = $io->askEmpty(
-                    $this->trans('commands.generate.'.$command.'.questions.fields.default-value')
+                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.default-value')
                 );
 
                 $fields[$count]['placeholder'] = $placeholder;
@@ -79,7 +79,7 @@ trait FieldsTypeTrait
 
             if ($type == 'select' || $type == 'radio' || $type == 'checkbox') {
                 if ($io->confirm(
-                    $this->trans('commands.generate.'.$command.'.questions.fields.multiple-options', $type),
+                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-options', $type),
                     false
                 )
                 ) {
@@ -89,13 +89,13 @@ trait FieldsTypeTrait
 
             if ($type == 'image') {
                 $src = $io->ask(
-                    $this->trans('commands.generate.'.$command.'.questions.fields.src')
+                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.src')
                 );
                 $fields[$count]['src_image'] =  $src;
             }
 
             if (!$io->confirm(
-                $this->trans('commands.generate.'.$command.'.questions.fields.generate-add'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.'.$command.'-add-another'),
                 false
             )
             ) {
@@ -112,13 +112,13 @@ trait FieldsTypeTrait
         $multiple_options = [];
         while (true) {
             $multiple_options_label = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.fields.multiple-label'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-label'),
                 ''
             );
 
 
             $multiple_options_value = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.fields.multiple-value'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-value'),
                 ''
             );
 
@@ -130,7 +130,7 @@ trait FieldsTypeTrait
                 ]
             );
             if (!$io->confirm(
-                $this->trans('commands.generate.'.$command.'.questions.fields.multiple-options-add', $type),
+                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-options-add', $type),
                 false
             )
             ) {

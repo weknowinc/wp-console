@@ -8,7 +8,7 @@ options:
     title: 'The title of the widget'
     description: 'The widget description'
     widget-class-name: 'The widget class name'
-    widget-fields: 'The widget fields'
+    widget-items: 'The widget items'
 questions:
     plugin: 'Enter the plugin name'
     class-name: 'Enter widget class name'
@@ -16,8 +16,8 @@ questions:
     title: 'Enter the title of the widget'
     description: 'Enter widget description'
     widget-class-name: 'Enter widget class name'
-    fields:
-        generate-fields: 'Do you want to generate the widget fields'
+    widget-items:
+        widget-add: 'Do you want to generate the widget items'
         type: 'Enter field type'
         id: 'Enter field id'
         label: 'Enter field label'
@@ -25,7 +25,7 @@ questions:
         placeholder: 'Enter field placeholder'
         default-value: 'Enter field default value'
         src_image: 'Enter the image path'
-        generate-add: 'Do you want to add another field widget'
+        widget-add-another: 'Do you want to add another widget item'
         multiple-options: 'Do you want to add option for %option%'
         multiple-label: 'Enter the label for option'
         multiple-value: 'Enter the value for option'

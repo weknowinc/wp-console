@@ -172,7 +172,7 @@ class SidebarCommand extends Command
             $stringConverter = $this->stringConverter;
             while (true) {
                 $id = $io->ask(
-                    $this->trans('commands.generate.sidebar.questions.id'),
+                    $this->trans('commands.generate.sidebar.questions.sidebar-items.id'),
                     str_replace("_", "-", $function_name),
                     function ($id) use ($stringConverter) {
                         $id = $stringConverter->humanToCamelCase($id);
@@ -181,7 +181,7 @@ class SidebarCommand extends Command
                 );
 
                 $class = $io->ask(
-                    $this->trans('commands.generate.sidebar.questions.class'),
+                    $this->trans('commands.generate.sidebar.questions.sidebar-items.class'),
                     $function_name,
                     function ($class) use ($stringConverter) {
                         $class = $stringConverter->humanToCamelCase($class);
@@ -190,12 +190,12 @@ class SidebarCommand extends Command
                 );
 
                 $name = $io->ask(
-                    $this->trans('commands.generate.sidebar.questions.name'),
+                    $this->trans('commands.generate.sidebar.questions.sidebar-items.name'),
                     'default sidebar'
                 );
 
                 $description = $io->ask(
-                    $this->trans('commands.generate.sidebar.questions.description'),
+                    $this->trans('commands.generate.sidebar.questions.sidebar-items.description'),
                     'My first Sidebar'
                 );
 
@@ -210,7 +210,7 @@ class SidebarCommand extends Command
                 );
 
                 if (!$io->confirm(
-                    $this->trans('commands.generate.sidebar.questions.sidebar-add'),
+                    $this->trans('commands.generate.sidebar.questions.sidebar-items.sidebar-add-another'),
                     true
                 )
                 ) {

@@ -10,7 +10,7 @@ options:
     screen: 'metabox screen'
     page-location: 'metabox page location'
     priority: 'metabox priority'
-    metabox-fields: 'The metabox fields'
+    metabox-items: 'The metabox items'
     wp-nonce: 'wp nonce for fields'
     auto-save: 'Auto save?'
 questions:
@@ -22,8 +22,8 @@ questions:
     screen: 'Enter metabox screen'
     page-location: 'Enter metabox page location'
     priority: 'Enter metabox priority'
-    fields:
-        generate-fields: 'Do you want to generate the metabox fields'
+    metabox-items:
+        metabox-add: 'Do you want to generate the metabox item'
         type: 'Enter field type'
         id: 'Enter field id'
         label: 'Enter field label'
@@ -31,7 +31,7 @@ questions:
         placeholder: 'Enter field placeholder'
         default-value: 'Enter field default value'
         src_image: 'Enter the image path'
-        generate-add: 'Do you want to add another field metabox'
+        metabox-add-another: 'Do you want to add another item metabox'
         multiple-options: 'Do you want to add option for %option%'
         multiple-label: 'Enter the label for option'
         multiple-value: 'Enter the value for option'

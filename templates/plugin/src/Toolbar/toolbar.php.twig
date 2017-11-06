@@ -13,8 +13,8 @@
 // Display Toolbar
 function {{ function_name }}() {
     global $wp_admin_bar;
-{% if menu is defined %}
-{% for item in menu %}
+{% if menu_items is defined %}
+{% for item in menu_items %}
     $args = array(
 {% for key, value in item %}
 {% if key == 'title' %}

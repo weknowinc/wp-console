@@ -39,25 +39,25 @@ class PostTypeGenerator extends Generator
     /**
      * Generator MetaBox
      *
-     * @param $plugin
-     * @param $class_name
-     * @param $function_name
-     * @param $post_type_key
-     * @param $description
-     * @param $name_singular
-     * @param $name_plural
-     * @param $taxonomy
-     * @param $hierarchical
-     * @param $exclude_from_search
-     * @param $enable_export
-     * @param $enable_archives
-     * @param $labels
-     * @param $supports
-     * @param $visibility
-     * @param $permalinks
-     * @param $capabilities
-     * @param $rest
-     * @param $child_themes
+     * @param string $plugin
+     * @param string $class_name
+     * @param string $function_name
+     * @param string $post_type_key
+     * @param string $description
+     * @param string $name_singular
+     * @param string $name_plural
+     * @param string $taxonomy
+     * @param boolean $hierarchical
+     * @param boolean $exclude_from_search
+     * @param boolean $enable_export
+     * @param boolean $enable_archives
+     * @param array $labels
+     * @param array $supports
+     * @param array $visibility
+     * @param boolean $permalinks
+     * @param array $capabilities
+     * @param array $rest
+     * @param boolean $child_themes
      */
     public function generate(
         $plugin,

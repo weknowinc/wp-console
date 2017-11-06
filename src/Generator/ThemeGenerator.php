@@ -19,15 +19,15 @@ class ThemeGenerator extends Generator
 {
     /**
      * @param Site           $site
-     * @param $Theme
-     * @param $machineName
-     * @param $dir
-     * @param $description
-     * @param $author
-     * @param $authorUrl
-     * @param $template_files
-     * @param screenshot
-     * @param $test
+     * @param string $Theme
+     * @param string $machineName
+     * @param string $dir
+     * @param string $description
+     * @param string $author
+     * @param string $authorUrl
+     * @param array $template_files
+     * @param string $screenshot
+     * @param boolean $test
      */
     public function generate(
         $site,

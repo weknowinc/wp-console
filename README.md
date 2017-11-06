@@ -45,13 +45,21 @@ chmod +x /usr/local/bin/wordpress
   * debug:theme (dt)                  Display current themes available for application
 
  **generate**
-  * generate:command (gc)             Generate commands for the console.
-  * generate:metabox (gm)             Generate a meta box.
-  * generate:plugin (gp)              Generate a plugin.
-  * generate:post:type (gpt)          Generate a custom post type.
-  * generate:shortcode (gs)           Generate a shortcode.  
-  * generate:taxonomy (gta)           Generate a custom taxonomy.
-  * generate:theme (gth)              Generate a theme.
+  * generate:command (gc)                  Generate commands for the console.
+  * generate:menu (gm)                     Generate a menu.
+  * generate:metabox (gm)                  Generate a meta box.
+  * generate:plugin (gp)                   Generate a plugin.
+  * generate:post:type (gpt)               Generate a custom post type.
+  * generate:quicktag (gqt)                Generate a quicktag.
+  * generate:register:style (grs)          Generate a register style.
+  * generate:shortcode (gs)                Generate a shortcode.  
+  * generate:sidebar (gsb)                 Generate a sidebar.
+  * generate:taxonomy (gta)                Generate a custom taxonomy.
+  * generate:theme (gth)                   Generate a theme.
+  * generate:toolbar (gtb)                 Generate a toolbar.
+  * generate:user:contactmethods (gucm)    Generate a User contact methods.
+  * generate:widget (gwd)                  Generate a widgets.
+
  
  **multisite**
   * multisite:install (mi)            Install a Wordpress multisite network

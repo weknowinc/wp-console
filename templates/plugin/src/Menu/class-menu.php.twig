@@ -24,7 +24,7 @@ class {{ class_name }} {% endblock -%}
     {
         $locations = array(
 {% for label in menu_items %}
-            '{{ label.menu }}'  => __('{{ label.description }}', 'text_domain'),
+            '{{ label.name }}'  => __('{{ label.description }}', 'text_domain'),
 {% endfor %}
         );
         register_nav_menus( $locations );

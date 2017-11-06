@@ -180,7 +180,7 @@ class QuickTagCommand extends Command
             $stringConverter = $this->stringConverter;
             while (true) {
                 $id = $io->ask(
-                    $this->trans('commands.generate.quicktag.questions.id'),
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.id'),
                     '',
                     function ($id) use ($stringConverter) {
                         return $stringConverter->humanToCamelCase($id);
@@ -188,33 +188,39 @@ class QuickTagCommand extends Command
                 );
 
                 $display = $io->ask(
-                    $this->trans('commands.generate.quicktag.questions.display'),
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.display'),
                     ''
                 );
 
                 $starting_tag = $io->ask(
-                    $this->trans('commands.generate.quicktag.questions.starting-tag'),
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.starting-tag'),
                     ''
                 );
 
                 $ending_tag = $io->askEmpty(
-                    $this->trans('commands.generate.quicktag.questions.ending-tag')
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.ending-tag')
                 );
 
                 $key = $io->askEmpty(
-                    $this->trans('commands.generate.quicktag.questions.key')
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.key')
                 );
 
                 $title = $io->askEmpty(
-                    $this->trans('commands.generate.quicktag.questions.title')
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.title')
                 );
 
                 $priority = $io->askEmpty(
-                    $this->trans('commands.generate.quicktag.questions.priority')
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.priority'),
+                    function ($priority) {
+                        if (!is_numeric(trim($priority))) {
+                            throw new \Exception('The Priority only can be a number');
+                        }
+                    return $priority;
+                    }
                 );
 
                 $instance = $io->askEmpty(
-                    $this->trans('commands.generate.quicktag.questions.instance')
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.instance')
                 );
 
                 array_push(
@@ -232,7 +238,7 @@ class QuickTagCommand extends Command
                 );
 
                 if (!$io->confirm(
-                    $this->trans('commands.generate.quicktag.questions.quicktag-add'),
+                    $this->trans('commands.generate.quicktag.questions.quicktag-items.quicktag-add-another'),
                     true
                 )
                 ) {

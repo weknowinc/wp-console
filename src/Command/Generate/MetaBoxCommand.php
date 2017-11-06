@@ -131,10 +131,10 @@ class MetaBoxCommand extends Command
                 $this->trans('commands.generate.metabox.options.priority')
             )
             ->addOption(
-                'metabox-fields',
+                'metabox-items',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.metabox.options.metabox-fields')
+                $this->trans('commands.generate.metabox.options.metabox-items')
             )
             ->addOption(
                 'wp-nonce',
@@ -171,7 +171,7 @@ class MetaBoxCommand extends Command
         $screen = $input->getOption('screen');
         $page_location = $input->getOption('page-location');
         $priority = $input->getOption('priority');
-        $metabox_fields = $input->getOption('metabox-fields');
+        $metabox_fields = $input->getOption('metabox-items');
         $wp_nonce = $input->getOption('wp-nonce');
         $auto_save = $input->getOption('auto-save');
 
@@ -290,21 +290,21 @@ class MetaBoxCommand extends Command
         $input->setOption('priority', $priority);
         
         
-        // -- metabox fields
-        $metabox_fields = $input->getOption('metabox-fields');
-        if (!$metabox_fields) {
+        // -- metabox items
+        $metabox_items = $input->getOption('metabox-items');
+        if (!$metabox_items) {
             if ($io->confirm(
-                $this->trans('commands.generate.metabox.questions.fields.generate-fields'),
+                $this->trans('commands.generate.metabox.questions.metabox-items.metabox-add'),
                 true
             )
             ) {
                 // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                $metabox_fields = $this->fieldsQuestion($io, 'metabox');
-                $input->setOption('metabox-fields', $metabox_fields);
+                $metabox_items = $this->fieldsQuestion($io, 'metabox');
+                $input->setOption('metabox-items', $metabox_items);
             }
         }
         
-        if (!empty($metabox_fields)) {
+        if (!empty($metabox_items)) {
             // --wp nonce
             $wp_nonce = $input->getOption('wp-nonce');
             if (!$wp_nonce) {
