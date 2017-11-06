@@ -45,7 +45,7 @@ class MenuGenerator extends Generator
      * @param string  $extension
      * @param string  $class_name
      * @param string  $function_name
-     * @param string  $menu_items
+     * @param array  $menu_items
      * @param string  $description
      * @param boolean $child_themes
      */

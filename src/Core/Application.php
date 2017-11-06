@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use WP\Console\Core\Command\Chain\ChainCustomCommand;
 use WP\Console\Core\EventSubscriber\CallCommandListener;
 use WP\Console\Core\EventSubscriber\ShowGenerateChainListener;
+use WP\Console\Core\EventSubscriber\ShowGenerateCountCodeLinesListener;
 use WP\Console\Core\EventSubscriber\ShowGeneratedFilesListener;
 use WP\Console\Core\EventSubscriber\ShowGenerateInlineListener;
 use WP\Console\Core\Style\WPStyle;
@@ -156,6 +157,12 @@ class Application extends BaseApplication
         $dispatcher->addSubscriber(
             new ShowGenerateChainListener(
                 $this->container->get('console.translator_manager')
+            )
+        );
+        $dispatcher->addSubscriber(
+            new ShowGenerateCountCodeLinesListener(
+                $this->container->get('console.translator_manager'),
+                $this->container->get('console.count_code_lines')
             )
         );
 

@@ -2,34 +2,29 @@
 
 /**
  * @file
- * Contains \WP\Console\Generator\ToolbarGenerator.
+ * Contains \WP\Console\Generator\UserContactMethodsGenerator.
  */
 
 namespace WP\Console\Generator;
 
-use WP\Console\Extension\Manager;
-use WP\Console\Core\Utils\TranslatorManager;
 use WP\Console\Core\Generator\Generator;
+use WP\Console\Extension\Manager;
 
 /**
- * Class ToolbarGenerator
+ * Class UserContactMethodsGenerator
  *
  * @package WP\Console\Generator
  */
-class ToolbarGenerator extends Generator
+class UserContactMethodsGenerator extends Generator
 {
+
     /**
      * @var Manager
      */
     protected $extensionManager;
 
     /**
-     * @var TranslatorManager
-     */
-    protected $translatorManager;
-
-    /**
-     * ToolbarGenerator constructor.
+     * AuthenticationProviderGenerator constructor.
      *
      * @param Manager $extensionManager
      */
@@ -39,34 +34,34 @@ class ToolbarGenerator extends Generator
         $this->extensionManager = $extensionManager;
     }
 
+
     /**
-     * Generate.
+     * Generator UserContactMethods
      *
-     * @param string $plugin
-     * @param string $function_name
-     * @param string $menu
-     * @param Site   $site
+     * @param $plugin
+     * @param $function_name
+     * @param $methods_items
+     * @param $site
      */
     public function generate(
         $plugin,
         $function_name,
-        $menu,
+        $methods_items,
         $site
     ) {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-
         $parameters = [
             "plugin" => $plugin,
             "function_name" => $function_name,
-            "menu" => $menu,
-            "admin_toolbar_path" => 'admin/partials/toolbars-admin.php',
+            "methods_items" => $methods_items,
+            "admin_user_contact_methods_path" => 'admin/partials/userContactMethods-admin.php',
             "file_exists" => file_exists($pluginFile),
-            "command_name" => 'toolbar'
+            "command_name" => 'userContactMethods'
         ];
 
-        $file_path_admin = $dir.'/'.$parameters['admin_toolbar_path'];
+        $file_path_admin = $dir.'/'.$parameters['admin_user_contact_methods_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
 
         if (!file_exists($file_path_admin)) {
@@ -82,7 +77,7 @@ class ToolbarGenerator extends Generator
             if (function_exists($function_name)) {
                 throw new \RuntimeException(
                     sprintf(
-                        'Unable to generate the sidebar , The function name already exist at "%s"',
+                        'Unable to generate the user_contactmethods , The function name already exist at "%s"',
                         realpath($file_path_admin)
                     )
                 );
@@ -90,7 +85,7 @@ class ToolbarGenerator extends Generator
         }
 
         $this->renderFile(
-            'plugin/src/Toolbar/toolbar.php.twig',
+            'plugin/src/UserContactMethods/user-contactmethods.php.twig',
             $file_path_admin,
             $parameters,
             FILE_APPEND

@@ -48,6 +48,8 @@ services:
   console.annotation_validator:
     class: WP\Console\Utils\AnnotationValidator
     arguments: ['@console.annotation_command_reader', '@console.extension_manager']
+  console.count_code_lines:
+    class: WP\Console\Core\Utils\CountCodeLines
   # WodpressConsole Services
   http_client:
     class: GuzzleHttp\Client

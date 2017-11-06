@@ -59,6 +59,8 @@ services:
       - { name: wordpress.generator }
   console.register_style_generator:
     class: WP\Console\Generator\RegisterStyleGenerator
+  console.user_contactmethods_generator:
+    class: WP\Console\Generator\UserContactMethodsGenerator
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }

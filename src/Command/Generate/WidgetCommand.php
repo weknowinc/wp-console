@@ -86,7 +86,7 @@ class WidgetCommand extends Command
                 'class-name',
                 null,
                 InputOption::VALUE_REQUIRED,
-                $this->trans('commands.common.options.class-name')
+                $this->trans('commands.generate.widget.options.class-name')
             )
             ->addOption(
                 'widget-id',
@@ -113,10 +113,10 @@ class WidgetCommand extends Command
                 $this->trans('commands.generate.widget.options.widget-class-name')
             )
             ->addOption(
-                'widget-fields',
+                'widget-items',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.widget.options.widget-fields')
+                $this->trans('commands.generate.widget.options.widget-items')
             )
             ->setAliases(['gwd']);
     }
@@ -134,7 +134,7 @@ class WidgetCommand extends Command
         $title = $input->getOption('title');
         $description = $input->getOption('description');
         $widget_class_name = $input->getOption('widget-class-name');
-        $widget_fields = $input->getOption('widget-fields');
+        $widget_items = $input->getOption('widget-items');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
@@ -149,7 +149,7 @@ class WidgetCommand extends Command
             $title,
             $description,
             $widget_class_name,
-            $widget_fields
+            $widget_items
         );
     }
 
@@ -158,8 +158,6 @@ class WidgetCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $io = new WPStyle($input, $output);
         $stringUtils = $this->stringConverter;
 
@@ -225,17 +223,17 @@ class WidgetCommand extends Command
         }
         $input->setOption('widget-class-name', $widget_class_name);
 
-        // --widget fields
-        $widget_fields = $input->getOption('widget-fields');
-        if (!$widget_fields) {
+        // --widget items
+        $widget_items = $input->getOption('widget-items');
+        if (!$widget_items) {
             if ($io->confirm(
-                $this->trans('commands.generate.widget.questions.fields.generate-fields'),
+                $this->trans('commands.generate.widget.questions.widget-items.widget-add'),
                 true
             )
             ) {
                 // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                $widget_fields = $this->fieldsQuestion($io, 'widget');
-                $input->setOption('widget-fields', $widget_fields);
+                $widget_items = $this->fieldsQuestion($io, 'widget');
+                $input->setOption('widget-items', $widget_items);
             }
         }
     }

@@ -181,8 +181,8 @@ class MenuCommand extends Command
             $array_menu_items = [];
             $stringConverter = $this->stringConverter;
             while (true) {
-                $menu = $io->ask(
-                    $this->trans('commands.generate.menu.questions.menu'),
+                $name = $io->ask(
+                    $this->trans('commands.generate.menu.questions.menu-items.name'),
                     '',
                     function ($menu) use ($stringConverter) {
                         return $stringConverter->humanToCamelCase($menu);
@@ -191,14 +191,14 @@ class MenuCommand extends Command
 
                 if (!empty($menu)) {
                     $description = $io->ask(
-                        $this->trans('commands.generate.menu.questions.description'),
+                        $this->trans('commands.generate.menu.questions.menu-items.description'),
                         ''
                     );
 
                     array_push(
                         $array_menu_items,
                         [
-                            'menu' => $stringConverter->camelCaseToUnderscore($menu),
+                            'name' => $stringConverter->camelCaseToUnderscore($name),
                             'description' => $description,
                         ]
                     );
@@ -207,7 +207,7 @@ class MenuCommand extends Command
 
 
                 if (!$io->confirm(
-                    $this->trans('commands.generate.menu.questions.menu-add'),
+                    $this->trans('commands.generate.menu.questions.menu-items.menu-add-another'),
                     true
                 )
                 ) {

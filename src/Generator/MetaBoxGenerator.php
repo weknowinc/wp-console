@@ -38,17 +38,17 @@ class MetaBoxGenerator extends Generator
     /**
      * Generator MetaBox
      *
-     * @param $plugin,
-     * @param $class_name
-     * @param $metabox_id,
-     * @param $title,
-     * @param $callback_function,
-     * @param $screen,
-     * @param $page_location,
-     * @param $priority,
-     * @param $metabox_fields
-     * @param $wp_nonce
-     * @param $auto_save
+     * @param string $plugin,
+     * @param string $class_name
+     * @param string $metabox_id,
+     * @param string $title,
+     * @param string $callback_function,
+     * @param string $screen,
+     * @param string $page_location,
+     * @param string $priority,
+     * @param array $metabox_items
+     * @param boolean $wp_nonce
+     * @param boolean $auto_save
      */
     public function generate(
         $plugin,
@@ -59,7 +59,7 @@ class MetaBoxGenerator extends Generator
         $screen,
         $page_location,
         $priority,
-        $metabox_fields,
+        $metabox_items,
         $wp_nonce,
         $auto_save
     ) {
@@ -75,7 +75,7 @@ class MetaBoxGenerator extends Generator
             "screen" => $screen,
             "page_location" => $page_location,
             "priority" => $priority,
-            "metabox_fields" => $metabox_fields,
+            "metabox_items" => $metabox_items,
             "wp_nonce" => $wp_nonce,
             "auto_save" => $auto_save,
             "class_name_path" => 'Metabox/' . lcfirst($class_name) . '.php',

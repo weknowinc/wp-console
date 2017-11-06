@@ -1,0 +1,18 @@
+description: 'Generate a User contact methods.'
+help: 'The <info>generate:user:contactmethods</info> command helps you generates a new User contact methods.'
+welcome: 'Welcome to the Wordpress User contact methods generator'
+options:
+    plugin: 'The Plugin name'
+    function-name: 'The user contact methods function name'
+    methods: 'The methods items'
+questions:
+    plugin: 'The plugin name.'
+    function-name: 'Enter menu function name'
+    methods: 'Do you want to add methods to user contact methods?'
+    name: 'Enter the name of the method'
+    description: 'Enter the description of the method'
+    methods-add: 'Do you want to add another methods to user contact methods?'
+warnings:
+    plugin-unavailable: 'Warning The following plugin are not already available in your local environment "%s"'
+errors:
+    directory-exists: 'The target directory "%s" is not empty.'

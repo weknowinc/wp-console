@@ -99,7 +99,7 @@ class ToolbarCommand extends Command
                 'menu-items',
                 '',
                 InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.toolbar.options.menu')
+                $this->trans('commands.generate.toolbar.options.menu-items')
             )
             ->setAliases(['gtb']);
     }
@@ -156,16 +156,16 @@ class ToolbarCommand extends Command
             $input->setOption('function-name', $function_name);
         }
 
-        // --menu
+        // --menu items
         $menu_items = $input->getOption('menu-items');
         if (!$menu_items) {
             $menu_items = [];
             while (true) {
-                $toolbar_id = $io->ask($this->trans('commands.generate.toolbar.questions.id'));
-                $parent_id = $io->askEmpty($this->trans('commands.generate.toolbar.questions.parent'));
-                $title = $io->ask($this->trans('commands.generate.toolbar.questions.title'));
-                $href = $io->askEmpty($this->trans('commands.generate.toolbar.questions.href'));
-                $menu_group = $io->choice($this->trans('commands.generate.toolbar.questions.group'), ['No include', 'true', 'false']);
+                $toolbar_id = $io->ask($this->trans('commands.generate.toolbar.questions.menu-items.id'));
+                $parent_id = $io->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.parent'));
+                $title = $io->ask($this->trans('commands.generate.toolbar.questions.menu-items.title'));
+                $href = $io->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.href'));
+                $menu_group = $io->choice($this->trans('commands.generate.toolbar.questions.menu-items.group'), ['No include', 'true', 'false']);
 
                 $options =
                     [
@@ -177,10 +177,10 @@ class ToolbarCommand extends Command
                     ];
 
                 $meta = [];
-                if ($io->confirm($this->trans('commands.generate.toolbar.questions.meta'))) {
+                if ($io->confirm($this->trans('commands.generate.toolbar.questions.menu-items.meta-add'))) {
                     $meta_options = ['html', 'class', 'target', 'onclick', 'title', 'tabindex'];
                     foreach ($meta_options as $value) {
-                        $ask = $io->askEmpty($this->trans('commands.generate.toolbar.questions.'.$value));
+                        $ask = $io->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.'.$value));
                         if (!empty($ask)) {
                             $meta[$value] = $ask;
                         }
@@ -206,7 +206,7 @@ class ToolbarCommand extends Command
                 array_push($menu_items, $options);
 
                 if (!$io->confirm(
-                    $this->trans('commands.generate.toolbar.questions.menu-add'),
+                    $this->trans('commands.generate.toolbar.questions.menu-items.menu-add-another'),
                     true
                 )
                 ) {

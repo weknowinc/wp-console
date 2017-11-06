@@ -62,5 +62,8 @@ services:
   console.generate_register_style:
     class: WP\Console\Command\Generate\RegisterStyleCommand
     arguments: ['@console.register_style_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+  console.generate_user_contactmethods:
+    class: WP\Console\Command\Generate\UserContactMethodsCommand
+    arguments: ['@console.user_contactmethods_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
     tags:
       - { name: wordpress.command }

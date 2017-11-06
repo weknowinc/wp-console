@@ -8,7 +8,6 @@
 namespace WP\Console\Generator;
 
 use WP\Console\Core\Generator\Generator;
-use WP\Console\Utils\Site;
 
 /**
  * Class PluginGenerator
@@ -18,14 +17,14 @@ use WP\Console\Utils\Site;
 class PluginGenerator extends Generator
 {
     /**
-     * @param Site        $site
-     * @param $plugin
-     * @param $machineName
-     * @param $dir
-     * @param $description
-     * @param $author
-     * @param $authorUrl
-     * @param $test
+     * @param Site   $site
+     * @param string $plugin
+     * @param string $machineName
+     * @param string $dir
+     * @param string $description
+     * @param string $author
+     * @param string $authorUrl
+     * @param boolean $test
      */
     public function generate(
         $site,

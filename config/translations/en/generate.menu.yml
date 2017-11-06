@@ -5,16 +5,16 @@ options:
     plugin: 'The Plugin name'
     class-name: 'The menu class name'
     function-name: 'The function used in the code'
-    menu: 'The menu name'
-    description: 'The description to menu item'
+    menu-items: 'The menu items'
     child-themes: 'Support Child Themes'
 questions:
     plugin: 'Enter the plugin name'
     class-name: 'Enter menu class name'
     function-name: 'Enter function used in the code'
-    menu: 'Enter menu name'
-    description: 'Enter the description to menu item'
-    menu-add: 'Do you want to add another menu item?'
+    menu-items:
+        name: 'Enter menu name'
+        description: 'Enter the description to menu item'
+        menu-add-another: 'Do you want to add another menu item?'
     child-themes: 'Do you want add Support Child Themes?'
 warnings:
     plugin-unavailable: 'Warning The following plugin are not already available in your local environment "%s"'

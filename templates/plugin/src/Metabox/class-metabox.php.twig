@@ -53,9 +53,9 @@ class {{ class_name }} {% endblock -%}
 {% if wp_nonce %}
         wp_nonce_field(basename(__FILE__), "meta-box-nonce");
 {% endif %}
-{% if metabox_fields is not null %}
+{% if metabox_items is not null %}
         ?>
-{% for fields in metabox_fields %}
+{% for fields in metabox_items %}
         <p>
             <label>{{ fields.label }}</label>
 {% if fields.type == 'select'%}
@@ -70,7 +70,6 @@ class {{ class_name }} {% endblock -%}
 {% endfor %}
 {% elseif fields.type == 'image' %}
             <img src="{{ fields.src_image }}" alt="{{ fields.description }}" />
-{% else %}
 {% else %}
             <input type="{{ fields.type }}" name="{{ fields.description }}" id="{{ fields.id }}" placeholder="{{ fields.placeholder }}" value="{{ fields.default_value }}" />
 {% endif %}
@@ -101,7 +100,7 @@ class {{ class_name }} {% endblock -%}
          if(defined("DOING_AUTOSAVE") && DOING_AUTOSAVE)
              return $post_id;
 
-{% for fields in metabox_fields %}
+{% for fields in metabox_items %}
          if(isset($_POST["{{ fields.id }}"])) {
              ${{ fields.id }}_value = $_POST["{{ fields.id }}"];
              update_post_meta($post_id, "{{ fields.id }}", ${{ fields.id }}_value);
