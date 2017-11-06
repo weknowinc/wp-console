@@ -1,0 +1,23 @@
+{% extends "base/file.php.twig" %}
+{% block extra_info %}
+{% if not admin_file_exists %}
+  * Functions with custom class {{ command_name }}
+{%- endif -%}
+{%- endblock -%}
+{% block file_docblock %}
+{% if not admin_file_exists %}
+  {{ parent() }}
+{%- endif -%}
+{%- endblock -%}
+{% block file_methods %}
+// Register User Contact Methods
+function {{ function_name }}( $user_contact_method ) {
+{% if methods_items is defined %}
+{% for item in methods_items %}
+    $user_contact_method['{{ item.name }}'] = __( '{{ item.description }}', 'text_domain' );
+{% endfor %}
+{% endif %}
+    return $user_contact_method;
+}
+add_filter( 'user_contactmethods', '{{ function_name }}' );
+{%- endblock -%}
