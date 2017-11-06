@@ -50,9 +50,9 @@ class {{ class_name }} extends WP_Widget {% endblock -%}
     public function form( $instance )
     {
         // outputs the options form on admin
-{% if widget_fields is not null %}
+{% if widget_items is not null %}
         ?>
-{% for fields in widget_fields %}
+{% for fields in widget_items %}
         <p>
             <label>{{ fields.label }}</label>
 {% if fields.type == 'select'%}

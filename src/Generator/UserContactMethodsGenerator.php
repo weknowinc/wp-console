@@ -38,10 +38,10 @@ class UserContactMethodsGenerator extends Generator
     /**
      * Generator UserContactMethods
      *
-     * @param $plugin
-     * @param $function_name
-     * @param $methods_items
-     * @param $site
+     * @param string $plugin
+     * @param string $function_name
+     * @param array $methods_items
+     * @param Site $site
      */
     public function generate(
         $plugin,

@@ -184,8 +184,8 @@ class RegisterStyleCommand extends Command
             while (true) {
                 $name = $io->ask($this->trans('commands.generate.register.style.questions.styles-items.name'));
                 $url = $io->ask($this->trans('commands.generate.register.style.questions.styles-items.url'));
-                $dependencies = $io->ask($this->trans('commands.generate.register.style.questions.styles-items.dependencies'));
-                $version = $io->ask($this->trans('commands.generate.register.style.questions.styles-items.version'));
+                $dependencies = $io->askEmpty($this->trans('commands.generate.register.style.questions.styles-items.dependencies'));
+                $version = $io->askEmpty($this->trans('commands.generate.register.style.questions.styles-items.version'));
                 $media = $io->choiceNoList(
                     $this->trans('commands.generate.register.style.questions.styles-items.media'),
                     ["all", "braille", "embossed", "handheld", "print", "projection", "screen", "speech", "tty", "tv"]
