@@ -24,7 +24,7 @@ class RegisterStyleGenerator extends Generator
     protected $extensionManager;
 
     /**
-     * AuthenticationProviderGenerator constructor.
+     * RegisterStyleGenerator constructor.
      *
      * @param Manager $extensionManager
      */

@@ -50,7 +50,7 @@ class ToolbarGenerator extends Generator
     public function generate(
         $plugin,
         $function_name,
-        $menu,
+        $menu_items,
         $site
     ) {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
@@ -60,7 +60,7 @@ class ToolbarGenerator extends Generator
         $parameters = [
             "plugin" => $plugin,
             "function_name" => $function_name,
-            "menu" => $menu,
+            "menu_items" => $menu_items,
             "admin_toolbar_path" => 'admin/partials/toolbars-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'toolbar'

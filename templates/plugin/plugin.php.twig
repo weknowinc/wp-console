@@ -146,4 +146,16 @@ function add_customs_user_contactmethods()
 }
 add_customs_user_contactmethods();
 {%- endif -%}
+{%- if admin_register_style_path is defined -%}
+
+/**
+ * This function render all register style that are in admin/partials/register-styles-admin.php
+ */
+function add_customs_register_styles()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_register_style_path }}';
+}
+add_customs_register_styles();
+{%- endif -%}
 {%- endblock -%}

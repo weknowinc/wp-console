@@ -165,8 +165,8 @@ class UserContactMethodsCommand extends Command
         if (!$methods_items) {
             $methods_items = [];
             while (true) {
-                $name = $io->ask($this->trans('commands.generate.user.contactmethods.questions.name'));
-                $description = $io->ask($this->trans('commands.generate.user.contactmethods.questions.description'));
+                $name = $io->ask($this->trans('commands.generate.user.contactmethods.questions.methods-items.name'));
+                $description = $io->ask($this->trans('commands.generate.user.contactmethods.questions.methods-items.description'));
 
                 array_push(
                     $methods_items,
@@ -177,7 +177,8 @@ class UserContactMethodsCommand extends Command
                 );
 
                 if (!$io->confirm(
-                    $this->trans('commands.generate.user.contactmethods.questions.methods-add'),
+                    $this->trans('commands.generate.user.contactmethods.questions.methods-items.methods-add-another'),
+
                     true
                 )
                 ) {
