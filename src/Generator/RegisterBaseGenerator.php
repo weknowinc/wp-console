@@ -15,7 +15,7 @@ use WP\Console\Extension\Manager;
  *
  * @package WP\Console\Generator
  */
-class RegisterStyleGenerator extends Generator
+class RegisterBaseGenerator extends Generator
 {
 
     /**
@@ -38,39 +38,47 @@ class RegisterStyleGenerator extends Generator
     /**
      * Generator RegisterStyle
      *
-     * @param string $plugin
+     * @param string $extension_type
+     * @param string $extension
+     * @param string $type
      * @param string $function_name
      * @param string $hook
-     * @param array  $styles_items
+     * @param array  $register_items
      * @param Site   $site
      */
     public function generate(
-        $plugin,
+        $extension_type,
+        $extension,
+        $type,
         $function_name,
         $hook,
-        $styles_items,
+        $register_items,
         $site
     ) {
-        $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
-        $dir = $this->extensionManager->getPlugin($plugin)->getPath();
+        $extensionObject = $this->extensionManager->getWPExtension($extension_type, $extension);
 
         $parameters = [
-            "plugin" => $plugin,
+            $extension_type => $extension,
+            "type" => $type,
             "function_name" => $function_name,
             "hook" => $hook,
-            "styles_items" => $styles_items,
-            "admin_register_style_path" => 'admin/partials/register-styles-admin.php',
-            "file_exists" => file_exists($pluginFile),
-            "command_name" => 'register_styles'
+            "register_items" => $register_items,
+            "admin_registers_path" => 'admin/partials/register-'.$type.'-admin.php',
+            "file_exists" => file_exists($extensionObject->getPathName().($extension_type == "theme" ? '/functions.php':'')),
+            "command_name" => 'registers'
         ];
 
-        $file_path_admin = $dir.'/'.$parameters['admin_register_style_path'];
+        $file_path_admin = $extensionObject->getPath().'/'.$parameters['admin_registers_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
+        var_dump($parameters);
+        var_dump($file_path_admin);
 
         if (!file_exists($file_path_admin)) {
+            var_dump($extension_type == "theme" ? 'theme/functions.php.twig': 'plugin/plugin.php.twig');
+            var_dump($extensionObject->getPathname() . ($extension_type == "theme" ? '/functions.php':''));
             $this->renderFile(
-                'plugin/plugin.php.twig',
-                $pluginFile,
+                $extension_type == "theme" ? 'theme/functions.php.twig': 'plugin/plugin.php.twig',
+                $extensionObject->getPathname() . ($extension_type == "theme" ? '/functions.php':''),
                 $parameters,
                 FILE_APPEND
             );
@@ -80,7 +88,7 @@ class RegisterStyleGenerator extends Generator
             if (function_exists($function_name)) {
                 throw new \RuntimeException(
                     sprintf(
-                        'Unable to generate the register styles , The function name already exist at "%s"',
+                        'Unable to generate the register '.$type.' , The function name already exist at "%s"',
                         realpath($file_path_admin)
                     )
                 );

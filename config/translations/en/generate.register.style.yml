@@ -1,16 +1,19 @@
-description: 'Generate a register style.'
+description: 'Generate a register style on your theme or plugin.'
 help: 'The <info>generate:register:style</info> command helps you generates a new Register style.'
 welcome: 'Welcome to the Wordpress Register style generator'
 options:
-    plugin: 'The Plugin name'
+    extension: 'The name of the Extension (that will contain the command).'
+    extension-type: 'The extension type.'
     function-name: 'The register style class name'
     hook: 'The hook to enqueue the register style'
     style-items: 'Register styles items'
 questions:
-    plugin: 'Enter the plugin name'
-    function-name: 'Enter register style function'
-    hook: 'Choice the hook to display the style or styles'
-    styles-items:
+    extension: 'Enter the extension name'
+    extension-type: 'Enter the extension type'
+    type: 'Enter the register type'
+    function-name: 'Enter register function'
+    hook: 'Choice the hook to display the style'
+    style-items:
         name: 'Enter the name used in the code as a stylesheet handle'
         url: 'Enter the URL to the style'
         dependencies: 'Enter the dependencies separated list of stylesheets to load before this style (use commas)'
@@ -18,7 +21,7 @@ questions:
         media: 'Enter the stylesheet media type'
         deregister: 'Do you want to add deregister the style first'
         enqueue: 'Do you want to add enqueue the style'
-        styles-add-another: 'Do you want to add another register style'
+        style-add-another: 'Do you want to add another register style'
 warnings:
     module-unavailable: 'Warning The following modules are not already available in your local environment "%s"'
 errors:

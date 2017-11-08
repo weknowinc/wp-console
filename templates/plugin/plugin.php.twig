@@ -146,16 +146,16 @@ function add_customs_user_contactmethods()
 }
 add_customs_user_contactmethods();
 {%- endif -%}
-{%- if admin_register_style_path is defined -%}
+{%- if admin_registers_path is defined -%}
 
 /**
- * This function render all register style that are in admin/partials/register-styles-admin.php
+ * This function render all register {{ type }} that are in admin/partials/register-{{ type }}-admin.php
  */
-function add_customs_register_styles()
+function add_customs_register_{{ type }}s()
 {
     // Include the files for rendering the display.
-    include_once plugin_dir_path( __FILE__ ) .'{{ admin_register_style_path }}';
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_registers_path }}';
 }
-add_customs_register_styles();
+add_customs_register_{{ type }}s();
 {%- endif -%}
 {%- endblock -%}
