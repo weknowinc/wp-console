@@ -3,10 +3,12 @@ help: 'The <info>generate:quicktag</info> command helps you generates a new quic
 welcome: 'Welcome to the Wordpress quicktag generator'
 options:
     extension: 'The name of the Extension (that will contain the command).'
+    extension-type: 'The extension type.'
     function-name: 'The function used in the code'
     quicktag-items: 'The quicktag items.'
 questions:
     extension: 'Enter the extension name'
+    extension-type: 'Enter the extension type'
     function-name: 'Enter function used in the code'
     quicktag-items:
         id: 'Enter the html id for the button.'
