@@ -70,12 +70,8 @@ class RegisterBaseGenerator extends Generator
 
         $file_path_admin = $extensionObject->getPath().'/'.$parameters['admin_registers_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
-        var_dump($parameters);
-        var_dump($file_path_admin);
 
         if (!file_exists($file_path_admin)) {
-            var_dump($extension_type == "theme" ? 'theme/functions.php.twig': 'plugin/plugin.php.twig');
-            var_dump($extensionObject->getPathname() . ($extension_type == "theme" ? '/functions.php':''));
             $this->renderFile(
                 $extension_type == "theme" ? 'theme/functions.php.twig': 'plugin/plugin.php.twig',
                 $extensionObject->getPathname() . ($extension_type == "theme" ? '/functions.php':''),
