@@ -1,4 +1,4 @@
-{%- if not function_exists -%}
+{%- if not file_exists -%}
 <?php
 /**
  * The template for displaying the functions
@@ -9,7 +9,7 @@
  */
 {%- endif -%}
 
-{%- if not file_exists and class_name_sidebar_path is defined -%}
+{% if not admin_file_exists and class_name_sidebar_path is defined %}
 
 /**
  * Custom sidebar to display in theme
@@ -17,12 +17,12 @@
 function add_custom_sidebar()
 {
     // Include the files for rendering the display.
-    include_once '{{ class_name_sidebar_path }}';
+    include_once( get_template_directory() . '/{{ class_name_sidebar_path }}');
 }
 add_custom_sidebar();
-{%- endif -%}
+{% endif %}
 
-{%- if class_name_quicktag_path is defined -%}
+{% if class_name_quicktag_path is defined %}
 
 /**
  * Custom quicktag to display in theme
@@ -30,7 +30,20 @@ add_custom_sidebar();
 function add_theme_custom_quicktag()
 {
     // Include the files for rendering the display.
-    include_once '{{ class_name_quicktag_path }}';
+    include_once( get_template_directory() . '/{{ class_name_quicktag_path }}');
 }
 add_theme_custom_quicktag();
-{%- endif -%}
+{% endif %}
+{% if not admin_file_exists and admin_registers_path is defined %}
+
+/**
+ * This function render all register {{ type }} that are in admin/partials/register-{{ type }}-admin.php
+ */
+function add_theme_customs_register_{{ type }}s()
+{
+    // Include the files for rendering the display.
+    include_once( get_template_directory() . '/{{ admin_registers_path }}');
+}
+add_theme_customs_register_{{ type }}s();
+
+{% endif %}

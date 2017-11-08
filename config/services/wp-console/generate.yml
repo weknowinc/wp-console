@@ -66,6 +66,11 @@ services:
       - { name: wordpress.command }
   console.generate_register_style:
     class: WP\Console\Command\Generate\RegisterStyleCommand
-    arguments: ['@console.register_style_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+    arguments: ['@console.register_base_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
+    tags:
+      - { name: wordpress.command }
+  console.generate_register_script:
+    class: WP\Console\Command\Generate\RegisterScriptCommand
+    arguments: ['@console.register_base_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
     tags:
       - { name: wordpress.command }

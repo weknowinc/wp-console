@@ -69,8 +69,8 @@ class SidebarGenerator extends Generator
             "sidebar_items" => $sidebar_items,
             "child_theme" => $child_themes,
             "class_name_sidebar_path" => $class_name_sidebar,
-            "file_exists" => file_exists($dir),
-            "function_exists" => file_exists($themeFile.'/functions.php')
+            "file_exists" => file_exists($themeFile.'/functions.php'),
+            "admin_file_exists" => file_exists($dir)
         ];
 
         $site->loadLegacyFile($dir);

@@ -1,14 +1,14 @@
 {% extends "base/file.php.twig" %}
 {% block extra_info %}
-{% if not file_exists %}
+{% if not admin_file_exists %}
  * Custom sidebar to display
-{%- endif -%}
-{%- endblock -%}
+{% endif %}
+{% endblock %}
 {% block file_docblock %}
-{% if not file_exists %}
+{% if not admin_file_exists %}
 {{ parent() }}
 {% endif %}
-{%- endblock -%}
+{% endblock %}
 {% block file_methods %}
 function {{ function_name }}() {
 {% for key, item in sidebar_items %}

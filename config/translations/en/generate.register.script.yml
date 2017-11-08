@@ -1,0 +1,29 @@
+description: 'Generate a register script on your theme or plugin.'
+help: 'The <info>generate:register:script</info> command helps you generates a new Register script.'
+welcome: 'Welcome to the Wordpress Register style/script generator'
+options:
+    extension: 'The name of the Extension (that will contain the command).'
+    extension-type: 'The extension type.'
+    function-name: 'The register script class name'
+    hook: 'The hook to enqueue the register script'
+    script-items: 'Register styles/script items'
+questions:
+    extension: 'Enter the extension name'
+    extension-type: 'Enter the extension type'
+    type: 'Enter the register type'
+    function-name: 'Enter register function'
+    hook: 'Choice the hook to display the script'
+    script-items:
+        name: 'Enter the name used in the code as a script handle'
+        url: 'Enter the URL to the script'
+        dependencies: 'Enter the dependencies separated list of scripts to load before this script (use commas)'
+        version: 'Enter script version number'
+        location: 'Enter the location to load the script'
+        deregister: 'Do you want to add deregister the script first'
+        enqueue: 'Do you want to add enqueue the script'
+        script-add-another: 'Do you want to add another register script'
+warnings:
+    module-unavailable: 'Warning The following modules are not already available in your local environment "%s"'
+errors:
+    invalid-core: 'The core version "%s" is invalid.'
+    directory-exists: 'The target directory "%s" is not empty.'

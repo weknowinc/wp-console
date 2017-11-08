@@ -1,26 +1,40 @@
 {% extends "base/file.php.twig" %}
 {% block extra_info %}
 {% if not admin_file_exists %}
-  * Functions with custom class {{ command_name }}
-{%- endif -%}
-{%- endblock -%}
+ * Functions with custom class {{ command_name }}
+{% endif %}
+{% endblock %}
 {% block file_docblock %}
 {% if not admin_file_exists %}
-  {{ parent() }}
-{%- endif -%}
-{%- endblock -%}
+{{ parent() }}
+{% endif %}
+{% endblock %}
 {% block file_methods %}
 // Register Style
 function {{ function_name }}() {
-{% if styles_items is defined %}
-{% for item in styles_items %}
+{% if register_items is defined %}
+{% for item in register_items %}
 
 {% if item.deregister %}
-    wp_deregister_style( '{{ item.name }}' );
+    wp_deregister_{{ type }}( '{{ item.name }}' );
 {% endif %}
-    wp_register_style( '{{ item.name }}', '{{ item.url }}', array({% for label in item.dependencies %} '{{ label }}', {% endfor %}), '{{ item.version }}', '{{ item.media }}' );
+    wp_register_{{ type }}(
+        '{{ item.name }}',
+        '{{ item.url }}',
+        array({% if item.dependencies|length < 0 %}{% for label in item.dependencies %}'{{ label }}',{% endfor %}{% endif %}),
+        '{{ item.version }}',
+{% if type == "script" %}
+{% if item.location == "footer" %}
+        true
+{% else %}
+        false
+{% endif %}
+{% else %}
+        '{{ item.media }}'
+{% endif %}
+    );
 {% if item.enqueue %}
-    wp_enqueue_style( '{{ item.name }}' );
+    wp_enqueue_{{ type }}( '{{ item.name }}' );
 {% endif %}
 {% endfor %}
 {% endif %}
