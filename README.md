@@ -48,6 +48,7 @@ chmod +x /usr/local/bin/wordpress
 
  **generate**
   * generate:command (gc)                  Generate commands for the console.
+  * generate:cron:job:event                Generate a schedule cron job event.
   * generate:menu (gm)                     Generate a menu.
   * generate:metabox (gm)                  Generate a meta box.
   * generate:plugin (gp)                   Generate a plugin.
