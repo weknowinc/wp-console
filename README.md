@@ -1,6 +1,6 @@
 WP Console
 =============================================
-The WordPress CLI. A tool to generate boilerplate code, interact with and debug WordPress.
+A WordPress CLI. A tool to generate boilerplate code, interact with and debug WordPress.
 
 ## Releases Page
 All notable changes to this project will be documented in the [releases page](https://github.com/weknowinc/wp-console/releases)
