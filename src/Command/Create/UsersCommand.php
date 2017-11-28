@@ -16,6 +16,7 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Utils\Create\UserData;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
+use WP\Console\Utils\WordpressApi;
 
 /**
  * Class UsersCommand
@@ -37,17 +38,25 @@ class UsersCommand extends Command
     protected $site;
 
     /**
+     * @var WordpressApi
+     */
+    protected $wordpressApi;
+
+    /**
      * UsersCommand constructor.
      *
-     * @param UserData $createUserData
-     * @param Site     $site
+     * @param UserData     $createUserData
+     * @param Site         $site
+     * @param WordpressApi $wordpressApi
      */
     public function __construct(
         UserData $createUserData,
-        Site $site
+        Site $site,
+        WordpressApi $wordpressApi
     ) {
         $this->createUserData = $createUserData;
         $this->site = $site;
+        $this->wordpressApi = $wordpressApi;
         parent::__construct();
     }
 
@@ -82,7 +91,7 @@ class UsersCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 $this->trans('commands.create.users.options.time-range')
             )
-            ->setAliases(['cu']);
+            ->setAliases(['cru']);
     }
 
     /**
@@ -94,7 +103,7 @@ class UsersCommand extends Command
 
         $role = $input->getArgument('role');
         if (!$role) {
-            $roles = $this->site->getRoles();
+            $roles = $this->wordpressApi->getRoles();
             $role = $io->choice(
                 $this->trans('commands.create.users.questions.role'),
                 array_keys($roles),
@@ -162,11 +171,11 @@ class UsersCommand extends Command
         );
 
         $tableHeader = [
-          $this->trans('commands.create.users.messages.user-id'),
-          $this->trans('commands.create.users.messages.username'),
-          $this->trans('commands.create.users.messages.password'),
-          $this->trans('commands.create.users.messages.role'),
-          $this->trans('commands.create.users.messages.registered'),
+            $this->trans('commands.create.users.messages.user-id'),
+            $this->trans('commands.create.users.messages.username'),
+            $this->trans('commands.create.users.messages.password'),
+            $this->trans('commands.create.users.messages.role'),
+            $this->trans('commands.create.users.messages.registered'),
         ];
 
         if ($users['success']) {

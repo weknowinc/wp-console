@@ -17,6 +17,9 @@ services:
     arguments: ['@console.shell_process']
     tags:
       - { name: wordpress.command }
+  console.wordpress_api:
+    class: WP\Console\Utils\WordpressApi
+    arguments: ['@app.root', '@console.site', '@http_client']
   console.remote:
     class: WP\Console\Core\Utils\Remote
     arguments: ['@console.translator_manager']
@@ -29,3 +32,6 @@ services:
   console.create_user_data:
     class: WP\Console\Utils\Create\UserData
     arguments: ['@console.site']
+  console.create_role_data:
+      class: WP\Console\Utils\Create\RoleData
+      arguments: ['@console.site', '@console.wordpress_api']

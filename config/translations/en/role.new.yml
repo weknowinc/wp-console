@@ -1,0 +1,24 @@
+description: 'Create roles for the application'
+help: 'The <info>role:new</info> command helps you create roles.'
+welcome: 'Welcome to the Wordpress role create'
+arguments:
+  rolename: 'Role name to be created'
+  machine-name: 'Role machine name'
+options:
+  capabilities: 'Role capabilities to be created'
+questions:
+  rolename: 'Role name to be created'
+  machine-name: 'Enter role machine name'
+  capabilities: 'Do you want add role capabilities'
+messages:
+  capabilities-menu:
+    showAll: 'Show all capabilities'
+    import: 'Import capabilities from a role'
+  role-id: 'Role Id'
+  role-name: 'Role Name'
+  role-created: 'Role "%s" was created successfully'
+  invalid-machine-name: 'The machine name is already exist'
+examples:
+  - description: 'Create role specifying rolename and machine-name'
+    execution: |
+      wordpress role:new  moderator moderator

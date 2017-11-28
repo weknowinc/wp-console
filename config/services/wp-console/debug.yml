@@ -24,3 +24,8 @@ services:
     arguments: ['@console.extension_manager', '@console.site']
     tags:
       - { name: wordpress.command }
+  console.roles_debug:
+    class: WP\Console\Command\Debug\RolesCommand
+    arguments: ['@console.wordpress_api']
+    tags:
+      - { name: wordpress.command }
