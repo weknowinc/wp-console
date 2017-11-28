@@ -158,4 +158,16 @@ function add_customs_register_{{ type }}s()
 }
 add_customs_register_{{ type }}s();
 {%- endif -%}
+{%- if admin_cron_job_event_path is defined -%}
+
+/**
+ * This function add schedule cron job events that are in admin/partials/cron-job-events-admin.php
+ */
+function add_cron_job_events()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_cron_job_event_path }}';
+}
+add_cron_job_events();
+{%- endif -%}
 {%- endblock -%}

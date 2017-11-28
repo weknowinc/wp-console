@@ -74,3 +74,8 @@ services:
     arguments: ['@console.register_base_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.site']
     tags:
       - { name: wordpress.command }
+  console.generate_cron_job_event:
+    class: WP\Console\Command\Generate\CronJobEventCommand
+    arguments: ['@console.cron_job_event_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }
