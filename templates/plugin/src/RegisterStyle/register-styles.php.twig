@@ -21,7 +21,7 @@ function {{ function_name }}() {
     wp_register_{{ type }}(
         '{{ item.name }}',
         '{{ item.url }}',
-        array({% if item.dependencies|length < 0 %}{% for label in item.dependencies %}'{{ label }}',{% endfor %}{% endif %}),
+        array({% if item.dependencies is defined and item.dependencies|length > 0 %}{% for label in item.dependencies %}'{{ label }}',{% endfor %}{% endif %}),
         '{{ item.version }}',
 {% if type == "script" %}
 {% if item.location == "footer" %}

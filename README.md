@@ -35,12 +35,14 @@ chmod +x /usr/local/bin/wordpress
 
  **create**
   * create:users (cu)                 Create dummy users for your WordPress application.
+  * create:roles (crr)                Create dummy roles for your Wordpress application.
 
  **debug**
   * debug:chain (dc)                  List available chain files.
   * debug:container (dco)             Displays current services for an application.
   * debug:multisite (dm)              List all sites in network available to a specific user
   * debug:plugin (dp)                 Display current plugins available for application
+  * debug:roles (dusr)                Displays current roles for the application
   * debug:shortcode (ds)              Displays current shortcodes in your WordPress application.
   * debug:theme (dt)                  Display current themes available for application
 
@@ -71,6 +73,10 @@ chmod +x /usr/local/bin/wordpress
 
  **site**
   * site:install (si)                 Install a Wordpress project
+ 
+ **role**
+  * role:delete (rd)                  Delete roles for the application
+  * role:new (rn)                     Create roles for the application
  
  **theme**
   * theme:activate (ta)               Activate theme in the application

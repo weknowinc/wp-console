@@ -4,7 +4,7 @@ welcome: 'Welcome to the Wordpress Register style generator'
 options:
     extension: 'The name of the Extension (that will contain the command).'
     extension-type: 'The extension type.'
-    function-name: 'The register style class name'
+    function-name: 'The register style function name'
     hook: 'The hook to enqueue the register style'
     style-items: 'Register styles items'
 questions:

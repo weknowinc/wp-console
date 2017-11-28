@@ -1,12 +1,12 @@
 description: 'Generate a register script on your theme or plugin.'
 help: 'The <info>generate:register:script</info> command helps you generates a new Register script.'
-welcome: 'Welcome to the Wordpress Register style/script generator'
+welcome: 'Welcome to the Wordpress Register script generator'
 options:
     extension: 'The name of the Extension (that will contain the command).'
     extension-type: 'The extension type.'
-    function-name: 'The register script class name'
+    function-name: 'The register script function name'
     hook: 'The hook to enqueue the register script'
-    script-items: 'Register styles/script items'
+    script-items: 'Register script items'
 questions:
     extension: 'Enter the extension name'
     extension-type: 'Enter the extension type'

@@ -80,9 +80,9 @@ class UserContactMethodsCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('generate:user:contactmethods')
-            ->setDescription($this->trans('commands.generate.user.contactmethods.description'))
-            ->setHelp($this->trans('commands.generate.user.contactmethods.help'))
+            ->setName('generate:user:contact:methods')
+            ->setDescription($this->trans('commands.generate.user.contact.methods.description'))
+            ->setHelp($this->trans('commands.generate.user.contact.methods.help'))
             ->addOption(
                 'plugin',
                 null,
@@ -136,8 +136,6 @@ class UserContactMethodsCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-
-        $io = new WPStyle($input, $output);
         $stringUtils = $this->stringConverter;
 
         // --plugin
@@ -151,7 +149,7 @@ class UserContactMethodsCommand extends Command
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
             $function_name = $io->ask(
-                $this->trans('commands.generate.user.contactmethods.questions.function-name'),
+                $this->trans('commands.generate.user.contact.methods.questions.function-name'),
                 'default_user_contactmethods',
                 function ($function_name) {
                     return $this->validator->validateFunctionName($function_name);
@@ -165,8 +163,8 @@ class UserContactMethodsCommand extends Command
         if (!$methods_items) {
             $methods_items = [];
             while (true) {
-                $name = $io->ask($this->trans('commands.generate.user.contactmethods.questions.methods-items.name'));
-                $description = $io->ask($this->trans('commands.generate.user.contactmethods.questions.methods-items.description'));
+                $name = $io->ask($this->trans('commands.generate.user.contact.methods.questions.methods-items.name'));
+                $description = $io->ask($this->trans('commands.generate.user.contact.methods.questions.methods-items.description'));
 
                 array_push(
                     $methods_items,
@@ -177,7 +175,7 @@ class UserContactMethodsCommand extends Command
                 );
 
                 if (!$io->confirm(
-                    $this->trans('commands.generate.user.contactmethods.questions.methods-items.methods-add-another'),
+                    $this->trans('commands.generate.user.contact.methods.questions.methods-items.methods-add-another'),
 
                     true
                 )
