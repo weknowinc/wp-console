@@ -1,0 +1,11 @@
+services:
+  console.role_new:
+    class: WP\Console\Command\Role\NewCommand
+    arguments: ['@console.wordpress_api', '@console.site', '@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }
+  console.role_delete:
+    class: WP\Console\Command\Role\DeleteCommand
+    arguments: ['@console.wordpress_api', '@console.site']
+    tags:
+      - { name: wordpress.command }

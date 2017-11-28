@@ -1,8 +1,8 @@
 options:
-    plugin: 'The plugin name.'
-    extension: 'The extension name.'
-    extension-type: 'The extension type.'
-    services: 'Load services from the container.'
+  plugin: 'The plugin name.'
+  extension: 'The extension name.'
+  extension-type: 'The extension type.'
+  services: 'Load services from the container.'
 status:
   checked: 'Yes'
   uncheked: 'NO'
@@ -13,12 +13,21 @@ messages:
   reserved: 'The following words are reserved for use by WordPress functions and cannot be used as blog names: %s'
   user-create-error: 'There was an error creating the user.'
 questions:
-    confirm: 'Do you confirm generation?'
-    plugin: 'Enter the plugin name'
-    theme: 'Enter the theme name'
-    extension: 'Enter the extension name'
-    extension-type: 'Enter the extension type'
-    services:
-            confirm: 'Do you want to load services from the container'
-            message: "\nType the service name or use keyup or keydown.\nThis is optional, press <info>enter</info> to <info>continue</info>\n"
-            name: 'Enter your service'
+  confirm: 'Do you confirm generation?'
+  plugin: 'Enter the plugin name'
+  theme: 'Enter the theme name'
+  extension: 'Enter the extension name'
+  extension-type: 'Enter the extension type'
+  services:
+    confirm: 'Do you want to load services from the container'
+    message: "\nType the service name or use keyup or keydown.\nThis is optional, press <info>enter</info> to <info>continue</info>\n"
+    name: 'Enter your service'
+  roles:
+    message: "\nType the role name or use keyup or keydown.\nThis is optional, press <info>enter</info> to <info>continue</info>\n"
+    name: 'Enter your role'
+  widgets:
+    message: "\nType the widget id or use keyup or keydown.\nThis is optional, press <info>enter</info> to <info>continue</info>\n"
+    name: 'Enter your widget id'
+  capabilities:
+    message: "\nType the capibility name or use keyup or keydown.\nThis is optional, press <info>enter</info> to <info>continue</info>\n"
+    name: 'Enter your capability'

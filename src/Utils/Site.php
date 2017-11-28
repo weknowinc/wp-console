@@ -725,17 +725,6 @@ class Site
         }
     }
 
-    public function getRoles()
-    {
-        $this->loadLegacyFile('wp-admin/includes/user.php');
-
-        if (function_exists('get_editable_roles')) {
-            return get_editable_roles();
-        } else {
-            return null;
-        }
-    }
-
     public function getUserBy($field, $value)
     {
         $this->loadLegacyFile('wp-includes/pluggable.php');
