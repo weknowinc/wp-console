@@ -1,0 +1,19 @@
+description: 'Displays current cron for the application'
+help: 'The <info>debug:cron</info> command helps you get current cron events.'
+welcome: 'Welcome to the Wordpress cron events debug'
+arguments:
+    type: 'Cron type [single|schedule|all]'
+messages:
+    type: 'Cron type'
+    name: 'Hook Name'
+    time: 'Next run GMT'
+    next-time: 'Next run relative'
+    schedule: 'Schedule'
+    interval: 'Recurrence'
+    args: 'Cron Arguments'
+errors:
+    invalid-argument: 'The argument must be [single|schedule|all]'
+examples:
+    - description: 'Cron list on the site'
+      execution: |
+        wordpress debug:cron all
