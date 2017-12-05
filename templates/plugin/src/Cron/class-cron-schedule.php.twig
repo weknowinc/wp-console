@@ -51,7 +51,7 @@ class {{ class_name }} {% endblock -%}
                 '{{ recurrence|lower|replace({' ': ''}) }}',
 {% endif %}
                 '{{ hook_name }}'
-{% if hook_arguments is defined and hook_arguments is not empty %},
+{%- if hook_arguments is defined and hook_arguments is not empty -%},
                 array({% for item in hook_arguments %} '{{ item }}',{% endfor %})
 {% endif %}
             );
@@ -59,7 +59,7 @@ class {{ class_name }} {% endblock -%}
     }
 
     // Scheduled Action Hook
-    public function {{ hook_name }}({% if hook_arguments is defined and hook_arguments is not empty %}{% for item in hook_arguments %} $param1 = '{{ item }}',{% endfor %}{% endif %})
+    public function {{ hook_name }}({% if hook_arguments is defined and hook_arguments is not empty %}{% for item in hook_arguments %} $param{{ loop.index }} = '{{ item }}',{% endfor %}{% endif %})
     {
         // do something
     }
