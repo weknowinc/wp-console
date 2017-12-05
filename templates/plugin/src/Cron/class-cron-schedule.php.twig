@@ -1,0 +1,66 @@
+{%- extends "base/class.php.twig" -%}
+{%- block class_declaration -%}
+/**
+ * Add {{ class_name }} schedule cron.
+ */
+class {{ class_name }} {% endblock -%}
+{% block class_construct %}
+    /**
+    *
+    */
+    public function __construct()
+    {
+        add_action('init', array( $this, 'custom_{{ hook_name }}_cron' ));
+        add_action('{{ hook_name }}', array( $this, '{{ hook_name }}' ));
+{% if recurrence is iterable %}
+        add_filter( 'cron_schedules', array( $this, '{{ hook_name }}_cron_recurrence' ) );
+
+{% endif %}
+    }
+
+{% endblock %}
+
+{% block class_methods %}
+{% if recurrence is iterable %}
+    // Custom Cron Recurrences
+    public function {{ hook_name }}_cron_recurrence( $schedules ) {
+        $schedules['{{ recurrence.name|lower|replace({' ': ''}) }}'] = array(
+            'display' => __( '{{ recurrence.label }}', 'textdomain' ),
+            'interval' => {{ recurrence.interval }},
+        );
+        return $schedules;
+    }
+
+{% endif %}
+
+    /**
+     * Schedule Cron Event
+     */
+    public function custom_{{ hook_name }}_cron()
+    {
+        if ( ! wp_next_scheduled( '{{ hook_name }}' ) ) {
+            wp_schedule_event(
+{% if timestamp == "GMT Time" %}
+                time(),
+{% else %}
+                current_time( 'timestamp' ),
+{% endif %}
+{% if recurrence is iterable %}
+                '{{ recurrence.name|lower|replace({' ': ''}) }}',
+{% else %}
+                '{{ recurrence|lower|replace({' ': ''}) }}',
+{% endif %}
+                '{{ hook_name }}'
+{% if hook_arguments is defined and hook_arguments is not empty %},
+                array({% for item in hook_arguments %} '{{ item }}',{% endfor %})
+{% endif %}
+            );
+        }
+    }
+
+    // Scheduled Action Hook
+    public function {{ hook_name }}({% if hook_arguments is defined and hook_arguments is not empty %}{% for item in hook_arguments %} $param1 = '{{ item }}',{% endfor %}{% endif %})
+    {
+        // do something
+    }
+{% endblock %}

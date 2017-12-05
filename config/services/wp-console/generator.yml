@@ -67,8 +67,8 @@ services:
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }
-  console.cron_job_event_generator:
-    class: WP\Console\Generator\CronJobEventGenerator
+  console.cron_base_generator:
+    class: WP\Console\Generator\CronBaseGenerator
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }
