@@ -42,7 +42,8 @@
         "anolilab/wordpress-salt-generator": "^1.2",
         "twig/twig": "^1.31",
         "doctrine/annotations": "^1.4",
-        "fzaninotto/faker": "^1.6"
+        "fzaninotto/faker": "^1.6",
+        "webmozart/path-util": "^2.3"
     },
     "bin": ["bin/wp-console"],
     "config": {
