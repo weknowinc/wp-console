@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \WP\Console\Command\Generate\CronJobEventCommand.
+ * Contains \WP\Console\Command\Generate\CronScheduleCommand.
  */
 
 namespace WP\Console\Command\Generate;
@@ -13,19 +13,21 @@ use Symfony\Component\Console\Input\InputOption;
 use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Core\Command\Command;
-use WP\Console\Generator\CronJobEventGenerator;
+use WP\Console\Generator\CronBaseGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
 use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 
-class CronJobEventCommand extends Command
+class CronBaseCommand extends Command
 {
     use ConfirmationTrait;
     use PluginTrait;
 
+    private $cronType;
+    private $commandName;
     /**
-     * @var CronJobEventGenerator
+     * @var CronBaseGenerator
      */
     protected $generator;
 
@@ -45,15 +47,15 @@ class CronJobEventCommand extends Command
     protected $stringConverter;
 
     /**
-     * CronJobEventCommand constructor.
+     * CronBaseCommand constructor.
      *
-     * @param CronJobEventGenerator $generator
-     * @param Manager               $extensionManager
-     * @param Validator             $validator
-     * @param StringConverter       $stringConverter
+     * @param CronBaseGenerator $generator
+     * @param Manager           $extensionManager
+     * @param Validator         $validator
+     * @param StringConverter   $stringConverter
      */
     public function __construct(
-        CronJobEventGenerator $generator,
+        CronBaseGenerator $generator,
         Manager $extensionManager,
         Validator $validator,
         StringConverter $stringConverter
@@ -65,15 +67,25 @@ class CronJobEventCommand extends Command
         parent::__construct();
     }
 
+    protected function setCronType($cronType)
+    {
+        return $this->cronType = $cronType;
+    }
+
+    protected function setCommandName($commandName)
+    {
+        return $this->commandName = $commandName;
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this
-            ->setName('generate:cron:job:event')
-            ->setDescription($this->trans('commands.generate.cron.job.event.description'))
-            ->setHelp($this->trans('commands.generate.cron.job.event.help'))
+            ->setName($this->commandName)
+            ->setDescription($this->trans('commands.generate.cron.'.$this->cronType.'.description'))
+            ->setHelp($this->trans('commands.generate.cron.'.$this->cronType.'.help'))
             ->addOption(
                 'plugin',
                 null,
@@ -90,27 +102,20 @@ class CronJobEventCommand extends Command
                 'timestamp',
                 '',
                 InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.cron.job.event.options.timestamp')
-            )
-            ->addOption(
-                'recurrence',
-                '',
-                InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.cron.job.event.options.recurrence')
+                $this->trans('commands.generate.cron.'.$this->cronType.'.options.timestamp')
             )
             ->addOption(
                 'hook-name',
                 '',
                 InputOption::VALUE_REQUIRED,
-                $this->trans('commands.generate.cron.job.event.options.hook-name')
+                $this->trans('commands.generate.cron.'.$this->cronType.'.options.hook-name')
             )
             ->addOption(
                 'hook-arguments',
                 '',
                 InputOption::VALUE_OPTIONAL,
-                $this->trans('commands.generate.cron.job.event.options.hook-arguments')
-            )
-            ->setAliases(['gcje']);
+                $this->trans('commands.generate.cron.'.$this->cronType.'.options.hook-arguments')
+            );
     }
 
     /**
@@ -123,7 +128,7 @@ class CronJobEventCommand extends Command
         $plugin = $input->getOption('plugin');
         $class_name = $this->validator->validateClassName($input->getOption('class-name'));
         $timestamp = $input->getOption('timestamp');
-        $recurrence = $input->getOption('recurrence');
+        $recurrence = $this->cronType == 'schedule' ? $input->getOption('recurrence'): null;
         $hook_name = $input->getOption('hook-name');
         $hook_arguments = $input->getOption('hook-arguments');
 
@@ -140,7 +145,8 @@ class CronJobEventCommand extends Command
             $timestamp,
             $recurrence,
             $hook_name,
-            $hook_arguments
+            $hook_arguments,
+            $this->cronType
         );
     }
 
@@ -162,8 +168,8 @@ class CronJobEventCommand extends Command
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
             $class_name = $io->ask(
-                $this->trans('commands.generate.cron.job.event.questions.class-name'),
-                'DefaultCronJobEvent',
+                $this->trans('commands.generate.cron.'.$this->cronType.'.questions.class-name'),
+                'DefaultCron'.ucfirst($this->cronType),
                 function ($class_name) {
                     return $this->validator->validateClassName($class_name);
                 }
@@ -174,43 +180,69 @@ class CronJobEventCommand extends Command
         // --timestamp
         $timestamp = $input->getOption('timestamp');
         if (!$timestamp) {
-            $timestamp = $io->choice(
-                $this->trans('commands.generate.cron.job.event.questions.timestamp'),
-                ['GMT Time', 'Local Time']
-            );
+            if ($this->cronType == 'single') {
+                $timestamp = $io->ask(
+                    $this->trans('commands.generate.cron.'.$this->cronType.'.questions.timestamp'),
+                    null,
+                    function ($timestamp) {
+                        if (! (bool)strtotime($timestamp)) {
+                            throw new \Exception($this->trans('commands.generate.cron.'.$this->cronType.'.errors.interval-invalid'));
+                        }
+                        return $timestamp;
+                    }
+                );
+            } else {
+                $timestamp = $io->choice(
+                    $this->trans('commands.generate.cron.'.$this->cronType.'.questions.timestamp'),
+                    ['GMT Time', 'Local Time']
+                );
+            }
             $input->setOption('timestamp', $timestamp);
         }
 
-        // --recurrence
-        $recurrence = $input->getOption('recurrence');
-        if (!$recurrence) {
-            $recurrence = $io->choice(
-                $this->trans('commands.generate.cron.job.event.questions.recurrence'),
-                ['Hourly', 'Twice daily', 'Daily' ,'Custom']
-            );
+        if ($this->cronType == 'schedule') {
+            // --recurrence
+            $recurrence = $input->getOption('recurrence');
+            if (!$recurrence) {
+                $recurrence = $io->choice(
+                    $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence'),
+                    ['Hourly', 'Twice daily', 'Daily' ,'Custom']
+                );
 
-            if ($recurrence == 'Custom') {
-                $recurrence_name = $io->ask($this->trans('commands.generate.cron.job.event.questions.recurrence-name'));
-                $recurrence_label = $io->ask($this->trans('commands.generate.cron.job.event.questions.recurrence-label'));
-                ;
-                $recurrence_interval = $io->ask($this->trans('commands.generate.cron.job.event.questions.recurrence-interval'));
-                ;
+                if ($recurrence == 'Custom') {
+                    $recurrence_name = $io->ask(
+                        $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence-name')
+                    );
+                    $recurrence_label = $io->ask(
+                        $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence-label')
+                    );
+                    $recurrence_interval = $io->ask(
+                        $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence-interval'),
+                        null,
+                        function ($recurrence_interval) {
+                            if (!is_numeric($recurrence_interval)) {
+                                throw new \Exception($this->trans('commands.generate.cron.'.$this->cronType.'.errors.interval-invalid'));
+                            }
+                            return $recurrence_interval;
+                        }
+                    );
 
-                $recurrence = [
-                    "name" => $recurrence_name,
-                    "label" => $recurrence_label,
-                    "interval" => $recurrence_interval
-                ];
+                    $recurrence = [
+                        "name" => $recurrence_name,
+                        "label" => $recurrence_label,
+                        "interval" => $recurrence_interval
+                    ];
+                }
+                $input->setOption('recurrence', $recurrence);
             }
-            $input->setOption('recurrence', $recurrence);
         }
 
         // --hook-name
         $hook_name = $input->getOption('hook-name');
         if (!$hook_name) {
             $hook_name = $io->ask(
-                $this->trans('commands.generate.cron.job.event.questions.hook-name'),
-                'custom_hook'
+                $this->trans('commands.generate.cron.'.$this->cronType.'.questions.hook-name'),
+                strtolower($class_name).'_hook'
             );
             $input->setOption('hook-name', $hook_name);
         }
@@ -218,7 +250,7 @@ class CronJobEventCommand extends Command
         // --hook arguments
         $hook_arguments = $input->getOption('hook-arguments');
         if (!$hook_arguments) {
-            $hook_arguments = $io->askEmpty($this->trans('commands.generate.cron.job.event.questions.hook-arguments'));
+            $hook_arguments = $io->askEmpty($this->trans('commands.generate.cron.'.$this->cronType.'.questions.hook-arguments'));
 
             $hook_arguments =  $hook_arguments == null ? $hook_arguments : explode(",", str_replace(" ", "", $hook_arguments));
 

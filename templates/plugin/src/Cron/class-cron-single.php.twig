@@ -1,0 +1,41 @@
+{%- extends "base/class.php.twig" -%}
+{%- block class_declaration -%}
+/**
+ * Add {{ class_name }} schedule cron.
+ */
+class {{ class_name }} {% endblock -%}
+{% block class_construct %}
+    /**
+    *
+    */
+    public function __construct()
+    {
+        add_action('init', array( $this, 'custom_{{ hook_name }}_single_cron' ));
+        add_action('{{ hook_name }}', array( $this, '{{ hook_name }}' ));
+    }
+
+{% endblock %}
+
+{% block class_methods %}
+    /**
+     * Schedule Cron Event
+     */
+    public function custom_{{ hook_name }}_single_cron()
+    {
+        if ( ! wp_next_scheduled( '{{ hook_name }}' ) ) {
+            wp_schedule_single_event(
+                strtotime('{{ timestamp }}'),
+                '{{ hook_name }}'
+{%- if hook_arguments is defined and hook_arguments is not empty -%},
+                array({% for item in hook_arguments %} '{{ item }}',{% endfor %})
+{% endif %}
+            );
+        }
+    }
+
+    // Scheduled Action Hook
+    public function {{ hook_name }}({% if hook_arguments is defined and hook_arguments is not empty %}{% for item in hook_arguments %} $param{{ loop.index }} = '{{ item }}',{% endfor %}{% endif %})
+    {
+        // do something
+    }
+{% endblock %}

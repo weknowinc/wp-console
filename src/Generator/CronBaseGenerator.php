@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \WP\Console\Generator\CronJobEventGenerator.
+ * Contains \WP\Console\Generator\CronBaseGenerator.
  */
 
 namespace WP\Console\Generator;
@@ -11,11 +11,11 @@ use WP\Console\Core\Generator\Generator;
 use WP\Console\Extension\Manager;
 
 /**
- * Class CronJobEventGenerator
+ * Class CronBaseGenerator
  *
  * @package WP\Console\Generator
  */
-class CronJobEventGenerator extends Generator
+class CronBaseGenerator extends Generator
 {
 
     /**
@@ -24,7 +24,7 @@ class CronJobEventGenerator extends Generator
     protected $extensionManager;
 
     /**
-     * AuthenticationProviderGenerator constructor.
+     * CronBaseGenerator constructor.
      *
      * @param Manager $extensionManager
      */
@@ -36,7 +36,7 @@ class CronJobEventGenerator extends Generator
 
 
     /**
-     * Generator CronJobEvent
+     * Generator CronBase
      *
      * @param string $plugin
      * @param string $class_name
@@ -44,6 +44,7 @@ class CronJobEventGenerator extends Generator
      * @pqram string $recurrence,
      * @param string $hook_name,
      * @param string $hook_arguments,
+     * @param string $type
      */
     public function generate(
         $plugin,
@@ -51,7 +52,8 @@ class CronJobEventGenerator extends Generator
         $timestamp,
         $recurrence,
         $hook_name,
-        $hook_arguments
+        $hook_arguments,
+        $type
     ) {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
@@ -63,21 +65,22 @@ class CronJobEventGenerator extends Generator
             "recurrence" => $recurrence,
             "hook_name" => $hook_name,
             "hook_arguments" => $hook_arguments,
-            "class_name_path" => 'CronJobEvent/' . lcfirst($class_name) . '.php',
-            "admin_cron_job_event_path" => 'admin/partials/cron-job-events-admin.php',
+            "class_name_path" => 'Cron'.ucfirst($type).'/' . lcfirst($class_name) . '.php',
+            "admin_cron_path" => 'admin/partials/cron-'.$type.'-admin.php',
             "file_exists" => file_exists($pluginFile),
-            "command_name" => 'cronjobevent'
+            "command_name" => 'cron'.$type,
+            "type" => $type
         ];
 
         $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
-        $file_path_admin = $dir.'/'.$parameters['admin_cron_job_event_path'];
+        $file_path_admin = $dir.'/'.$parameters['admin_cron_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
 
         if (file_exists($file_path)) {
             if (!is_dir($file_path)) {
                 throw new \RuntimeException(
                     sprintf(
-                        'Unable to generate the schedule cron job event , it already exist at "%s"',
+                        'Unable to generate the '.$type.' cron, it already exist at "%s"',
                         realpath($file_path)
                     )
                 );
@@ -94,7 +97,7 @@ class CronJobEventGenerator extends Generator
         }
 
         $this->renderFile(
-            'plugin/src/CronJobEvent/class-cron-job-event.php.twig',
+            'plugin/src/Cron/class-cron-'.$type.'.php.twig',
             $file_path,
             $parameters
         );
