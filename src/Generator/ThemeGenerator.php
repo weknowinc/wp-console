@@ -42,6 +42,7 @@ class ThemeGenerator extends Generator
         $package,
         $test
     ) {
+        $dir = ($dir == "/" ? '': $dir).'/'.$machineName;
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
                 throw new \RuntimeException(

@@ -40,6 +40,7 @@ class PluginGenerator extends Generator
         $deactivate,
         $uninstall
     ) {
+        $dir = ($dir == "/" ? '': $dir).'/'.$machineName;
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
                 throw new \RuntimeException(

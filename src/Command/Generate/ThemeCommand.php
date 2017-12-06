@@ -11,6 +11,7 @@ use GuzzleHttp\Client;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Webmozart\PathUtil\Path;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Generator\ThemeGenerator;
@@ -162,8 +163,12 @@ class ThemeCommand extends Command
         }
         
         $theme = $this->validator->validatePluginName($input->getOption('theme'));
-        
-        $themePath = $this->appRoot . $input->getOption('theme-path');
+
+        // Get the theme path and define it, if it is null
+        // Check that it is an absolute path or otherwise create an absolute path using appRoot
+        $themePath = $input->getOption('theme-path');
+        $themePath = $themePath == null ? basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'themes' : $themePath;
+        $themePath = Path::isAbsolute($themePath) ? $themePath : Path::makeAbsolute($themePath, $this->appRoot);
         $themePath = $this->validator->validatePluginPath($themePath, true);
         
         $machineName = $this->validator->validateMachineName($input->getOption('machine-name'));
@@ -248,13 +253,12 @@ class ThemeCommand extends Command
         // --theme path
         $themePath = $input->getOption('theme-path');
         if (!$themePath) {
-            $wordpressRoot = $this->appRoot;
             $themePath = $io->ask(
                 $this->trans('commands.generate.theme.questions.theme-path'),
-                basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $machineName,
-                function ($themePath) use ($wordpressRoot, $machineName) {
-                    $themePath = ($themePath[0] != '/' ? '/' : '').$themePath;
-                    $fullPath = $wordpressRoot.$themePath.'/'.$machineName;
+                basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'themes',
+                function ($themePath) use ($machineName) {
+                    $fullPath = Path::isAbsolute($themePath) ? $themePath : Path::makeAbsolute($themePath, $this->appRoot);
+                    $fullPath = $fullPath.'/'.$machineName;
                     if (file_exists($fullPath)) {
                         throw new \InvalidArgumentException(
                             sprintf(
@@ -263,7 +267,6 @@ class ThemeCommand extends Command
                             )
                         );
                     }
-                    
                     return $themePath;
                 }
             );

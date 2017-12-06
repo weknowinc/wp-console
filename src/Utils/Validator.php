@@ -104,20 +104,26 @@ class Validator
 
     public function validatePluginPath($pluginPath, $create = false)
     {
-        if (!is_dir($pluginPath)) {
-            if ($create && mkdir($pluginPath, 0755, true)) {
-                return $pluginPath;
-            }
 
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'plugin path "%s" is invalid. You need to provide a valid path.',
-                    $pluginPath
-                )
-            );
+        if (strlen($pluginPath) > 1 && $pluginPath[strlen($pluginPath)-1] == "/") {
+            $pluginPath = substr($pluginPath, 0, -1);
         }
 
-        return $pluginPath;
+        if (is_dir($pluginPath)) {
+            return $pluginPath;
+        }
+
+        if ($create && mkdir($pluginPath, 0755, true)) {
+            chmod($pluginPath, 0755);
+            return $pluginPath;
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Path "%s" is invalid. You need to provide a valid path.',
+                $pluginPath
+            )
+        );
     }
 
     /*public function validatePluginDependencies($dependencies)
