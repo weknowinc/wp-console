@@ -10,7 +10,7 @@ options:
     hook-arguments: 'The arguments to pass to the hook function(s).'
 questions:
     plugin: 'The plugin name'
-    class-name: 'Enter menu function name'
+    class-name: 'Enter cron single function name'
     timestamp: 'Enter date and time to execute (example: 2017-12-12 11:00:00)'
     hook-name: 'Enter name of an action hook to execute'
     hook-arguments: 'Enter the list of arguments to pass to the hook function(s) separated by comma'

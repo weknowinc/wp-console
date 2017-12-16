@@ -7,7 +7,7 @@ options:
     menu-items: 'The menu items'
 questions:
     plugin: 'The plugin name.'
-    function-name: 'Enter menu function name'
+    function-name: 'Enter toolbar function name'
     menu-items:
         id: 'Enter the ID of the menu'
         parent: 'Enter the ID of the parent menu'

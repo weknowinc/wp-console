@@ -10,7 +10,7 @@ options:
     hook-arguments: 'The arguments to pass to the hook function(s).'
 questions:
     plugin: 'The plugin name'
-    class-name: 'Enter menu function name'
+    class-name: 'Enter cron schedule function name'
     timestamp: 'Enter time to the event'
     recurrence: 'Enter the recurrence to the event'
     recurrence-name: 'Enter the recurrence name to the event'
