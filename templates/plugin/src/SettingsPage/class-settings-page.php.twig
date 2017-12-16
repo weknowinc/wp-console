@@ -1,0 +1,166 @@
+{% extends "base/class.php.twig" %}
+{%- block class_declaration -%}
+/**
+ * Create a custom settings page
+ */
+class {{ class_name }} {% endblock -%}
+{% block class_construct %}
+    /**
+     * Holds the values to be used in the fields callbacks
+     */
+    private $options;
+
+    /**
+     * Start up
+     */
+    public function __construct()
+    {
+        add_action( 'admin_menu', array( $this, 'add_{{ class_name|lower }}_plugin_page' ) );
+        add_action( 'admin_init', array( $this, '{{ class_name|lower}}_page_init' ) );
+    }
+{% endblock %}
+
+{% block class_methods %}
+
+    /**
+     * Add options page
+     */
+    public function add_{{ class_name|lower }}_plugin_page()
+    {
+        // This page will be under "Settings"
+        add_options_page(
+            'Settings Submenu',
+            __( '{{ menu_title }}', '{{ text_domain }}' ),
+            '{{ capability }}',
+            '{{ slug }}',
+            array( $this, '{{ callback_function }}' )
+        );
+    }
+
+    /**
+     * Options page callback
+     */
+    public function {{ callback_function }}()
+    {
+        // Set class property
+        $this->options = get_option( '{{ setting_name }}' );
+        ?>
+        <div class="wrap">
+{% if page_title is not null or page_title is defined %}
+            <h1>{{ page_title }}</h1>
+{% endif %}
+            <form method="post" action="options.php">
+                <?php
+                // This prints out all hidden setting fields
+                settings_fields( '{{ setting_group }}' );
+                do_settings_sections( '{{ slug }}' );
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /**
+     * Register and add settings
+     */
+    public function {{ class_name|lower }}_page_init()
+    {
+        register_setting(
+            '{{ setting_group }}', // Option group
+            '{{ setting_name }}', // Option name
+            array( $this, '{{ class_name|lower }}_add_fields' ) // Sanitize
+        );
+
+        //Add Sections to fields
+{% if sections is defined and sections is not null %}
+{% for id, name in sections %}
+        add_settings_section(
+            '{{ id }}', // ID
+            __( '{{ name }}', '{{ text_domain }}' ), // Name
+            array( $this, '{{ id }}_print_section' ), // Callback
+            '{{ slug }}' // ID Settings Page
+        );
+
+{% endfor %}
+{% endif %}
+
+        //Add fields to Settings page
+{% if fields is defined and fields is not null %}
+{% for field in fields %}
+        add_settings_field(
+            '{{ field.id }}', // ID
+            __( '{{ field.label }}', '{{ text_domain }}' ), // Name
+            array( $this, '{{ field.id }}_callback' ), // Callback
+            '{{ slug }}', // Page
+            '{{ field.section_id }}' // Section
+        );
+
+{% endfor %}
+{% endif %}
+    }
+
+    /**
+     * Sanitize each setting field as needed
+     *
+     * @param array $input Contains all settings fields as array keys
+     */
+    public function {{ class_name|lower }}_add_fields( $input )
+    {
+        $new_input = array();
+{% if fields is defined and fields is not null %}
+{% for field in fields %}
+        if( isset( $input['{{ field.id }}'] ) )
+            $new_input['{{ field.id }}'] = $input['{{ field.id }}'];
+
+{% endfor %}
+{% endif %}
+        return $new_input;
+    }
+
+{% if section_field is defined and section_field is not null %}
+{% for id, name in section_field %}
+    /**
+     * Print the {{ name }} Section text
+     */
+    public function {{ id }}_print_section()
+    {
+        print __( 'Enter your {{ name }} settings below:', '{{ text_domain }}' );
+    }
+
+{% endfor %}
+{% endif %}
+
+{% if fields is defined and fields is not null %}
+{% for field in fields %}
+    /**
+     * Get the settings option array and print one of its values
+     */
+    public function {{ field.id }}_callback()
+    {
+
+{% if field.type == 'select'%}
+        echo '<select name="{{ setting_name }}[{{ field.id }}]" id="{{ field.id }}" >
+{% for options in field.multi_selection %}
+                 <option value="{{ options.value }}" '.selected( $this->options['{{ field.id }}'], "{{ options.value }}" ).' >{{ options.label }}</option>
+{% endfor %}
+              </select>';
+{% elseif field.type == 'radio' %}
+{% for options in field.multi_selection %}
+        echo '<input type="{{ field.type }}" name="{{ setting_name }}[{{ field.id }}]" id="{{ setting_name }}[{{ field.id }}]" value="{{ options.value }}" '.checked( "{{ options.value }}", $this->options['{{ field.id }}'], false ).'/> {{ options.label }}<br>';
+{% endfor %}
+{% elseif field.type == 'image' %}
+        echo '<img src="{{ field.src_image }}" alt="{{ field.description }}" />
+{% elseif field.type == 'checkbox' %}
+        echo '<input type="{{ field.type }}" name="{{ setting_name }}[{{ field.id }}]" id="{{ setting_name }}[{{ field.id }}]" value="{{ options.value }}" '.checked( "{{ options.value }}", $this->options['{{ field.id }}'], false ).'/> {{ options.label }}<br>';
+{% else %}
+        printf(
+            '<input type="{{ field.type }}" name="{{ setting_name }}[{{ field.id }}]" placeholder="{{ field.placeholder }}" value="%s" />',
+            isset( $this->options['{{ field.id }}'] ) ? esc_attr( $this->options['{{ field.id }}']) : ''
+        );
+{% endif %}
+    }
+
+{% endfor %}
+{% endif %}
+{% endblock %}

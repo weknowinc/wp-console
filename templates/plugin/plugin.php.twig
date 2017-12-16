@@ -170,4 +170,16 @@ function {{ plugin }}_add_cron_{{ type }}()
 }
 {{ plugin }}_add_cron_{{ type }}();
 {%- endif -%}
+{%- if admin_settings_page_path is defined -%}
+
+/**
+ * This function add custom settings page that are in admin/partials/settings-page-admin.php
+ */
+function {{ plugin }}_add_settings_page()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_settings_page_path }}';
+}
+{{ plugin }}_add_settings_page();
+{%- endif -%}
 {%- endblock -%}
