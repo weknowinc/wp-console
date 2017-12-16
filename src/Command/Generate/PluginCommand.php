@@ -18,6 +18,7 @@ use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\Site;
+use Webmozart\PathUtil\Path;
 
 class PluginCommand extends Command
 {
@@ -169,7 +170,11 @@ class PluginCommand extends Command
 
         $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
 
-        $pluginPath = $this->appRoot . $input->getOption('plugin-path');
+        // Get the plugin path and define it if it is null
+        // Check that it is an absolute path or otherwise create an absolute path using appRoot
+        $pluginPath = $input->getOption('plugin-path');
+        $pluginPath = $pluginPath == null ? basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'plugins' : $pluginPath;
+        $pluginPath = Path::isAbsolute($pluginPath) ? $pluginPath : Path::makeAbsolute($pluginPath, $this->appRoot);
         $pluginPath = $this->validator->validatePluginPath($pluginPath, true);
 
         $machineName = $this->validator->validateMachineName($input->getOption('machine-name'));
@@ -253,13 +258,12 @@ class PluginCommand extends Command
 
         $pluginPath = $input->getOption('plugin-path');
         if (!$pluginPath) {
-            $wordpressRoot = $this->appRoot;
             $pluginPath = $io->ask(
                 $this->trans('commands.generate.plugin.questions.plugin-path'),
-                basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $machineName,
-                function ($pluginPath) use ($wordpressRoot, $machineName) {
-                    $pluginPath = ($pluginPath[0] != '/' ? '/' : '').$pluginPath;
-                    $fullPath = $wordpressRoot.$pluginPath.'/'.$machineName;
+                basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'plugins',
+                function ($pluginPath) use ($machineName) {
+                    $fullPath = Path::isAbsolute($pluginPath) ? $pluginPath : Path::makeAbsolute($pluginPath, $this->appRoot);
+                    $fullPath = $fullPath.'/'.$machineName;
                     if (file_exists($fullPath)) {
                         throw new \InvalidArgumentException(
                             sprintf(

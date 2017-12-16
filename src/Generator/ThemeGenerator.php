@@ -18,15 +18,15 @@ use WP\Console\Utils\Site;
 class ThemeGenerator extends Generator
 {
     /**
-     * @param Site           $site
-     * @param string $Theme
-     * @param string $machineName
-     * @param string $dir
-     * @param string $description
-     * @param string $author
-     * @param string $authorUrl
-     * @param array $template_files
-     * @param string $screenshot
+     * @param Site    $site
+     * @param string  $Theme
+     * @param string  $machineName
+     * @param string  $dir
+     * @param string  $description
+     * @param string  $author
+     * @param string  $authorUrl
+     * @param array   $template_files
+     * @param string  $screenshot
      * @param boolean $test
      */
     public function generate(
@@ -42,6 +42,7 @@ class ThemeGenerator extends Generator
         $package,
         $test
     ) {
+        $dir = ($dir == "/" ? '': $dir).'/'.$machineName;
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
                 throw new \RuntimeException(
