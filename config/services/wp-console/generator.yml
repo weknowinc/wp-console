@@ -72,3 +72,8 @@ services:
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }
+  console.settings_page_generator:
+    class: WP\Console\Generator\SettingsPageGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }

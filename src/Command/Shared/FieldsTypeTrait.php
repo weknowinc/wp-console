@@ -17,7 +17,7 @@ use WP\Console\Core\Style\WPStyle;
 trait FieldsTypeTrait
 {
 
-    public function fieldsQuestion(WPStyle $io, $command)
+    public function fieldsQuestion(WPStyle $io, $command, $optionName, $sections = null)
     {
         $stringConverter = $this->stringConverter;
 
@@ -27,7 +27,7 @@ trait FieldsTypeTrait
         $count = 0;
         while (true) {
             $type = $io->choiceNoList(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.type'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.type'),
                 $fields_options,
                 NULL,
                 TRUE
@@ -38,12 +38,12 @@ trait FieldsTypeTrait
             }
 
             $label = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.label'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.label'),
                 null
             );
 
             $id = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.id'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.id'),
                 $this->stringConverter->createMachineName($label),
                 function ($id) use ($stringConverter) {
                     return $stringConverter->createMachineName($id);
@@ -51,7 +51,7 @@ trait FieldsTypeTrait
             );
 
             $description = $io->askEmpty(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.description')
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.description')
             );
 
             array_push(
@@ -66,36 +66,38 @@ trait FieldsTypeTrait
 
             if ($type != 'select' && $type != 'radio' && $type != 'checkbox') {
                 $placeholder = $io->askEmpty(
-                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.placeholder')
+                    $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.placeholder')
                 );
 
                 $default_value = $io->askEmpty(
-                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.default-value')
+                    $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.default-value')
                 );
 
                 $fields[$count]['placeholder'] = $placeholder;
                 $fields[$count]['default_value'] = $default_value;
             }
 
-            if ($type == 'select' || $type == 'radio' || $type == 'checkbox') {
-                if ($io->confirm(
-                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-options', $type),
-                    false
-                )
-                ) {
-                    $fields[$count]['multi_selection'] =  $this->multiSelection($io, $type, $command);
-                }
+            if ($type == 'select' || $type == 'radio') {
+                $fields[$count]['multi_selection'] =  $this->multiSelection($io, $type, $command, $optionName);
             }
 
             if ($type == 'image') {
                 $src = $io->ask(
-                    $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.src')
+                    $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.src')
                 );
                 $fields[$count]['src_image'] =  $src;
             }
 
+            if ($command == 'settings.page') {
+                $section_id = $io->choice(
+                    $this->trans('commands.generate.settings.page.questions.fields.section-id'),
+                    array_values($sections)
+                );
+                $fields[$count]['section_id'] = array_search($section_id, $sections);
+            }
+
             if (!$io->confirm(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.'.$command.'-add-another'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.'.$optionName.'-add-another'),
                 false
             )
             ) {
@@ -107,18 +109,18 @@ trait FieldsTypeTrait
         return $fields;
     }
 
-    private function multiSelection(WPStyle $io, $type, $command)
+    private function multiSelection(WPStyle $io, $type, $command, $optionName)
     {
         $multiple_options = [];
         while (true) {
             $multiple_options_label = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-label'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.multiple-label').$type,
                 ''
             );
 
 
             $multiple_options_value = $io->ask(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-value'),
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.multiple-value').$type,
                 ''
             );
 
@@ -130,7 +132,7 @@ trait FieldsTypeTrait
                 ]
             );
             if (!$io->confirm(
-                $this->trans('commands.generate.'.$command.'.questions.'.$command.'-items.multiple-options-add', $type),
+                $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.multiple-options-add').$type,
                 false
             )
             ) {
