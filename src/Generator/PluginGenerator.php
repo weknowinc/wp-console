@@ -17,13 +17,13 @@ use WP\Console\Core\Generator\Generator;
 class PluginGenerator extends Generator
 {
     /**
-     * @param Site   $site
-     * @param string $plugin
-     * @param string $machineName
-     * @param string $dir
-     * @param string $description
-     * @param string $author
-     * @param string $authorUrl
+     * @param Site    $site
+     * @param string  $plugin
+     * @param string  $machineName
+     * @param string  $dir
+     * @param string  $description
+     * @param string  $author
+     * @param string  $authorUrl
      * @param boolean $test
      */
     public function generate(
@@ -117,7 +117,7 @@ class PluginGenerator extends Generator
             );
         }
 
-        if($uninstall) {
+        if ($uninstall) {
             $this->renderFile(
                 'plugin/uninstall.php.twig',
                 $dir. '/uninstall.php',

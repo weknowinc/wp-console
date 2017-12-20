@@ -104,11 +104,10 @@ class Validator
 
     public function validatePluginPath($pluginPath, $create = false)
     {
-
         if (strlen($pluginPath) > 1 && $pluginPath[strlen($pluginPath)-1] == "/") {
             $pluginPath = substr($pluginPath, 0, -1);
         }
-
+      
         if (is_dir($pluginPath)) {
             return $pluginPath;
         }

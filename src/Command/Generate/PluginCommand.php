@@ -20,7 +20,6 @@ use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\Site;
 use Webmozart\PathUtil\Path;
 
-
 class PluginCommand extends Command
 {
     use ConfirmationTrait;
