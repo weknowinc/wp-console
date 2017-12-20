@@ -299,7 +299,7 @@ class MetaBoxCommand extends Command
             )
             ) {
                 // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                $metabox_items = $this->fieldsQuestion($io, 'metabox');
+                $metabox_items = $this->fieldsQuestion($io, 'metabox', 'metabox-items');
                 $input->setOption('metabox-items', $metabox_items);
             }
         }

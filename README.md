@@ -40,6 +40,7 @@ chmod +x /usr/local/bin/wordpress
  **debug**
   * debug:chain (dc)                  List available chain files.
   * debug:container (dco)             Displays current services for an application.
+  * debug:cron (dce)                  Displays current cron for the application
   * debug:multisite (dm)              List all sites in network available to a specific user
   * debug:plugin (dp)                 Display current plugins available for application
   * debug:roles (dusr)                Displays current roles for the application
@@ -48,19 +49,22 @@ chmod +x /usr/local/bin/wordpress
 
  **generate**
   * generate:command (gc)                  Generate commands for the console.
-  * generate:cron:job:event                Generate a schedule cron job event.
+  * generate:cron:schedule (gcsh)          Generate a schedule cron.
+  * generate:cron:single (gcs)             Generate a single cron.
   * generate:menu (gm)                     Generate a menu.
   * generate:metabox (gm)                  Generate a meta box.
   * generate:plugin (gp)                   Generate a plugin.
   * generate:post:type (gpt)               Generate a custom post type.
   * generate:quicktag (gqt)                Generate a quicktag.
-  * generate:register:style (grs)          Generate a register style.
+  * generate:register:script (grsp)        Generate a register style.
+  * generate:register:style (grst)         Generate a register style.
+  * generate:settings:page (gsp)           Generate a new custom settings page.
   * generate:shortcode (gs)                Generate a shortcode.  
   * generate:sidebar (gsb)                 Generate a sidebar.
   * generate:taxonomy (gta)                Generate a custom taxonomy.
   * generate:theme (gth)                   Generate a theme.
   * generate:toolbar (gtb)                 Generate a toolbar.
-  * generate:user:contactmethods (gucm)    Generate a User contact methods.
+  * generate:user:contact:methods (gucm)   Generate a User contact methods.
   * generate:widget (gwd)                  Generate a widgets.
 
  

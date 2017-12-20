@@ -232,7 +232,7 @@ class WidgetCommand extends Command
             )
             ) {
                 // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                $widget_items = $this->fieldsQuestion($io, 'widget');
+                $widget_items = $this->fieldsQuestion($io, 'widget', 'widget-items');
                 $input->setOption('widget-items', $widget_items);
             }
         }

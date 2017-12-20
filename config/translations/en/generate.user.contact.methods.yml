@@ -7,7 +7,7 @@ options:
     methods-items: 'The methods items'
 questions:
     plugin: 'The plugin name.'
-    function-name: 'Enter menu function name'
+    function-name: 'Enter function name'
     methods: 'Do you want to add methods to user contact methods?'
     methods-items:
        name: 'Enter the name of the method'
