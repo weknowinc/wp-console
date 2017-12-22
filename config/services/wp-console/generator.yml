@@ -77,3 +77,8 @@ services:
     arguments: ['@console.extension_manager']
     tags:
       - { name: wordpress.generator }
+  console.dashboard_widgets_generator:
+    class: WP\Console\Generator\DashboardWidgetsGenerator
+    arguments: ['@console.extension_manager']
+    tags:
+      - { name: wordpress.generator }

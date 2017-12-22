@@ -1,0 +1,66 @@
+{% extends "base/class.php.twig" %}
+{%- block class_declaration %}
+/**
+ * Create {{ class_name }} dashboard.
+ */
+class {{ class_name }} {% endblock -%}
+
+{% block class_construct %}
+    /**
+     * Sets up the dashboard widget etc
+     */
+    public function __construct()
+    {
+        add_action('wp_dashboard_setup', array( $this, 'add_dashboard_widget'));
+    }
+
+{% endblock %}
+
+{% block class_methods %}
+    /**
+     * Register the widget
+     */
+    public function add_dashboard_widget()
+    {
+        wp_add_dashboard_widget(
+            '{{ id }}', //A unique slug/ID
+            __( '{{ title }}', '{{ text_domain }}' ), //Visible name for the widget
+            //Callback for the main widget content
+            '{{ render_function }}'
+{%- if submission_function is defined and submission_function  -%},
+            //Optional callback for widget submission function
+            '{{ id }}_submission_callback'
+{%- endif -%}
+{%- if callback_arguments is defined and callback_arguments is not empty -%},
+{% if submission_function is not defined or submission_function == false %}
+            //Optional callback for widget submission function
+            null,
+{% endif %}
+            // Optional: Callback args
+            array({{ callback_arguments }})
+{% endif %}
+        );
+    }
+
+    /**
+     * Outputs the content of the dashboard widget
+     */
+    public function {{ render_function }}({% if callback_arguments is defined and callback_arguments is not empty %}$args{% endif %})
+    {
+{% if callback_arguments is defined and callback_arguments is not empty %}
+        var_dump($args);
+{% else %}
+        //Do something here
+{% endif %}
+    }
+
+{% if submission_function is defined and submission_function %}
+    /*
+     * Submission function
+     */
+    public function {{ id }}_submission_callback()
+    {
+        //Do something here
+    }
+{%- endif -%}
+{%- endblock -%}
