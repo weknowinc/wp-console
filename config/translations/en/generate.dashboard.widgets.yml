@@ -1,0 +1,26 @@
+description: 'Generate a new custom dashboard widgets.'
+help: 'The <info>generate:dashboard:widgets</info> command helps you generates a new dashboard widgets.'
+welcome: 'Welcome to the Wordpress dashboard widgets generator'
+options:
+    plugin: 'The Plugin name.'
+    class-name: 'The dashboard widget class name'
+    id: 'ID used in the code identifying the widget.'
+    title: 'The title that will be displayed in its heading.'
+    render-function: 'The function that displays the widget content.'
+    submission-function: 'The function that handles widget submission.'
+    callback-arguments: 'Arguments array passed to the callback function. ["1" => "foo", "2" => "bar"]'
+    text-domain: 'Translations file.'
+questions:
+    plugin: 'The plugin name'
+    class-name: 'Enter dashboard widget class name'
+    id: 'Enter the widget id'
+    title: 'Enter the widget name'
+    render-function: 'Enter the function name to display the actual contents of your widget'
+    submission-function: 'Do you want add function to handle submission of widget options (configuration) forms, and will also display the form elements.'
+    callback-arguments: 'Enter the arguments to pass into your callback function. Follow this example: "1" => "foo", "2" => "bar"'
+    text-domain: 'Enter the text-domain to translation file'
+warnings:
+    plugin-unavailable: 'Warning The following plugin are not already available in your local environment "%s"'
+errors:
+    directory-exists: 'The target directory "%s" is not empty.'
+    interval-invalid: 'The interval must be a number'

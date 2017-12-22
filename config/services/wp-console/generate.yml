@@ -89,3 +89,8 @@ services:
     arguments: ['@console.settings_page_generator', '@console.extension_manager', '@console.validator', '@console.string_converter', '@console.wordpress_api']
     tags:
       - { name: wordpress.command }
+  console.generate_dashboard_widgets:
+    class: WP\Console\Command\Generate\DashboardWidgetsCommand
+    arguments: ['@console.dashboard_widgets_generator', '@console.extension_manager', '@console.validator', '@console.string_converter']
+    tags:
+      - { name: wordpress.command }

@@ -1,6 +1,6 @@
 {% extends "base/file.php.twig" %}
 {%- block extra_info -%}
-{% if not file_exists %}
+{%- if not file_exists -%}
 {% if plugin_uri is defined %}
  * Plugin Name:     {{plugin}}
  * Plugin URI:      {{plugin_uri}}
@@ -12,14 +12,14 @@
  * Version:         0.1.0
  *
  * @package         {{package}}
-{% endif %}
-{% endif %}
-{% endblock %}
-{% block file_docblock %}
-{% if not file_exists %}
+{%- endif -%}
+{%- endif -%}
+{%- endblock -%}
+{%- block file_docblock -%}
+{%- if not file_exists -%}
 {{ parent() }}
-{% endif %}
-{% endblock %}
+{%- endif -%}
+{%- endblock -%}
 {%- block file_methods -%}
 {%- if activate is defined and activate -%}
 
@@ -125,7 +125,7 @@ add_action('admin_print_scripts', 'add_plugin_custom_quicktag');
 {%- if admin_widget_path is defined -%}
 
 /**
- * This function render all toolbars that are in admin/partials/widgets-admin.php
+ * This function render all widgets that are in admin/partials/widgets-admin.php
  */
 function add_customs_widgets()
 {
@@ -181,5 +181,17 @@ function {{ plugin }}_add_settings_page()
     include_once plugin_dir_path( __FILE__ ) .'{{ admin_settings_page_path }}';
 }
 {{ plugin }}_add_settings_page();
+{%- endif -%}
+{%- if admin_dashboard_widgets_path is defined -%}
+
+/**
+ * This function render all dashboard widgets that are in admin/partials/dashboard-widgets-admin.php
+ */
+function add_customs_dashboard_widgets()
+{
+    // Include the files for rendering the display.
+    include_once plugin_dir_path( __FILE__ ) .'{{ admin_dashboard_widgets_path }}';
+}
+add_customs_dashboard_widgets();
 {%- endif -%}
 {%- endblock -%}
