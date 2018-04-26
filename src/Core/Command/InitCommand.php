@@ -55,7 +55,8 @@ class InitCommand extends Command
         'temp' => '/tmp',
         'learning' => false,
         'generate_inline' => false,
-        'generate_chain' => false
+        'generate_chain' => false,
+        'statistics' => false
     ];
 
     /**
@@ -174,6 +175,21 @@ class InitCommand extends Command
                 false
             );
             $input->setOption('autocomplete', $autocomplete);
+        }
+
+        $io->commentBlock(
+            $this->trans('commands.init.messages.statistics')
+        );
+
+        $this->configParameters['statistics'] = $io->confirm(
+            $this->trans('commands.init.questions.statistics'),
+            true
+        );
+
+        if ($this->configParameters['statistics']) {
+            $io->commentBlock(
+                $this->trans('commands.init.messages.statistics-disable')
+            );
         }
     }
 

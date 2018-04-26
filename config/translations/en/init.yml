@@ -11,3 +11,18 @@ questions:
   learning: 'Shows information for learning purposes?'
   generate-inline: 'Show inline representation of the executed command?'
   generate-chain: 'Show chain representation of the executed command?'
+  statistics: 'Allow to collect and send this information to wordpressConsole server?'
+messages:
+  statistics: |
+      Help us to improve the Wordpress Console project, allowing to provide information about how you use the application.
+      The information that will be collected would be
+
+      - Language used
+      - Command executed
+      - Lines of code generated if is a generator command
+
+      You could read about our privacy policy at http://wordpressconsole.com/privacy.
+  statistics-disable: |
+      You can always disable the sending of information using the following command
+
+      wordpress settings:set share.statistics false

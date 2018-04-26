@@ -2,13 +2,12 @@
 
 /**
  * @file
- * Contains \Drupal\Console\Core\EventSubscriber\CalculateStatisticsListener.
+ * Contains \WP\Console\Core\EventSubscriber\CalculateStatisticsListener.
  */
 
-namespace Drupal\Console\Core\EventSubscriber;
+namespace WP\Console\Core\EventSubscriber;
 
-use Drupal\Console\Core\Command\Chain\ChainCustomCommand;
-use Drupal\Console\Core\Utils\ConfigurationManager;
+use WP\Console\Core\Utils\ConfigurationManager;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,7 +18,7 @@ use Symfony\Component\Finder\Finder;
 /**
  * Class CalculateStatisticsListener
  *
- * @package Drupal\Console\Core\EventSubscriber
+ * @package WP\Console\Core\EventSubscriber
  */
 class CalculateStatisticsListener implements EventSubscriberInterface
 {
@@ -60,26 +59,15 @@ class CalculateStatisticsListener implements EventSubscriberInterface
             return;
         }
 
-        $globalConfig = $this->configurationManager->getGlobalConfig();
+        $globalConfig = $this->configurationManager->getConfigAsArray();
 
         //Validate if the config is enable.
         if (is_null($globalConfig) || !$globalConfig['application']['share']['statistics']) {
             return;
         }
 
-        //Check that the namespace starts with 'Drupal\Console'.
-        $class = new \ReflectionClass($event->getCommand());
-        if (strpos($class->getNamespaceName(), "Drupal\Console") !== 0) {
-            return;
-        }
-
-        //Validate if the command is not a custom chain command.
-        if ($event->getCommand() instanceof ChainCustomCommand) {
-            return;
-        }
-
         $path = sprintf(
-            '%s/.console/stats',
+            '%s/.wp-console/stats',
             $this->configurationManager->getHomeDirectory()
         );
 
@@ -91,50 +79,52 @@ class CalculateStatisticsListener implements EventSubscriberInterface
             ->notName(date('Y-m-d').'-pending.csv')
             ->in($path);
 
-        if ($finder->count() > 0) {
-            $statisticsKeys = ['command', 'language', 'linesOfCode'];
-            $commands = [];
-            $languages = [];
-            $filePathToDelete = [];
+        if ($finder->count() == 0) {
+            return;
+        }
 
-            foreach ($finder as $file) {
-                if (($handle = fopen($file->getPathname(), "r")) !== false) {
-                    while (($content = fgetcsv($handle, 0, ';')) !== false) {
+        $statisticsKeys = ['command', 'language', 'linesOfCode'];
+        $commands = [];
+        $languages = [];
+        $filePathToDelete = [];
 
-                        /**
-                         * If the command doesn't have linesOfCode,
-                         * we add a null value at the end to combine with statistics keys.
-                         */
-                        if (count($content) === 2) {
-                            array_push($content, 0);
-                        }
+        foreach ($finder as $file) {
+            if (($handle = fopen($file->getPathname(), "r")) !== false) {
+                while (($content = fgetcsv($handle, 0, ';')) !== false) {
 
-                        $commands = $this->getCommandStatisticsAsArray($commands, array_combine($statisticsKeys, $content));
-                        $languages = $this->getLanguageStatisticsAsArray($languages, array_combine($statisticsKeys, $content));
+                    /**
+                     * If the command doesn't have linesOfCode,
+                     * we add a null value at the end to combine with statistics keys.
+                     */
+                    if (count($content) === 2) {
+                        array_push($content, 0);
                     }
 
-                    fclose($handle);
-
-                    //Save file path to delete if the response is success.
-                    array_push($filePathToDelete, $file->getPathname());
+                    $commands = $this->getCommandStatisticsAsArray($commands, array_combine($statisticsKeys, $content));
+                    $languages = $this->getLanguageStatisticsAsArray($languages, array_combine($statisticsKeys, $content));
                 }
+
+                fclose($handle);
+
+                //Save file path to delete if the response is success.
+                array_push($filePathToDelete, $file->getPathname());
             }
+        }
 
-            $client = new Client();
+        $client = new Client();
 
-            $response = $client->post(
-                'http://127.0.0.1:8088/statistics?_format=json',
-                [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => ['commands' => $commands, 'languages' => $languages]
-                ]
-            );
+        $response = $client->post(
+            'http://wordpressconsole.com/statistics?_format=json',
+            [
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+                'json' => ['commands' => $commands, 'languages' => $languages]
+            ]
+        );
 
-            if ($response->getStatusCode() === 200) {
-                $this->fs->remove($filePathToDelete);
-            }
+        if ($response->getStatusCode() === 200) {
+            $this->fs->remove($filePathToDelete);
         }
     }
 
