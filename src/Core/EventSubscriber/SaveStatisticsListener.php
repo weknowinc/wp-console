@@ -2,15 +2,15 @@
 
 /**
  * @file
- * Contains \Drupal\Console\Core\EventSubscriber\SaveStatisticsListener.
+ * Contains \WP\Console\Core\EventSubscriber\SaveStatisticsListener.
  */
 
-namespace Drupal\Console\Core\EventSubscriber;
+namespace WP\Console\Core\EventSubscriber;
 
-use Drupal\Console\Core\Command\Chain\ChainCustomCommand;
-use Drupal\Console\Core\Utils\ConfigurationManager;
-use Drupal\Console\Core\Utils\CountCodeLines;
-use Drupal\Console\Core\Utils\TranslatorManagerInterface;
+use WP\Console\Core\Command\Chain\ChainCustomCommand;
+use WP\Console\Core\Utils\ConfigurationManager;
+use WP\Console\Core\Utils\CountCodeLines;
+use WP\Console\Core\Utils\TranslatorManager;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Console\ConsoleEvents;
@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class SaveStatisticsListener
  *
- * @package Drupal\Console\Core\EventSubscriber
+ * @package WP\Console\Core\EventSubscriber
  */
 class SaveStatisticsListener implements EventSubscriberInterface
 {
@@ -35,7 +35,7 @@ class SaveStatisticsListener implements EventSubscriberInterface
     protected $configurationManager;
 
     /**
-     * @var TranslatorManagerInterface
+     * @var TranslatorManager
      */
     protected $translator;
 
@@ -49,12 +49,12 @@ class SaveStatisticsListener implements EventSubscriberInterface
      *
      * @param CountCodeLines             $countCodeLines
      * @param ConfigurationManager       $configurationManager
-     * @param TranslatorManagerInterface $translator
+     * @param TranslatorManager $translator
      */
     public function __construct(
         CountCodeLines $countCodeLines,
         ConfigurationManager $configurationManager,
-        TranslatorManagerInterface $translator
+        TranslatorManager $translator
     ) {
         $this->countCodeLines = $countCodeLines;
         $this->configurationManager = $configurationManager;
@@ -72,16 +72,16 @@ class SaveStatisticsListener implements EventSubscriberInterface
             return;
         }
 
-        $globalConfig = $this->configurationManager->getGlobalConfig();
+        $globalConfig = $this->configurationManager->getConfigAsArray();
 
         //Validate if the config is enable.
         if (is_null($globalConfig) || !$globalConfig['application']['share']['statistics']) {
             return;
         }
 
-        //Check that the namespace starts with 'Drupal\Console'.
+        //Check that the namespace starts with 'WP\Console'.
         $class = new \ReflectionClass($event->getCommand());
-        if (strpos($class->getNamespaceName(), "Drupal\Console") !== 0) {
+        if (strpos($class->getNamespaceName(), "WP\Console") !== 0) {
             return;
         }
 
@@ -91,7 +91,7 @@ class SaveStatisticsListener implements EventSubscriberInterface
         }
 
         $path =  $path = sprintf(
-            '%s/.console/stats/',
+            '%s/.wp-console/stats/',
             $this->configurationManager->getHomeDirectory()
         );
 

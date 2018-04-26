@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use WP\Console\Annotations\WPCommandAnnotationReader;
+use WP\Console\Core\Command\Chain\ChainCustomCommand;
 use WP\Console\Utils\AnnotationValidator;
 use WP\Console\Core\Application as BaseApplication;
 

@@ -2,10 +2,13 @@
 
 namespace WP\Console\Core\Utils;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 use Dflydev\DotAccessConfiguration\YamlFileConfigurationBuilder;
 use Dflydev\DotAccessConfiguration\ConfigurationInterface;
 use Symfony\Component\Console\Input\ArgvInput;
+use Webmozart\PathUtil\Path;
 
 /**
  * Class ConfigurationManager.
@@ -157,11 +160,7 @@ class ConfigurationManager
      */
     public function getHomeDirectory()
     {
-        if (function_exists('posix_getuid')) {
-            return posix_getpwuid(posix_getuid())['dir'];
-        }
-
-        return realpath(rtrim(getenv('HOME') ?: getenv('USERPROFILE'), '/\\'));
+        return Path::getHomeDirectory();
     }
 
     /**
@@ -254,5 +253,29 @@ class ConfigurationManager
             $builder = new YamlFileConfigurationBuilder([$extendFile]);
             $this->configuration->import($builder->build());
         }
+    }
+
+    /**
+     * Get the config as array.
+     *
+     * @return array
+     */
+    public function getConfigAsArray()
+    {
+        $filePath = sprintf(
+            '%s/.wp-console/config.yml',
+            $this->getHomeDirectory()
+        );
+
+        $fs = new Filesystem();
+
+        if ($fs->exists($filePath)) {
+            $yaml = new Parser();
+            $configGlobal = $yaml->parse(file_get_contents($filePath), true);
+
+            return $configGlobal;
+        }
+
+        return null;
     }
 }

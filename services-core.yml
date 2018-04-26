@@ -9,14 +9,6 @@ services:
     class: WP\Console\Core\Command\ListCommand
     tags:
       - { name: wordpress.command }
-  # Installer services
-  console.chain_queue:
-    class: WP\Console\Core\Utils\ChainQueue
-  console.chain_discovery:
-    class: WP\Console\Core\Utils\ChainDiscovery
-    arguments: ['@app.root', '@console.configuration_manager']
-  console.configuration_manager:
-    class: WP\Console\Core\Utils\ConfigurationManager
   console.help:
     class: WP\Console\Core\Command\HelpCommand
     tags:
@@ -26,9 +18,24 @@ services:
     arguments: ['@console.show_file', '@console.configuration_manager', '@console.init_generator', '@app.root', '@?console.root']
     tags:
       - { name: wordpress.command }
+  console.settings_set:
+      class: WP\Console\Core\Command\Settings\SetCommand
+      arguments: ['@console.configuration_manager', '@console.nested_array']
+      tags:
+        - { name: wordpress.command }
+  # Installer services
+  console.chain_queue:
+    class: WP\Console\Core\Utils\ChainQueue
+  console.chain_discovery:
+    class: WP\Console\Core\Utils\ChainDiscovery
+    arguments: ['@app.root', '@console.configuration_manager']
+  console.configuration_manager:
+    class: WP\Console\Core\Utils\ConfigurationManager
   console.renderer:
     class: WP\Console\Core\Utils\TwigRenderer
     arguments: ['@console.translator_manager', '@console.string_converter']
+  console.nested_array:
+    class: WP\Console\Core\Utils\NestedArray
   console.show_file:
     class: WP\Console\Core\Utils\ShowFile
     arguments: ['@app.root', '@console.translator_manager']
@@ -58,6 +65,7 @@ services:
   # WordpressConsoleCore Generators
   console.init_generator:
     class: WP\Console\Core\Generator\InitGenerator
+    arguments: ['@console.nested_array']
     tags:
       - { name: wordpress.generator }
 

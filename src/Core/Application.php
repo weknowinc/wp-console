@@ -9,7 +9,9 @@ use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use WP\Console\Core\Command\Chain\ChainCustomCommand;
+use WP\Console\Core\EventSubscriber\CalculateStatisticsListener;
 use WP\Console\Core\EventSubscriber\CallCommandListener;
+use WP\Console\Core\EventSubscriber\SaveStatisticsListener;
 use WP\Console\Core\EventSubscriber\ShowGenerateChainListener;
 use WP\Console\Core\EventSubscriber\ShowGenerateCountCodeLinesListener;
 use WP\Console\Core\EventSubscriber\ShowGeneratedFilesListener;
@@ -165,6 +167,18 @@ class Application extends BaseApplication
                 $this->container->get('console.count_code_lines')
             )
         );
+        $dispatcher->addSubscriber(
+            new SaveStatisticsListener(
+                $this->container->get('console.count_code_lines'),
+                $this->container->get('console.configuration_manager'),
+                $this->container->get('console.translator_manager')
+            )
+        );
+        $dispatcher->addSubscriber(
+            new CalculateStatisticsListener(
+                $this->container->get('console.configuration_manager')
+            )
+        );
 
         $this->setDispatcher($dispatcher);
     }
@@ -284,7 +298,7 @@ class Application extends BaseApplication
                     foreach ($autoWireForcedCommand['arguments'] as $argument) {
                         $argument = substr($argument, 1);
                         $arguments[] = $this->container->get($argument);
-                    }
+                    } 
                 }
 
                 $command = $reflectionClass->newInstanceArgs($arguments);
