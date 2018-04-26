@@ -196,7 +196,7 @@ class Application extends BaseApplication
         }
     }
 
-    public function getData()
+    public function getData($filterNamespaces = null, $excludeNamespaces = [], $excludeChainCommands = false)
     {
         $singleCommands = [
             'about',
@@ -210,27 +210,43 @@ class Application extends BaseApplication
         ];
 
         $data = [];
-        foreach ($singleCommands as $singleCommand) {
-            $data['commands']['misc'][] = $this->commandData($singleCommand);
+
+        // Exclude misc if it is inside the $excludeNamespaces array.
+        if (!in_array('misc', $excludeNamespaces)) {
+            foreach ($singleCommands as $singleCommand) {
+                $data['commands']['misc'][] = $this->commandData($singleCommand);
+            }
         }
+
 
         $namespaces = array_filter(
             $this->getNamespaces(), function ($item) {
-                return (strpos($item, ':')<=0);
-            }
+            return (strpos($item, ':')<=0);
+        }
         );
         sort($namespaces);
         array_unshift($namespaces, 'misc');
+
+        // Exclude specific namespaces
+        $namespaces = array_diff($namespaces, $excludeNamespaces);
+
+        // filter namespaces if available
+        if($filterNamespaces) $namespaces = array_intersect($namespaces, $filterNamespaces);
 
         foreach ($namespaces as $namespace) {
             $commands = $this->all($namespace);
             usort(
                 $commands, function ($cmd1, $cmd2) {
-                    return strcmp($cmd1->getName(), $cmd2->getName());
-                }
+                return strcmp($cmd1->getName(), $cmd2->getName());
+            }
             );
 
             foreach ($commands as $command) {
+                // Exclude command if is a chain command and was requested to exclude chain commands
+                if($excludeChainCommands && $command instanceof ChainCustomCommand) {
+                    continue;
+                }
+
                 if (method_exists($command, 'getModule')) {
                     if ($command->getModule() == 'Console') {
                         $data['commands'][$namespace][] = $this->commandData(
@@ -244,6 +260,11 @@ class Application extends BaseApplication
                 }
             }
         }
+
+        // Remove namepsaces without commands
+        $namespaces = array_filter($namespaces, function($namespace) use( $data) {
+            return count($data['commands'][$namespace]) > 0;
+        });
 
         $input = $this->getDefinition();
         $options = [];
@@ -261,25 +282,27 @@ class Application extends BaseApplication
             ];
         }
 
-        $data['application'] = [
-            'namespaces' => $namespaces,
-            'options' => $options,
-            'arguments' => $arguments,
-            'messages' => [
-                'title' =>  $this->trans('commands.generate.doc.gitbook.messages.title'),
-                'note' =>  $this->trans('commands.generate.doc.gitbook.messages.note'),
-                'note_description' =>  $this->trans('commands.generate.doc.gitbook.messages.note-description'),
-                'command' =>  $this->trans('commands.generate.doc.gitbook.messages.command'),
-                'options' => $this->trans('commands.generate.doc.gitbook.messages.options'),
-                'option' => $this->trans('commands.generate.doc.gitbook.messages.option'),
-                'details' => $this->trans('commands.generate.doc.gitbook.messages.details'),
-                'arguments' => $this->trans('commands.generate.doc.gitbook.messages.arguments'),
-                'argument' => $this->trans('commands.generate.doc.gitbook.messages.argument'),
-                'examples' => $this->trans('commands.generate.doc.gitbook.messages.examples')
-            ],
-            'examples' => []
-        ];
-
+        // Exclude misc if it is inside the $excludeNamespaces array.
+        if (!in_array('misc', $excludeNamespaces)) {
+            $data['application'] = [
+                'namespaces' => $namespaces,
+                'options' => $options,
+                'arguments' => $arguments,
+                'messages' => [
+                    'title' =>  $this->trans('commands.generate.doc.gitbook.messages.title'),
+                    'note' =>  $this->trans('commands.generate.doc.gitbook.messages.note'),
+                    'note_description' =>  $this->trans('commands.generate.doc.gitbook.messages.note-description'),
+                    'command' =>  $this->trans('commands.generate.doc.gitbook.messages.command'),
+                    'options' => $this->trans('commands.generate.doc.gitbook.messages.options'),
+                    'option' => $this->trans('commands.generate.doc.gitbook.messages.option'),
+                    'details' => $this->trans('commands.generate.doc.gitbook.messages.details'),
+                    'arguments' => $this->trans('commands.generate.doc.gitbook.messages.arguments'),
+                    'argument' => $this->trans('commands.generate.doc.gitbook.messages.argument'),
+                    'examples' => $this->trans('commands.generate.doc.gitbook.messages.examples')
+                ],
+                'examples' => []
+            ];
+        }
         return $data;
     }
 
