@@ -6,6 +6,7 @@
  */
 namespace WP\Console\Core\Generator;
 
+use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\NestedArray;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
@@ -116,12 +117,6 @@ class InitGenerator extends Generator
         $userConfigFile = $homeDirectory . 'config.yml';
 
         if (!file_exists($userConfigFile)) {
-            $this->getIo()->error(
-                sprintf(
-                    $this->trans('commands.settings.set.messages.missing-file'),
-                    $userConfigFile
-                )
-            );
             return 1;
         }
 

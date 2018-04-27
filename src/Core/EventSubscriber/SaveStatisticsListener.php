@@ -47,9 +47,9 @@ class SaveStatisticsListener implements EventSubscriberInterface
     /**
      * SaveStatisticsListener constructor.
      *
-     * @param CountCodeLines             $countCodeLines
-     * @param ConfigurationManager       $configurationManager
-     * @param TranslatorManager $translator
+     * @param CountCodeLines       $countCodeLines
+     * @param ConfigurationManager $configurationManager
+     * @param TranslatorManager    $translator
      */
     public function __construct(
         CountCodeLines $countCodeLines,
@@ -72,10 +72,10 @@ class SaveStatisticsListener implements EventSubscriberInterface
             return;
         }
 
-        $globalConfig = $this->configurationManager->getConfigAsArray();
+        $configGlobalAsArray = $this->configurationManager->getConfigGlobalAsArray();
 
         //Validate if the config is enable.
-        if (is_null($globalConfig) || !$globalConfig['application']['share']['statistics']) {
+        if (is_null($configGlobalAsArray) || !$configGlobalAsArray['application']['share']['statistics']) {
             return;
         }
 
