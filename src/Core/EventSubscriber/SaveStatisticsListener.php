@@ -79,6 +79,11 @@ class SaveStatisticsListener implements EventSubscriberInterface
             return;
         }
 
+        //Validate if attempted is 10
+        if ($configGlobalAsArray['application']['statistics']['count-attempted'] >= 10) {
+            return;
+        }
+
         //Check that the namespace starts with 'WP\Console'.
         $class = new \ReflectionClass($event->getCommand());
         if (strpos($class->getNamespaceName(), "WP\Console") !== 0) {
@@ -104,7 +109,7 @@ class SaveStatisticsListener implements EventSubscriberInterface
 
 
         $this->fs->appendToFile(
-            $path .  date('Y-m-d') . '-pending.csv',
+            $path .  date('Y-m-d') . '.csv',
             $information . PHP_EOL
         );
     }

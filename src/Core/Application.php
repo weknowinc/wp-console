@@ -9,7 +9,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use WP\Console\Core\Command\Chain\ChainCustomCommand;
-use WP\Console\Core\EventSubscriber\CalculateStatisticsListener;
+use WP\Console\Core\EventSubscriber\SendStatisticsListener;
 use WP\Console\Core\EventSubscriber\CallCommandListener;
 use WP\Console\Core\EventSubscriber\SaveStatisticsListener;
 use WP\Console\Core\EventSubscriber\ShowGenerateChainListener;
@@ -175,7 +175,7 @@ class Application extends BaseApplication
             )
         );
         $dispatcher->addSubscriber(
-            new CalculateStatisticsListener(
+            new SendStatisticsListener(
                 $this->container->get('console.configuration_manager')
             )
         );
@@ -298,7 +298,7 @@ class Application extends BaseApplication
                     foreach ($autoWireForcedCommand['arguments'] as $argument) {
                         $argument = substr($argument, 1);
                         $arguments[] = $this->container->get($argument);
-                    } 
+                    }
                 }
 
                 $command = $reflectionClass->newInstanceArgs($arguments);

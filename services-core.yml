@@ -65,7 +65,7 @@ services:
   # WordpressConsoleCore Generators
   console.init_generator:
     class: WP\Console\Core\Generator\InitGenerator
-    arguments: ['@console.nested_array']
+    arguments: ['@console.nested_array', '@console.configuration_manager']
     tags:
       - { name: wordpress.generator }
 
