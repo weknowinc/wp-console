@@ -14,8 +14,8 @@ questions:
   statistics: 'Allow to collect and send this information to wordpressConsole server?'
 messages:
   statistics: |
-      Help us to improve the Wordpress Console project, allowing to provide information about how you use the application.
-      The information that will be collected would be
+      Help us improve the Wordpress Console project, providing information about how you use the application.
+      The information that would be collected
 
       - Language used
       - Command executed
@@ -25,4 +25,4 @@ messages:
   statistics-disable: |
       You can always disable the sending of information using the following command
 
-      wordpress settings:set share.statistics false
+      wordpress settings:set statistics.enabled false
