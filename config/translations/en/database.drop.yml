@@ -1,0 +1,12 @@
+description: "Drop the current database and remove wp-config.php."
+help: 'The <info>database:drop</info> command helps you drop database.'
+question:
+    drop-tables: 'Confirm you really want to drop the database "%s"?'
+messages:
+    database-drop: 'Drop "%s" database successfully'
+errors:
+    failed-database-drop:
+examples:
+    - description: 'Drop the tables on the database specified on the argument'
+      execution: |
+        wp-console database:drop
