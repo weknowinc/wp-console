@@ -23,6 +23,11 @@ services:
       arguments: ['@console.configuration_manager', '@console.nested_array']
       tags:
         - { name: wordpress.command }
+  console.database_create:
+    class: WP\Console\Command\Database\CreateCommand
+    arguments: ['@console.site', '@app.root']
+    tags:
+      - { name: wordpress.command }
   # Installer services
   console.chain_queue:
     class: WP\Console\Core\Utils\ChainQueue

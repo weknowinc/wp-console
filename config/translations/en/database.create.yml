@@ -1,0 +1,17 @@
+description: "Create a new database."
+help: 'The <info>database:create</info> command helps you create database.'
+arguments:
+    dbname: 'Name of new database'
+    dbuser: 'User to access mysql'
+    dbpassword: 'Password to access mysql'
+    dbhost: 'host to access mysql'
+question:
+    create-tables: 'Confirm you really want to create the database "%s"?'
+messages:
+    database-create: 'The database "%s" was created successfully'
+errors:
+    failed-database-drop:
+examples:
+    - description: 'Create a new database specified on the argument'
+      execution: |
+        wp-console database:create
