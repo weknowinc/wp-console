@@ -15,6 +15,7 @@ class Manager
      * @var Site
      */
     protected $site;
+
     /**
      * @var string
      */

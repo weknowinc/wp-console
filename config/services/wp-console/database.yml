@@ -1,0 +1,6 @@
+services:
+  console.database_drop:
+    class: WP\Console\Command\Database\DropCommand
+    arguments: ['@console.site', '@app.root']
+    tags:
+      - { name: wordpress.command }
