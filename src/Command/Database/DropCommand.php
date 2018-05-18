@@ -56,6 +56,11 @@ class DropCommand extends Command
             ->setName('database:drop')
             ->setDescription($this->trans('commands.database.drop.description'))
             ->setHelp($this->trans('commands.database.drop.help'))
+            ->addArgument(
+                'dbname',
+                InputArgument::OPTIONAL,
+                $this->trans('commands.database.create.arguments.dbname')
+            )
             ->setAliases(['dbd']);
     }
 
@@ -65,24 +70,17 @@ class DropCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
+        $dbname = $input->getArgument('dbname');
         $yes = $input->getOption('yes');
 
         $this->site->loadLegacyFile('wp-config.php');
         global $wpdb;
 
-        $command = sprintf(
-            'mysql --no-defaults --no-auto-rehash -u%s -p%s -h%s -e $"drop database %s"',
-            $wpdb->dbuser,
-            $wpdb->dbpassword,
-            $wpdb->dbhost,
-            $wpdb->dbname
-        );
-
         if (!$yes) {
             if (!$io->confirm(
                 sprintf(
                     $this->trans('commands.database.drop.question.drop-tables'),
-                    $wpdb->dbname
+                    is_null($dbname) ? $wpdb->dbname : $dbname
                 ),
                 true
             )
@@ -91,24 +89,21 @@ class DropCommand extends Command
             }
         }
 
-        try {
-            //Delete Database
-            $process = new Process($command);
-            $process->setWorkingDirectory('/usr/bin/env');
-            $process->setTimeout(null);
-            $process->run();
+        $result = false;
+        if(is_null($dbname)) {
+            foreach ( $wpdb->tables() as $table ) {
+                $result = $wpdb->query( "DROP TABLE {$table}" );
+            }
+
             $fs = new Filesystem();
             $configPath = sprintf('%s/wp-config.php', $this->appRoot);
             $fs->remove($configPath);
             $this->site->cacheFlush();
+        } else {
+            $result =  $wpdb->query( "DROP DATABASE {$dbname}" );
+        }
 
-            $io->success(
-                sprintf(
-                    $this->trans('commands.database.drop.messages.database-drop'),
-                    $wpdb->dbname
-                )
-            );
-        } catch (\Exception $exception) {
+        if(!$result) {
             $io->error(
                 sprintf(
                     $this->trans('commands.database.drop.errors.failed-database-drop'),
@@ -117,6 +112,14 @@ class DropCommand extends Command
             );
             return 1;
         }
+
+        $io->success(
+            sprintf(
+                $this->trans('commands.database.drop.messages.database-drop'),
+                is_null($dbname) ? $wpdb->dbname : $dbname
+            )
+        );
+
         return 0;
     }
 }

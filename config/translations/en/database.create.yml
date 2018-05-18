@@ -10,7 +10,8 @@ question:
 messages:
     database-create: 'The database "%s" was created successfully'
 errors:
-    failed-database-drop:
+    empty-wpdb: 'You must provide dbuser and dbpassword as argument'
+    failed-database-create: 'Failed to create the database "%s"'
 examples:
     - description: 'Create a new database specified on the argument'
       execution: |
