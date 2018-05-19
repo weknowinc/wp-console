@@ -90,9 +90,22 @@ class DropCommand extends Command
         }
 
         $result = false;
-        if(is_null($dbname)) {
-            foreach ( $wpdb->tables() as $table ) {
-                $result = $wpdb->query( "DROP TABLE {$table}" );
+        if (is_null($dbname)) {
+            $table = $wpdb->get_results("show tables");
+            foreach ($table as $value) {
+                foreach ((array) $value as $table) {
+                    $result = $wpdb->query("DROP TABLE {$table}");
+
+                    if (!$result) {
+                        $io->error(
+                            sprintf(
+                                $this->trans('commands.database.drop.errors.failed-database-drop'),
+                                $wpdb->dbname
+                            )
+                        );
+                        return 1;
+                    }
+                }
             }
 
             $fs = new Filesystem();
@@ -100,10 +113,10 @@ class DropCommand extends Command
             $fs->remove($configPath);
             $this->site->cacheFlush();
         } else {
-            $result =  $wpdb->query( "DROP DATABASE {$dbname}" );
+            $result =  $wpdb->query("DROP DATABASE {$dbname}");
         }
 
-        if(!$result) {
+        if (!$result) {
             $io->error(
                 sprintf(
                     $this->trans('commands.database.drop.errors.failed-database-drop'),
