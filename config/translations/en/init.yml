@@ -15,7 +15,7 @@ questions:
 messages:
   statistics: |
       Help us improve the Wordpress Console project, providing information about how you use the application.
-      The information that would be collected
+      The colleted information at "%s", would be:
 
       - Language used
       - Command executed

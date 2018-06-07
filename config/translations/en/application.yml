@@ -46,6 +46,11 @@ messages:
         extra: 'You must execute: "%s" instead'
 errors:
     invalid-command: 'Command "%s", is not a valid command name.'
+    statistics-failed: |
+      The Wordpress console failed to send statistics. After 10 attempts, this feature was disabled.
+      If you want to enable it again, use the following command:
+
+      wp-console settings:set statistics.enabled true
 site:
     messages:
         path: 'Site path'
