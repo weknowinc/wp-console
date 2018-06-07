@@ -16,7 +16,6 @@ use WP\Console\Command\Shared\TaxonomyPostTypeTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\PostTypeGenerator;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 
@@ -203,10 +202,8 @@ class PostTypeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -258,21 +255,19 @@ class PostTypeCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $stringUtils = $this->stringConverter;
 
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.post.type.questions.class-name'),
                 $stringUtils->humanToCamelCase($plugin).'PostType',
                 function ($class) {
@@ -285,7 +280,7 @@ class PostTypeCommand extends Command
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.post.type.questions.function-name'),
                 $stringUtils->camelCaseToUnderscore($class_name),
                 function ($function_name) {
@@ -298,7 +293,7 @@ class PostTypeCommand extends Command
         // --post type key
         $post_type_key = $input->getOption('post-type-key');
         if (!$post_type_key) {
-            $post_type_key = $io->ask(
+            $post_type_key = $this->getIo()->ask(
                 $this->trans('commands.generate.post.type.questions.post-type-key')
             );
             $post_type_key = $stringUtils->humanToCamelCase($post_type_key);
@@ -308,7 +303,7 @@ class PostTypeCommand extends Command
         // --description
         $description = $input->getOption('description');
         if (!$description) {
-            $description = $io->ask(
+            $description = $this->getIo()->ask(
                 $this->trans('commands.generate.post.type.questions.description'),
                 'Post Type Description'
             );
@@ -318,7 +313,7 @@ class PostTypeCommand extends Command
         // --singular name
         $singular_name = $input->getOption('singular-name');
         if (!$singular_name) {
-            $singular_name = $io->ask(
+            $singular_name = $this->getIo()->ask(
                 $this->trans('commands.generate.post.type.questions.singular-name'),
                 'post type'
             );
@@ -328,7 +323,7 @@ class PostTypeCommand extends Command
         // --plural name
         $plural_name = $input->getOption('plural-name');
         if (!$plural_name) {
-            $plural_name = $io->ask(
+            $plural_name = $this->getIo()->ask(
                 $this->trans('commands.generate.post.type.questions.plural-name'),
                 'post types'
             );
@@ -338,7 +333,7 @@ class PostTypeCommand extends Command
         // --taxonomy
         /*       $post_type = $input->getOption('post-type');
             if (!$post_type) {
-                $post_type = $io->ask(
+                $post_type = $this->getIo()->ask(
                     $this->trans('commands.generate.post.type.questions.post-type'),
                     ['post', 'page']
                 );
@@ -348,7 +343,7 @@ class PostTypeCommand extends Command
         // --hierarchical
         $hierarchical = $input->getOption('hierarchical');
         if (!$hierarchical) {
-            $hierarchical = $io->confirm(
+            $hierarchical = $this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.hierarchical'),
                 true
             );
@@ -358,7 +353,7 @@ class PostTypeCommand extends Command
         // --exclude from search
         $exclude_from_search = $input->getOption('exclude-from-search');
         if (!$exclude_from_search) {
-            $exclude_from_search = $io->confirm(
+            $exclude_from_search = $this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.exclude-from-search'),
                 false
             );
@@ -368,7 +363,7 @@ class PostTypeCommand extends Command
         // --enable export
         $enable_export = $input->getOption('enable-export');
         if (!$enable_export) {
-            $enable_export = $io->confirm(
+            $enable_export = $this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.enable-export'),
                 false
             );
@@ -378,12 +373,12 @@ class PostTypeCommand extends Command
         // --enable archives
         $enable_archives = $input->getOption('enable-archives');
         if (!$enable_archives) {
-            $enable_archives = $io->choice(
+            $enable_archives = $this->getIo()->choice(
                 $this->trans('commands.generate.post.type.questions.enable-archives'),
                 ['true', 'false', 'Custom']
             );
             if ($enable_archives == 'Custom') {
-                $enable_archives = $io->ask($this->trans('commands.generate.post.type.questions.enable-archives-custom'));
+                $enable_archives = $this->getIo()->ask($this->trans('commands.generate.post.type.questions.enable-archives-custom'));
             }
 
             $input->setOption('enable-archives', $enable_archives);
@@ -392,7 +387,7 @@ class PostTypeCommand extends Command
         // --labels
         $labels = $input->getOption('labels');
         if (!$labels) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.labels'),
                 false
             )
@@ -405,7 +400,7 @@ class PostTypeCommand extends Command
                     'items_list_navigation', 'filter_items_list'
                 );
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::labelsQuestion
-                $labels = $this->labelsQuestion($io, $labels_options, 'post.type');
+                $labels = $this->labelsQuestion($labels_options, 'post.type');
                 $input->setOption('labels', $labels);
             }
         }
@@ -413,7 +408,7 @@ class PostTypeCommand extends Command
         // --supports
         $supports = $input->getOption('supports');
         if (!$supports) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.supports'),
                 false
             )
@@ -422,7 +417,7 @@ class PostTypeCommand extends Command
                     'trackbacks', 'revisions', 'custom-fields', 'page-attributes', 'post-formats' ];
 
                 foreach ($supports_labels as $label) {
-                    if ($io->confirm(
+                    if ($this->getIo()->confirm(
                         $this->trans('commands.generate.post.type.questions.supports-edit'). $label,
                         false
                     )
@@ -438,7 +433,7 @@ class PostTypeCommand extends Command
         // --visibility
         $visibility = $input->getOption('visibility');
         if (!$visibility) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.visibility'),
                 false
             )
@@ -452,7 +447,7 @@ class PostTypeCommand extends Command
                     'show_in_nav_menus' => true
                 ];
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::visibilityQuestion
-                $visibility = $this->visibilityQuestion($io, $visibility_labels, 'post.type');
+                $visibility = $this->visibilityQuestion($visibility_labels, 'post.type');
             }
 
             $input->setOption('visibility', $visibility);
@@ -462,7 +457,7 @@ class PostTypeCommand extends Command
         $options_permalinks= ['default', 'custom', 'no permalinks'];
         $permalinks = $input->getOption('permalinks');
         if (!$permalinks) {
-            if ($io->choice(
+            if ($this->getIo()->choice(
                 $this->trans('commands.generate.post.type.questions.permalinks'),
                 $options_permalinks
             ) == 'custom'
@@ -470,7 +465,7 @@ class PostTypeCommand extends Command
                 $permalinks_labels = [ 'slug', 'with_front', 'pages', 'feeds' ];
 
                 // @see \WP\Console\Command\Shared\TaxonomyTrait::permalinksQuestion
-                $permalinks = $this->permalinksQuestion($io, $permalinks_labels, 'post.type');
+                $permalinks = $this->permalinksQuestion($permalinks_labels, 'post.type');
                 $input->setOption('permalinks', $permalinks);
             }
         }
@@ -478,7 +473,7 @@ class PostTypeCommand extends Command
         // --capabilities
         $capabilities = $input->getOption('capabilities');
         if (!$capabilities) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.capabilities'),
                 false
             )
@@ -487,9 +482,9 @@ class PostTypeCommand extends Command
                     'publish_posts', 'read_private_posts'];
 
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::capabilitiesQuestion
-                $capabilities = $this->capabilitiesQuestion($io, $capabilities_labels, 'post.type');
+                $capabilities = $this->capabilitiesQuestion($capabilities_labels, 'post.type');
             } else {
-                $capabilities = $io->choice(
+                $capabilities = $this->getIo()->choice(
                     $this->trans('commands.generate.post.type.questions.capabilities-options').'capabilities',
                     ['page', 'post']
                 );
@@ -500,13 +495,13 @@ class PostTypeCommand extends Command
         // --rest
         $rest = $input->getOption('rest');
         if (!$rest) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.rest'),
                 false
             )
             ) {
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::restQuestion
-                $rest = $this->restQuestion($io, 'Post', $input->getOption('post-type-key'), 'post.type');
+                $rest = $this->restQuestion('Post', $input->getOption('post-type-key'), 'post.type');
                 $input->setOption('rest', $rest);
             }
         }
@@ -514,7 +509,7 @@ class PostTypeCommand extends Command
         // --child themes
         $child_themes = $input->getOption('child-themes');
         if (!$child_themes) {
-            $child_themes = $io->confirm(
+            $child_themes = $this->getIo()->confirm(
                 $this->trans('commands.generate.post.type.questions.child-themes'),
                 false
             );

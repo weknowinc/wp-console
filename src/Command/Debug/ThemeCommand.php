@@ -11,13 +11,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Extension\Manager;
 
 class ThemeCommand extends Command
 {
-
     /**
      * @var Manager
      */
@@ -60,8 +58,6 @@ class ThemeCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        
         $status = $input->getOption('status');
         
         $tableHeader = [
@@ -99,6 +95,6 @@ class ThemeCommand extends Command
             ];
         }
         
-        $io->table($tableHeader, $tableRows, 'compact');
+        $this->getIo()->table($tableHeader, $tableRows, 'compact');
     }
 }

@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Generator\PluginGenerator;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\Site;
@@ -160,11 +159,8 @@ class PluginCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
-
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -210,8 +206,6 @@ class PluginCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $validator = $this->validator;
 
         try {
@@ -220,13 +214,13 @@ class PluginCommand extends Command
                     $input->getOption('plugin')
                 ) : null;
         } catch (\Exception $error) {
-            $io->error($error->getMessage());
+            $this->getIo()->error($error->getMessage());
 
             return;
         }
 
         if (!$plugin) {
-            $plugin = $io->ask(
+            $plugin = $this->getIo()->ask(
                 $this->trans('commands.generate.plugin.questions.plugin'),
                 null,
                 function ($plugin) use ($validator) {
@@ -242,11 +236,11 @@ class PluginCommand extends Command
                     $input->getOption('machine-name')
                 ) : null;
         } catch (\Exception $error) {
-            $io->error($error->getMessage());
+            $this->getIo()->error($error->getMessage());
         }
 
         if (!$machineName) {
-            $machineName = $io->ask(
+            $machineName = $this->getIo()->ask(
                 $this->trans('commands.generate.plugin.questions.machine-name'),
                 $this->stringConverter->createMachineName($plugin),
                 function ($machine_name) use ($validator) {
@@ -258,7 +252,7 @@ class PluginCommand extends Command
 
         $pluginPath = $input->getOption('plugin-path');
         if (!$pluginPath) {
-            $pluginPath = $io->ask(
+            $pluginPath = $this->getIo()->ask(
                 $this->trans('commands.generate.plugin.questions.plugin-path'),
                 basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'plugins',
                 function ($pluginPath) use ($machineName) {
@@ -281,7 +275,7 @@ class PluginCommand extends Command
 
         $description = $input->getOption('description');
         if (!$description) {
-            $description = $io->ask(
+            $description = $this->getIo()->ask(
                 $this->trans('commands.generate.plugin.questions.description'),
                 'My Awesome Plugin'
             );
@@ -290,7 +284,7 @@ class PluginCommand extends Command
 
         $author = $input->getOption('author');
         if (!$author) {
-            $author = $io->ask(
+            $author = $this->getIo()->ask(
                 $this->trans('commands.generate.plugin.questions.author'),
                 ''
             );
@@ -299,7 +293,7 @@ class PluginCommand extends Command
 
         $authorUrl = $input->getOption('author-url');
         if (!$authorUrl) {
-            $authorUrl = $io->ask(
+            $authorUrl = $this->getIo()->ask(
                 $this->trans('commands.generate.plugin.questions.author-url'),
                 ''
             );
@@ -309,7 +303,7 @@ class PluginCommand extends Command
 
         $activate = $input->getOption('activate');
         if (!$activate) {
-            $activate = $io->confirm(
+            $activate = $this->getIo()->confirm(
                 $this->trans('commands.generate.plugin.questions.activate'),
                 true
             );
@@ -318,7 +312,7 @@ class PluginCommand extends Command
 
         $deactivate = $input->getOption('deactivate');
         if (!$deactivate) {
-            $deactivate = $io->confirm(
+            $deactivate = $this->getIo()->confirm(
                 $this->trans('commands.generate.plugin.questions.deactivate'),
                 true
             );
@@ -327,7 +321,7 @@ class PluginCommand extends Command
 
         $uninstall = $input->getOption('uninstall');
         if (!$uninstall) {
-            $uninstall = $io->confirm(
+            $uninstall = $this->getIo()->confirm(
                 $this->trans('commands.generate.plugin.questions.uninstall'),
                 true
             );

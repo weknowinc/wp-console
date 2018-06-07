@@ -17,7 +17,6 @@ use WP\Console\Core\Command\ContainerAwareCommand;
 use WP\Console\Generator\CommandGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 
 class CommandCommand extends ContainerAwareCommand
@@ -108,8 +107,6 @@ class CommandCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getOption('plugin');
         $pluginNameSpace = $this->stringConverter->humanToCamelCase($plugin);
         $pluginCamelCaseMachineName = $this->stringConverter->createMachineName($this->stringConverter->humanToCamelCase($plugin));
@@ -119,8 +116,8 @@ class CommandCommand extends ContainerAwareCommand
         $services = $input->getOption('services');
         $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -142,18 +139,16 @@ class CommandCommand extends ContainerAwareCommand
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         $class = $input->getOption('class');
         if (!$class) {
-            $class = $io->ask(
+            $class = $this->getIo()->ask(
                 $this->trans('commands.generate.command.questions.class'),
                 'DefaultCommand',
                 function ($class) {
@@ -168,7 +163,7 @@ class CommandCommand extends ContainerAwareCommand
 
         $name = $input->getOption('name');
         if (!$name) {
-            $name = $io->ask(
+            $name = $this->getIo()->ask(
                 $this->trans('commands.generate.command.questions.name'),
                 sprintf(
                     '%s:default',
@@ -182,7 +177,7 @@ class CommandCommand extends ContainerAwareCommand
 
         $services = $input->getOption('services');
         if (empty($services)) {
-            $services = $this->servicesQuestion($io);
+            $services = $this->servicesQuestion();
             $input->setOption('services', $services);
         }
     }

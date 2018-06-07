@@ -7,7 +7,6 @@
 
 namespace WP\Console\Command\Shared;
 
-use WP\Console\Core\Style\WPStyle;
 use Symfony\Component\Console\Question\Question;
 
 /**
@@ -18,73 +17,61 @@ use Symfony\Component\Console\Question\Question;
 trait DatabaseTrait
 {
     /**
-     * @param WPStyle $io
-     *
      * @return mixed
      */
-    public function dbHostQuestion(WPStyle $io)
+    public function dbHostQuestion()
     {
-        return $io->ask(
+        return $this->getIo()->ask(
             $this->trans('commands.site.install.questions.db-host'),
             '127.0.0.1'
         );
     }
 
     /**
-     * @param WPStyle $io
-     *
      * @return mixed
      */
-    public function dbNameQuestion(WPStyle $io)
+    public function dbNameQuestion()
     {
-        return $io->ask(
+        return $this->getIo()->ask(
             $this->trans('commands.site.install.questions.db-name')
         );
     }
 
     /**
-     * @param WPStyle $io
-     *
      * @return mixed
      */
-    public function dbUserQuestion(WPStyle $io)
+    public function dbUserQuestion()
     {
-        return $io->ask(
+        return $this->getIo()->ask(
             $this->trans('commands.site.install.questions.db-user')
         );
     }
 
     /**
-     * @param WPStyle $io
-     *
      * @return mixed
      */
-    public function dbPassQuestion(WPStyle $io)
+    public function dbPassQuestion()
     {
-        return $io->askHiddenEmpty(
+        return $this->getIo()->askHiddenEmpty(
             $this->trans('commands.site.install.questions.db-pass')
         );
     }
 
     /**
-     * @param WPStyle $io
-     *
      * @return mixed
      */
-    public function dbPrefixQuestion(WPStyle $io)
+    public function dbPrefixQuestion()
     {
         $question = new Question($this->trans('commands.site.install.questions.db-prefix'), 'wp_');
-        return trim($io->askQuestion($question));
+        return trim($this->getIo()->askQuestion($question));
     }
 
     /**
-     * @param WPStyle $io
-     *
      * @return mixed
      */
-    public function dbPortQuestion(WPStyle $io)
+    public function dbPortQuestion()
     {
-        return $io->ask(
+        return $this->getIo()->ask(
             $this->trans('commands.site.install.questions.db-port'),
             '3306'
         );

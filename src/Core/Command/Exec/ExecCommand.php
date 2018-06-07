@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\ShellProcess;
 
 /**
@@ -65,12 +64,11 @@ class ExecCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $bin = $input->getArgument('bin');
         $workingDirectory = $input->getOption('working-directory');
 
         if (!$bin) {
-            $io->error(
+            $this->getIo()->error(
                 $this->trans('commands.exec.messages.missing-bin')
             );
 
@@ -84,7 +82,7 @@ class ExecCommand extends Command
 
         $finder = new ExecutableFinder();
         if (!$finder->find($name)) {
-            $io->error(
+            $this->getIo()->error(
                 sprintf(
                     $this->trans('commands.exec.messages.binary-not-found'),
                     $name
@@ -95,18 +93,18 @@ class ExecCommand extends Command
         }
 
         if (!$this->shellProcess->exec($bin, $workingDirectory)) {
-            $io->error(
+            $this->getIo()->error(
                 sprintf(
                     $this->trans('commands.exec.messages.invalid-bin')
                 )
             );
 
-            $io->writeln($this->shellProcess->getOutput());
+            $this->getIo()->writeln($this->shellProcess->getOutput());
 
             return 1;
         }
 
-        $io->success(
+        $this->getIo()->success(
             sprintf(
                 $this->trans('commands.exec.messages.success'),
                 $bin

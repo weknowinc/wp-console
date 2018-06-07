@@ -193,4 +193,12 @@ class WPStyle extends SymfonyStyle
         $message = sprintf('// %s', $message);
         parent::text($message);
     }
+
+    /**
+     * @return InputInterface
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
 }

@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
 use WP\Console\Core\Utils\ChainDiscovery;
-use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class ChainDebugCommand
@@ -55,12 +54,11 @@ class ChainCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $files = $this->chainDiscovery->getChainFiles();
 
         foreach ($files as $directory => $chainFiles) {
-            $io->info($this->trans('commands.debug.chain.messages.directory'), false);
-            $io->comment($directory);
+            $this->getIo()->info($this->trans('commands.debug.chain.messages.directory'), false);
+            $this->getIo()->comment($directory);
 
             $tableHeader = [
                 $this->trans('commands.debug.chain.messages.file')
@@ -71,7 +69,7 @@ class ChainCommand extends Command
                 $tableRows[] = $file;
             }
 
-            $io->table($tableHeader, $tableRows);
+            $this->getIo()->table($tableHeader, $tableRows);
         }
 
         return 0;

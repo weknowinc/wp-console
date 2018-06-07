@@ -16,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
 use WP\Console\Utils\WordpressApi;
 use WP\Console\Command\Shared\ConfirmationTrait;
-use WP\Console\Core\Style\WPStyle;
 
 class NewCommand extends Command
 {
@@ -95,8 +94,6 @@ class NewCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $rolename = $input->getArgument('rolename');
         $machine_name= $input->getArgument('machine-name');
         $capabilities= $input->getOption('capabilities');
@@ -113,20 +110,20 @@ class NewCommand extends Command
         ];
 
         if ($role['success']) {
-            $io->success(
+            $this->getIo()->success(
                 sprintf(
                     $this->trans('commands.role.new.messages.role-created'),
                     $role['success'][0]['role-name']
                 )
             );
 
-            $io->table($tableHeader, $role['success']);
+            $this->getIo()->table($tableHeader, $role['success']);
 
             return 0;
         }
 
         if ($role['error']) {
-            $io->error($role['error']['error']);
+            $this->getIo()->error($role['error']['error']);
 
             return 1;
         }
@@ -137,17 +134,15 @@ class NewCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $name = $input->getArgument('rolename');
         if (!$name) {
-            $name = $io->ask($this->trans('commands.role.new.questions.rolename'));
+            $name = $this->getIo()->ask($this->trans('commands.role.new.questions.rolename'));
             $input->setArgument('rolename', $name);
         }
 
         $machine_name = $input->getArgument('machine-name');
         if (!$machine_name) {
-            $machine_name = $io->ask(
+            $machine_name = $this->getIo()->ask(
                 $this->trans('commands.role.new.questions.machine-name'),
                 $this->stringConverter->createMachineName($name),
                 function ($machine_name) {
@@ -171,7 +166,7 @@ class NewCommand extends Command
                 $this->trans('commands.role.new.messages.capabilities-menu.showAll'),
                 ];
 
-            $menu = $io->choice(
+            $menu = $this->getIo()->choice(
                 $this->trans('commands.role.new.questions.capabilities'),
                 $menu_options
             );
@@ -179,17 +174,17 @@ class NewCommand extends Command
             $capabilities_collection = [];
 
             if (array_search($menu, $menu_options) == 0) {
-                $choice_role = $io->choice(
+                $choice_role = $this->getIo()->choice(
                     $this->trans('commands.role.new.questions.capabilities'),
                     $roles
                 );
 
                 $capabilities_collection = $this->wordpressApi->getCapabilities($choice_role);
             } else {
-                $io->writeln($this->trans('commands.common.questions.capabilities.message'));
+                $this->getIo()->writeln($this->trans('commands.common.questions.capabilities.message'));
                 $capabilities = $this->wordpressApi->getCapabilities();
                 while (true) {
-                    $capability = $io->choiceNoList(
+                    $capability = $this->getIo()->choiceNoList(
                         $this->trans('commands.common.questions.capabilities.name'),
                         $capabilities,
                         null,

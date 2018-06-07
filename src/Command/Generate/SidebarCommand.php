@@ -16,7 +16,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Generator\SidebarGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Utils\Validator;
 
@@ -116,16 +115,13 @@ class SidebarCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $theme = $input->getOption('theme');
         $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $sidebar_items = $input->getOption('sidebar-items');
         $child_themes = $input->getOption('child-themes');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -143,19 +139,17 @@ class SidebarCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --theme
         $theme = $input->getOption('theme');
         if (!$theme) {
-            $theme = $this->themeQuestion($io);
+            $theme = $this->themeQuestion();
             $input->setOption('theme', $theme);
         }
 
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.sidebar.questions.function-name'),
                 'custom_sidebar',
                 function ($function_name) {
@@ -171,7 +165,7 @@ class SidebarCommand extends Command
             $array_sidebar_items = [];
             $stringConverter = $this->stringConverter;
             while (true) {
-                $id = $io->ask(
+                $id = $this->getIo()->ask(
                     $this->trans('commands.generate.sidebar.questions.sidebar-items.id'),
                     str_replace("_", "-", $function_name),
                     function ($id) use ($stringConverter) {
@@ -180,7 +174,7 @@ class SidebarCommand extends Command
                     }
                 );
 
-                $class = $io->ask(
+                $class = $this->getIo()->ask(
                     $this->trans('commands.generate.sidebar.questions.sidebar-items.class'),
                     $function_name,
                     function ($class) use ($stringConverter) {
@@ -189,12 +183,12 @@ class SidebarCommand extends Command
                     }
                 );
 
-                $name = $io->ask(
+                $name = $this->getIo()->ask(
                     $this->trans('commands.generate.sidebar.questions.sidebar-items.name'),
                     'default sidebar'
                 );
 
-                $description = $io->ask(
+                $description = $this->getIo()->ask(
                     $this->trans('commands.generate.sidebar.questions.sidebar-items.description'),
                     'My first Sidebar'
                 );
@@ -209,7 +203,7 @@ class SidebarCommand extends Command
                     ]
                 );
 
-                if (!$io->confirm(
+                if (!$this->getIo()->confirm(
                     $this->trans('commands.generate.sidebar.questions.sidebar-items.sidebar-add-another'),
                     true
                 )
@@ -223,7 +217,7 @@ class SidebarCommand extends Command
         // --child themes
         $child_themes = $input->getOption('child-themes');
         if (!$child_themes) {
-            $child_themes = $io->confirm(
+            $child_themes = $this->getIo()->confirm(
                 $this->trans('commands.generate.sidebar.questions.child-themes'),
                 false
             );

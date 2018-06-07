@@ -7,8 +7,6 @@
 
 namespace WP\Console\Command\Shared;
 
-use WP\Console\Core\Style\WPStyle;
-
 /**
  * Class PluginTrait
  *
@@ -17,12 +15,11 @@ use WP\Console\Core\Style\WPStyle;
 trait ThemeTrait
 {
     /**
-     * @param \WP\Console\Core\Style\WPStyle $io
-     * @param string                         $status
+     * @param string $status
      * @return string
      * @throws \Exception
      */
-    public function themeQuestion(WPStyle $io, $status = 'all')
+    public function themeQuestion($status = 'all')
     {
         $extensionManager = $this->extensionManager->discoverthemes();
 
@@ -40,7 +37,7 @@ trait ThemeTrait
             throw new \Exception('No extension available, execute the proper generator command to generate one.');
         }
 
-        $theme = $io->choiceNoList(
+        $theme = $this->getIo()->choiceNoList(
             $this->trans('commands.common.questions.theme'),
             $themes
         );

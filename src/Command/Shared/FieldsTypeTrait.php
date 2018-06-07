@@ -7,8 +7,6 @@
 
 namespace WP\Console\Command\Shared;
 
-use WP\Console\Core\Style\WPStyle;
-
 /**
  * Class FieldsTypeTrait
  *
@@ -16,8 +14,7 @@ use WP\Console\Core\Style\WPStyle;
  */
 trait FieldsTypeTrait
 {
-
-    public function fieldsQuestion(WPStyle $io, $command, $optionName, $sections = null)
+    public function fieldsQuestion($command, $optionName, $sections = null)
     {
         $stringConverter = $this->stringConverter;
 
@@ -26,23 +23,23 @@ trait FieldsTypeTrait
             'tel', 'color', 'oEmbed', 'file', 'image', 'month', 'search', 'submit', 'time', 'week'];
         $count = 0;
         while (true) {
-            $type = $io->choiceNoList(
+            $type = $this->getIo()->choiceNoList(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.type'),
                 $fields_options,
-                NULL,
-                TRUE
+                null,
+                true
             );
 
             if (empty($type)) {
                 break;
             }
 
-            $label = $io->ask(
+            $label = $this->getIo()->ask(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.label'),
                 null
             );
 
-            $id = $io->ask(
+            $id = $this->getIo()->ask(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.id'),
                 $this->stringConverter->createMachineName($label),
                 function ($id) use ($stringConverter) {
@@ -50,7 +47,7 @@ trait FieldsTypeTrait
                 }
             );
 
-            $description = $io->askEmpty(
+            $description = $this->getIo()->askEmpty(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.description')
             );
 
@@ -65,11 +62,11 @@ trait FieldsTypeTrait
             );
 
             if ($type != 'select' && $type != 'radio' && $type != 'checkbox') {
-                $placeholder = $io->askEmpty(
+                $placeholder = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.placeholder')
                 );
 
-                $default_value = $io->askEmpty(
+                $default_value = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.default-value')
                 );
 
@@ -78,25 +75,25 @@ trait FieldsTypeTrait
             }
 
             if ($type == 'select' || $type == 'radio') {
-                $fields[$count]['multi_selection'] =  $this->multiSelection($io, $type, $command, $optionName);
+                $fields[$count]['multi_selection'] =  $this->multiSelection($type, $command, $optionName);
             }
 
             if ($type == 'image') {
-                $src = $io->ask(
+                $src = $this->getIo()->ask(
                     $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.src')
                 );
                 $fields[$count]['src_image'] =  $src;
             }
 
             if ($command == 'settings.page') {
-                $section_id = $io->choice(
+                $section_id = $this->getIo()->choice(
                     $this->trans('commands.generate.settings.page.questions.fields.section-id'),
                     array_values($sections)
                 );
                 $fields[$count]['section_id'] = array_search($section_id, $sections);
             }
 
-            if (!$io->confirm(
+            if (!$this->getIo()->confirm(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.'.$optionName.'-add-another'),
                 false
             )
@@ -109,17 +106,17 @@ trait FieldsTypeTrait
         return $fields;
     }
 
-    private function multiSelection(WPStyle $io, $type, $command, $optionName)
+    private function multiSelection($type, $command, $optionName)
     {
         $multiple_options = [];
         while (true) {
-            $multiple_options_label = $io->ask(
+            $multiple_options_label = $this->getIo()->ask(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.multiple-label').$type,
                 ''
             );
 
 
-            $multiple_options_value = $io->ask(
+            $multiple_options_value = $this->getIo()->ask(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.multiple-value').$type,
                 ''
             );
@@ -131,7 +128,7 @@ trait FieldsTypeTrait
                     'value' => $multiple_options_value
                 ]
             );
-            if (!$io->confirm(
+            if (!$this->getIo()->confirm(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.multiple-options-add').$type,
                 false
             )

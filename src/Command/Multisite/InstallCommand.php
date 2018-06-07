@@ -17,7 +17,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Core\Utils\ArgvInputReader;
 use WP\Console\Core\Generator\SiteInstallGenerator;
 use WP\Console\Core\Utils\ConfigurationManager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Command\Shared\DatabaseTrait;
 use WP\Console\Core\Utils\ChainQueue;
@@ -199,7 +198,6 @@ class InstallCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $argvInputReader = new ArgvInputReader();
 
         if (!$this->site->isInstalled()) {
@@ -207,7 +205,7 @@ class InstallCommand extends Command
             $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_HOST);
             $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_SCHEME);
             if ($uri == 'default') {
-                $siteUri = $io->ask(
+                $siteUri = $this->getIo()->ask(
                     $this->trans('commands.site.install.questions.site-url'),
                     'http://wordpress.local'
                 );
@@ -228,7 +226,7 @@ class InstallCommand extends Command
                     ->getConfiguration()
                     ->get('application.language');
 
-                $langcode = $io->choiceNoList(
+                $langcode = $this->getIo()->choiceNoList(
                     $this->trans('commands.site.install.questions.langcode'),
                     array_values($languages),
                     $languages[$defaultLanguage]
@@ -240,35 +238,35 @@ class InstallCommand extends Command
             // --db-host option
             /*$dbHost = $input->getOption('db-host');
             if (!$dbHost) {
-                $dbHost = $this->dbHostQuestion($io);
+                $dbHost = $this->dbHostQuestion($this->getIo());
                 $input->setOption('db-host', $dbHost);
             }*/
 
             // --db-name option
             $dbName = $input->getOption('db-name');
             if (!$dbName) {
-                $dbName = $this->dbNameQuestion($io);
+                $dbName = $this->dbNameQuestion();
                 $input->setOption('db-name', $dbName);
             }
 
             // --db-user option
             $dbUser = $input->getOption('db-user');
             if (!$dbUser) {
-                $dbUser = $this->dbUserQuestion($io);
+                $dbUser = $this->dbUserQuestion();
                 $input->setOption('db-user', $dbUser);
             }
 
             // --db-pass option
             $dbPass = $input->getOption('db-pass');
             if (!$dbPass) {
-                $dbPass = $this->dbPassQuestion($io);
+                $dbPass = $this->dbPassQuestion();
                 $input->setOption('db-pass', $dbPass);
             }
 
             // --db-port option
             /*$dbPort = $input->getOption('db-port');
             if (!$dbPort) {
-                $dbPort = $this->dbPortQuestion($io);
+                $dbPort = $this->dbPortQuestion();
                 $input->setOption('db-port', $dbPort);
             }*/
 
@@ -276,14 +274,14 @@ class InstallCommand extends Command
             // --db-prefix option
             $dbPrefix = $input->getOption('db-prefix');
             if (!$dbPrefix) {
-                $dbPrefix = $this->dbPrefixQuestion($io);
+                $dbPrefix = $this->dbPrefixQuestion();
                 $input->setOption('db-prefix', $dbPrefix);
             }
 
             // --site-name option
             $siteName = $input->getOption('site-name');
             if (!$siteName) {
-                $siteName = $io->ask(
+                $siteName = $this->getIo()->ask(
                     $this->trans('commands.site.install.questions.site-name'),
                     'Wordpress'
                 );
@@ -293,7 +291,7 @@ class InstallCommand extends Command
             // --account-name option
             $accountName = $input->getOption('account-name');
             if (!$accountName) {
-                $accountName = $io->ask(
+                $accountName = $this->getIo()->ask(
                     $this->trans('commands.site.install.questions.account-name'),
                     'admin'
                 );
@@ -303,7 +301,7 @@ class InstallCommand extends Command
             // --account-mail option
             $accountMail = $input->getOption('account-mail');
             if (!$accountMail) {
-                $accountMail = $io->ask(
+                $accountMail = $this->getIo()->ask(
                     $this->trans('commands.site.install.questions.account-mail'),
                     'admin@example.com'
                 );
@@ -313,18 +311,18 @@ class InstallCommand extends Command
             // --account-pass option
             $accountPass = $input->getOption('account-pass');
             if (!$accountPass) {
-                $accountPass = $io->askHidden(
+                $accountPass = $this->getIo()->askHidden(
                     $this->trans('commands.site.install.questions.account-pass')
                 );
                 $input->setOption('account-pass', $accountPass);
             }
 
-            $this->interactiveMultisiteQuestions($input, $io);
+            $this->interactiveMultisiteQuestions($input);
         } elseif (!$this->site->isMultisite()) {
-            $this->interactiveMultisiteQuestions($input, $io);
+            $this->interactiveMultisiteQuestions($input);
         } else {
             print 'here';
-            $io->info(
+            $this->getIo()->info(
                 $this->trans('commands.site.install.messages.already-multisite')
             );
             exit();
@@ -338,8 +336,6 @@ class InstallCommand extends Command
     {
         global $wpdb;
 
-        $io = new WPStyle($input, $output);
-
         $force = $input->getOption('force');
 
 
@@ -352,7 +348,7 @@ class InstallCommand extends Command
             $this->site->setSiteURL($scheme, $uri);
 
             if ($this->site->getConfig()) {
-                $io->error(
+                $this->getIo()->error(
                     sprintf($this->trans('commands.site.install.messages.already-installed'), $uri, $uri)
                 );
                 exit(1);
@@ -388,9 +384,9 @@ class InstallCommand extends Command
             ];
 
             $siteInstallInput = new ArrayInput($arguments);
-            $siteInstallcommand->run($siteInstallInput, $io);
+            $siteInstallcommand->run($siteInstallInput, $this->getIo());
 
-            $io->info(
+            $this->getIo()->info(
                 $this->trans('commands.multisite.install.messages.installing')
             );
 
@@ -419,21 +415,21 @@ class InstallCommand extends Command
                 'base' => $this->networkBase
             );
 
-            $result = $this->runInstaller($io, $uri, $configParameters, $force);
+            $result = $this->runInstaller($uri, $configParameters, $force);
 
             if ($result) {
-                $io->info(
+                $this->getIo()->info(
                     $this->trans('commands.multisite.install.messages.installed')
                 );
             } else {
-                $io->info(
+                $this->getIo()->info(
                     $this->trans('commands.multisite.install.messages.error-installing-multisite')
                 );
             }
         } elseif (!$this->site->isMultisite()) {
             $domain = $this->site->getDomain();
             $this->multisiteQuestions($input);
-            $io->info(
+            $this->getIo()->info(
                 $this->trans('commands.multisite.install.messages.installing')
             );
 
@@ -460,25 +456,25 @@ class InstallCommand extends Command
                 'base' => $this->networkBase
             );
 
-            $result = $this->runInstaller($io, $domain, $configParameters, $force);
+            $result = $this->runInstaller($domain, $configParameters, $force);
 
             if ($result) {
-                $io->info(
+                $this->getIo()->info(
                     $this->trans('commands.multisite.install.messages.installed')
                 );
             } else {
-                $io->info(
+                $this->getIo()->info(
                     $this->trans('commands.multisite.install.messages.error-installing-multisite')
                 );
             }
         } else {
-            $io->info(
+            $this->getIo()->info(
                 $this->trans('commands.multisite.install.messages.already-multisite')
             );
         }
     }
 
-    public function generateConfigFile(WPStyle $io, $parameters, $force)
+    public function generateConfigFile($parameters, $force)
     {
         $this->generator->generate(
             $this->appRoot,
@@ -487,22 +483,22 @@ class InstallCommand extends Command
         );
 
         if ($force && file_exists($this->appRoot . "/wp-config.php.old")) {
-            $io->error(
+            $this->getIo()->error(
                 $this->trans('commands.site.install.messages.config-overwrite')
             );
         }
     }
 
-    public function runInstaller(WPStyle $io, $domain, $parameters, $force)
+    public function runInstaller($domain, $parameters, $force)
     {
         global $wpdb;
 
-        $this->generateConfigFile($io, $parameters, $force);
+        $this->generateConfigFile($parameters, $force);
 
         $this->site->loadLegacyFile('wp-admin/includes/upgrade.php');
 
         if ($domain === 'localhost' && !$this->subdomains) {
-            $io->error(
+            $this->getIo()->error(
                 sprintf(
                     $this->trans('commands.site.multisite.install.messages.invalid-domain'),
                     $domain
@@ -532,24 +528,24 @@ class InstallCommand extends Command
         );
 
         if ($result) {
-            $io->info(
+            $this->getIo()->info(
                 $this->trans('commands.multisite.install.messages.setup-tables')
             );
         } elseif (is_wp_error($result)) {
             switch ($result->get_error_code()) {
             case 'siteid_exists':
                 WP_CLI::log($result->get_error_message());
-                $io->error(
+                $this->getIo()->error(
                     $result->get_error_message()
                 );
                 return false;
             case 'no_wildcard_dns':
-                $io->info(
+                $this->getIo()->info(
                     $this->trans('commands.site.multisite.install.messages.no-wildcard-dns')
                 );
                 break;
             default:
-                $io->error(
+                $this->getIo()->error(
                     $result->get_error_message()
                 );
                 return false;
@@ -581,7 +577,7 @@ class InstallCommand extends Command
         $this->networkBase = $input->getOption('network-base');
     }
 
-    protected function interactiveMultisiteQuestions(ArgvInput $input, WPStyle $io)
+    protected function interactiveMultisiteQuestions(ArgvInput $input)
     {
         $subdomains = $input->getOption('subdomains');
 
@@ -591,7 +587,7 @@ class InstallCommand extends Command
                 1 => $this->trans('commands.multisite.install.questions.subdomains.subdomains')
             ];
 
-            $subdomainType = $io->choice(
+            $subdomainType = $this->getIo()->choice(
                 $this->trans('commands.multisite.install.questions.subdomains.question'),
                 $types
             );
@@ -605,7 +601,7 @@ class InstallCommand extends Command
         $networkTitle = $input->getOption('network-title');
 
         if (!$networkTitle) {
-            $networkTitle = $io->ask(
+            $networkTitle = $this->getIo()->ask(
                 $this->trans('commands.multisite.install.questions.network-title'),
                 sprintf('%s Sites', $this->site->getTitle())
             );
@@ -615,7 +611,7 @@ class InstallCommand extends Command
         // --network-mail option
         $networkMail = $input->getOption('network-mail');
         if (!$networkMail) {
-            $networkMail = $io->ask(
+            $networkMail = $this->getIo()->ask(
                 $this->trans('commands.multisite.install.questions.network-mail'),
                 $this->site->getEmail()
             );
@@ -625,7 +621,7 @@ class InstallCommand extends Command
         // --base-path option
         $networkBase = $input->getOption('network-base');
         if (!$networkBase) {
-            $networkBase = $io->ask(
+            $networkBase = $this->getIo()->ask(
                 $this->trans('commands.multisite.install.questions.network-base'),
                 '/'
             );

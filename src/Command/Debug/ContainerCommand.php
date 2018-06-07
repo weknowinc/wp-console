@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
 use WP\Console\Core\Command\ContainerAwareCommand;
-use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class ContainerDebugCommand
@@ -50,14 +49,13 @@ class ContainerCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $service = $input->getArgument('service');
         $parameters = $input->getOption('parameters');
 
         if ($parameters) {
             $parameterList = $this->getParameterList();
             ksort($parameterList);
-            $io->write(Yaml::dump(['parameters' => $parameterList], 4, 2));
+            $this->getIo()->write(Yaml::dump(['parameters' => $parameterList], 4, 2));
 
             return 0;
         }
@@ -65,7 +63,7 @@ class ContainerCommand extends ContainerAwareCommand
         $tableHeader = [];
         if ($service) {
             $tableRows = $this->getServiceDetail($service);
-            $io->table($tableHeader, $tableRows, 'compact');
+            $this->getIo()->table($tableHeader, $tableRows, 'compact');
 
             return 0;
         }
@@ -76,7 +74,7 @@ class ContainerCommand extends ContainerAwareCommand
         ];
 
         $tableRows = $this->getServiceList();
-        $io->table($tableHeader, $tableRows, 'compact');
+        $this->getIo()->table($tableHeader, $tableRows, 'compact');
 
         return 0;
     }

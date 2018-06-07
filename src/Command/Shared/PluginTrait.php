@@ -7,8 +7,6 @@
 
 namespace WP\Console\Command\Shared;
 
-use WP\Console\Core\Style\WPStyle;
-
 /**
  * Class PluginTrait
  *
@@ -17,12 +15,12 @@ use WP\Console\Core\Style\WPStyle;
 trait PluginTrait
 {
     /**
-     * @param \WP\Console\Core\Style\WPStyle $io
-     * @param string                         $status
+     * @param string $status
+     *
      * @return string
      * @throws \Exception
      */
-    public function pluginQuestion(WPStyle $io, $status = 'all')
+    public function pluginQuestion($status = 'all')
     {
         $extensionManager = $this->extensionManager->discoverPlugins();
 
@@ -40,7 +38,7 @@ trait PluginTrait
             throw new \Exception('No extension available, execute the proper generator command to generate one.');
         }
 
-        $plugin = $io->choiceNoList(
+        $plugin = $this->getIo()->choiceNoList(
             $this->trans('commands.common.questions.plugin'),
             $plugins
         );

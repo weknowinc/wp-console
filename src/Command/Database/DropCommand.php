@@ -11,9 +11,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
 /**
@@ -69,7 +67,6 @@ class DropCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $dbname = $input->getArgument('dbname');
         $yes = $input->getOption('yes');
 
@@ -77,7 +74,7 @@ class DropCommand extends Command
         global $wpdb;
 
         if (!$yes) {
-            if (!$io->confirm(
+            if (!$this->getIo()->confirm(
                 sprintf(
                     $this->trans('commands.database.drop.question.drop-tables'),
                     is_null($dbname) ? $wpdb->dbname : $dbname
@@ -97,7 +94,7 @@ class DropCommand extends Command
                     $result = $wpdb->query("DROP TABLE {$table}");
 
                     if (!$result) {
-                        $io->error(
+                        $this->getIo()->error(
                             sprintf(
                                 $this->trans('commands.database.drop.errors.failed-database-drop'),
                                 $wpdb->dbname
@@ -117,7 +114,7 @@ class DropCommand extends Command
         }
 
         if (!$result) {
-            $io->error(
+            $this->getIo()->error(
                 sprintf(
                     $this->trans('commands.database.drop.errors.failed-database-drop'),
                     $wpdb->dbname
@@ -126,7 +123,7 @@ class DropCommand extends Command
             return 1;
         }
 
-        $io->success(
+        $this->getIo()->success(
             sprintf(
                 $this->trans('commands.database.drop.messages.database-drop'),
                 is_null($dbname) ? $wpdb->dbname : $dbname

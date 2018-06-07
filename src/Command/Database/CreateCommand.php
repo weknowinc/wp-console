@@ -10,10 +10,8 @@ namespace WP\Console\Command\Database;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
 /**
@@ -23,7 +21,6 @@ use WP\Console\Utils\Site;
  */
 class CreateCommand extends Command
 {
-
     /**
      * @var Site
      */
@@ -84,8 +81,6 @@ class CreateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $this->site->loadLegacyFile('wp-config.php');
         global $wpdb;
 
@@ -96,12 +91,12 @@ class CreateCommand extends Command
         $yes = $input->getOption('yes');
 
         if (is_null($wpdb) && is_null($dbuser) && is_null($dbpassword)) {
-            $io->error($this->trans('commands.database.create.errors.empty-wpdb'));
+            $this->getIo()->error($this->trans('commands.database.create.errors.empty-wpdb'));
             return 1;
         }
 
         if (!$yes) {
-            if (!$io->confirm(
+            if (!$this->getIo()->confirm(
                 sprintf(
                     $this->trans('commands.database.create.question.create-tables'),
                     $dbname
@@ -113,7 +108,7 @@ class CreateCommand extends Command
             }
         }
 
-        if(is_null($wpdb)) {
+        if (is_null($wpdb)) {
             $command = sprintf(
                 'mysql --no-defaults --no-auto-rehash -u%s -p%s -h%s -e "create database %s"',
                 $dbuser,
@@ -129,8 +124,8 @@ class CreateCommand extends Command
             $process->setTimeout(null);
             $process->run();
 
-            if(!$process->isSuccessful()) {
-                $io->error(
+            if (!$process->isSuccessful()) {
+                $this->getIo()->error(
                     sprintf(
                         $this->trans('commands.database.create.errors.failed-database-create'),
                         $dbname
@@ -138,11 +133,11 @@ class CreateCommand extends Command
                 );
                 return 1;
             }
-        }else {
-            $result = $wpdb->query( "CREATE DATABASE {$dbname}" );
+        } else {
+            $result = $wpdb->query("CREATE DATABASE {$dbname}");
 
-            if(!$result) {
-                $io->error(
+            if (!$result) {
+                $this->getIo()->error(
                     sprintf(
                         $this->trans('commands.database.create.errors.failed-database-create'),
                         $dbname
@@ -152,7 +147,7 @@ class CreateCommand extends Command
             }
         }
 
-        $io->success(
+        $this->getIo()->success(
             sprintf(
                 $this->trans('commands.database.create.messages.database-create'),
                 $dbname

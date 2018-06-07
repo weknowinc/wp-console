@@ -14,7 +14,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Command\Shared\CreateTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Utils\Create\UserData;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Utils\WordpressApi;
 
@@ -99,12 +98,10 @@ class UsersCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $role = $input->getArgument('role');
         if (!$role) {
             $roles = $this->wordpressApi->getRoles();
-            $role = $io->choice(
+            $role = $this->getIo()->choice(
                 $this->trans('commands.create.users.questions.role'),
                 array_keys($roles),
                 null,
@@ -117,7 +114,7 @@ class UsersCommand extends Command
 
         $limit = $input->getOption('limit');
         if (!$limit) {
-            $limit = $io->ask(
+            $limit = $this->getIo()->ask(
                 $this->trans('commands.create.users.questions.limit'),
                 10
             );
@@ -126,7 +123,7 @@ class UsersCommand extends Command
 
         $password = $input->getOption('password');
         if (!$password) {
-            $password = $io->askEmpty(
+            $password = $this->getIo()->askEmpty(
                 $this->trans('commands.create.users.questions.password'),
                 null
             );
@@ -138,7 +135,7 @@ class UsersCommand extends Command
         if (!$timeRange) {
             $timeRanges = $this->getTimeRange();
 
-            $timeRange = $io->choice(
+            $timeRange = $this->getIo()->choice(
                 $this->trans('commands.create.nodes.questions.time-range'),
                 array_values($timeRanges)
             );
@@ -152,8 +149,6 @@ class UsersCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $role = $input->getArgument('role');
         $limit = $input->getOption('limit')?:25;
         $password = $input->getOption('password');
@@ -179,9 +174,9 @@ class UsersCommand extends Command
         ];
 
         if ($users['success']) {
-            $io->table($tableHeader, $users['success']);
+            $this->getIo()->table($tableHeader, $users['success']);
 
-            $io->success(
+            $this->getIo()->success(
                 sprintf(
                     $this->trans('commands.create.users.messages.created-users'),
                     $limit

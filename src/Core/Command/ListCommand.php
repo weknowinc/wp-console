@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use WP\Console\Core\Helper\DescriptorHelper;
-use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class ListCommand
@@ -49,11 +48,9 @@ class ListCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $helper = new DescriptorHelper();
         $helper->describe(
-            $io,
+            $this->getIo(),
             $this->getApplication(),
             [
                 'format' => $input->getOption('format'),
