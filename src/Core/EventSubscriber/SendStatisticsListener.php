@@ -15,6 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use WP\Console\Core\Utils\TranslatorManager;
 
 /**
  * Class SendStatisticsListener
@@ -40,14 +41,22 @@ class SendStatisticsListener implements EventSubscriberInterface
     protected $homeDirectory;
 
     /**
+     * @var TranslatorManager
+     */
+    protected $translator;
+
+    /**
      * SaveStatisticsListener constructor.
      *
      * @param ConfigurationManager $configurationManager
+     * @param TranslatorManager $translator
      */
     public function __construct(
-        ConfigurationManager $configurationManager
+        ConfigurationManager $configurationManager,
+        TranslatorManager $translator
     ) {
         $this->configurationManager = $configurationManager;
+        $this->translator = $translator;
         $this->fs = new Filesystem();
     }
 
@@ -70,6 +79,10 @@ class SendStatisticsListener implements EventSubscriberInterface
 
         //Validate if the times attempted is 10
         if ($configGlobalAsArray['application']['statistics']['times-attempted'] >= 10) {
+            /* @var WPStyle $io */
+            $io = new WPStyle($event->getInput(), $event->getOutput());
+            $io->error($this->translator->trans('application.errors.statistics-failed'));
+
             $this->configurationManager->updateConfigGlobalParameter('statistics.enabled', false);
             return;
         }
@@ -104,7 +117,7 @@ class SendStatisticsListener implements EventSubscriberInterface
 
         foreach ($finder as $file) {
             if (($handle = fopen($file->getPathname(), "r")) !== false) {
-                while (($content = fgetcsv($handle, 0, ';')) !== false) {
+                while (($content = fgetcsv($handle, 0, ',')) !== false) {
 
                     /**
                      * If the command doesn't have linesOfCode,
@@ -144,14 +157,9 @@ class SendStatisticsListener implements EventSubscriberInterface
                 $this->configurationManager->updateConfigGlobalParameter('statistics.times-attempted', 0);
             }
         } catch (\Exception $exception) {
-
             //Increase the times attempted in global config.
             $timesAttempted = $configGlobalAsArray['application']['statistics']['times-attempted'] + 1;
             $this->configurationManager->updateConfigGlobalParameter('statistics.times-attempted', $timesAttempted);
-
-            /* @var WPStyle $io */
-            $io = new WPStyle($event->getInput(), $event->getOutput());
-            $io->error(trim($exception->getMessage()));
         }
 
         //Update last attempted in global config.

@@ -7,7 +7,6 @@
 namespace WP\Console\Core\Generator;
 
 use WP\Console\Core\Utils\ConfigurationManager;
-use WP\Console\Core\Utils\NestedArray;
 
 /**
  * Class InitGenerator
@@ -17,11 +16,6 @@ use WP\Console\Core\Utils\NestedArray;
 class InitGenerator extends Generator
 {
     /**
-     * @var NestedArray
-     */
-    protected $nestedArray;
-
-    /**
      * @var ConfigurationManager
      */
     protected $configurationManager;
@@ -29,12 +23,10 @@ class InitGenerator extends Generator
     /**
      * InitGenerator constructor.
      *
-     * @param NestedArray          $nestedArray
      * @param ConfigurationManager $configurationManager
      */
-    public function __construct(NestedArray $nestedArray, ConfigurationManager $configurationManager)
+    public function __construct(ConfigurationManager $configurationManager)
     {
-        $this->nestedArray = $nestedArray;
         $this->configurationManager = $configurationManager;
     }
 
@@ -67,10 +59,14 @@ class InitGenerator extends Generator
         // If configFile is an override, we only change the value of statistics in the global config.
         $consoleDestination = $userHome . 'config.yml';
         if ($configFile !== $consoleDestination) {
-            $this->configurationManager->updateConfigGlobalParameter(
-                'statistics.enabled',
-                $configParameters['statistics']
-            );
+            if($configParameters['statistics'] || file_exists($consoleDestination)) {
+                $configParameters['statistics'] = $configParameters['statistics'] ? 'true' : 'false';
+                $this->renderFile(
+                    'core/init/statistics.config.yml.twig',
+                    $consoleDestination,
+                    $configParameters
+                );
+            }
 
             unset($configParameters['statistics']);
         }

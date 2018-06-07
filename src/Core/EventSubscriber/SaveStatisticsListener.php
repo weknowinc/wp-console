@@ -75,12 +75,7 @@ class SaveStatisticsListener implements EventSubscriberInterface
         $configGlobalAsArray = $this->configurationManager->getConfigGlobalAsArray();
 
         //Validate if the config is enable.
-        if (is_null($configGlobalAsArray) || !$configGlobalAsArray['application']['share']['statistics']) {
-            return;
-        }
-
-        //Validate if attempted is 10
-        if ($configGlobalAsArray['application']['statistics']['count-attempted'] >= 10) {
+        if (is_null($configGlobalAsArray) || !$configGlobalAsArray['application']['statistics']['enabled']) {
             return;
         }
 
@@ -100,11 +95,11 @@ class SaveStatisticsListener implements EventSubscriberInterface
             $this->configurationManager->getHomeDirectory()
         );
 
-        $information = $event->getCommand()->getName() . ';' . $this->translator->getLanguage();
+        $information = $event->getCommand()->getName() . ',' . $this->translator->getLanguage();
 
         $countCodeLines = $this->countCodeLines->getCountCodeLines();
         if ($countCodeLines > 0) {
-            $information = $information . ';' . $countCodeLines;
+            $information = $information . ',' . $countCodeLines;
         }
 
 

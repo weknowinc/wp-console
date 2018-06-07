@@ -176,7 +176,8 @@ class Application extends BaseApplication
         );
         $dispatcher->addSubscriber(
             new SendStatisticsListener(
-                $this->container->get('console.configuration_manager')
+                $this->container->get('console.configuration_manager'),
+                $this->container->get('console.translator_manager')
             )
         );
 
