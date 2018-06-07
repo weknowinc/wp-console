@@ -7,12 +7,10 @@
 
 namespace WP\Console\Command\Debug;
 
-use Faker\Provider\DateTime;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
 /**
@@ -60,8 +58,6 @@ class CronCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $type_cron = $input->getArgument('type');
         $type_cron = empty($type_cron) ? 'all' : $type_cron;
 
@@ -134,7 +130,7 @@ class CronCommand extends Command
             ];
         }
 
-        $io->table($tableHeader, $tableRows);
+        $this->getIo()->table($tableHeader, $tableRows);
     }
 
     /**

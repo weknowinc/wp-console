@@ -17,7 +17,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Generator\WidgetGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 
 class WidgetCommand extends Command
@@ -126,8 +125,6 @@ class WidgetCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getOption('plugin');
         $class_name = $this->validator->validateClassName($input->getOption('class-name'));
         $widget_id = $input->getOption('widget-id');
@@ -135,10 +132,9 @@ class WidgetCommand extends Command
         $description = $input->getOption('description');
         $widget_class_name = $input->getOption('widget-class-name');
         $widget_items = $input->getOption('widget-items');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -158,20 +154,19 @@ class WidgetCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $stringUtils = $this->stringConverter;
 
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.widget.questions.class-name'),
                 'DefaultWidget',
                 function ($value) use ($stringUtils) {
@@ -187,7 +182,7 @@ class WidgetCommand extends Command
         // --widget id
         $widget_id = $input->getOption('widget-id');
         if (!$widget_id) {
-            $widget_id = $io->ask(
+            $widget_id = $this->getIo()->ask(
                 $this->trans('commands.generate.widget.questions.widget-id'),
                 $stringUtils->camelCaseToUnderscore($class_name)
             );
@@ -197,7 +192,7 @@ class WidgetCommand extends Command
         // -- title
         $title = $input->getOption('title');
         if (!$title) {
-            $title = $io->ask(
+            $title = $this->getIo()->ask(
                 $this->trans('commands.generate.widget.questions.title'),
                 'First widget'
             );
@@ -207,7 +202,7 @@ class WidgetCommand extends Command
         // --description
         $description = $input->getOption('description');
         if (!$description) {
-            $description = $io->ask(
+            $description = $this->getIo()->ask(
                 $this->trans('commands.generate.widget.questions.description'),
                 'My '.strtolower($title)
             );
@@ -217,7 +212,7 @@ class WidgetCommand extends Command
         // --widget class name
         $widget_class_name = $input->getOption('widget-class-name');
         if (!$widget_class_name) {
-            $widget_class_name = $io->ask(
+            $widget_class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.widget.questions.widget-class-name')
             );
         }
@@ -226,13 +221,13 @@ class WidgetCommand extends Command
         // --widget items
         $widget_items = $input->getOption('widget-items');
         if (!$widget_items) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.widget.questions.widget-items.widget-add'),
                 true
             )
             ) {
                 // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                $widget_items = $this->fieldsQuestion($io, 'widget', 'widget-items');
+                $widget_items = $this->fieldsQuestion('widget', 'widget-items');
                 $input->setOption('widget-items', $widget_items);
             }
         }

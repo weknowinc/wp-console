@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Utils\Site;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Extension\Manager;
 use WP\Console\Core\Utils\ChainQueue;
@@ -98,11 +97,9 @@ class ActivateCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getArgument('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io, false);
+            $plugin = $this->pluginQuestion(false);
             $input->setArgument('plugin', $plugin);
         }
     }
@@ -112,8 +109,6 @@ class ActivateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getArgument('plugin');
 
         if (!is_array($plugin)) {
@@ -131,14 +126,14 @@ class ActivateCommand extends Command
                 $this->site->activatePlugin($pluginFile);
             }
 
-            $io->success(
+            $this->getIo()->success(
                 sprintf(
                     $this->trans('commands.plugin.activate.messages.success'),
                     implode(', ', $plugins)
                 )
             );
         } catch (\Exception $e) {
-            $io->error($e->getMessage());
+            $this->getIo()->error($e->getMessage());
 
             return 1;
         }

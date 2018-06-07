@@ -16,7 +16,6 @@ use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\SettingsPageGenerator;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\WordpressApi;
@@ -166,10 +165,8 @@ class SettingsPageCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -207,19 +204,17 @@ class SettingsPageCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.settings.page.questions.class-name'),
                 'CustomSettingsPage',
                 function ($value) {
@@ -235,7 +230,7 @@ class SettingsPageCommand extends Command
         // --setting group
         $setting_group = $input->getOption('setting-group');
         if (!$setting_group) {
-            $setting_group = $io->ask(
+            $setting_group = $this->getIo()->ask(
                 $this->trans('commands.generate.settings.page.questions.setting-group'),
                 strtolower($class_name).'_group'
             );
@@ -245,7 +240,7 @@ class SettingsPageCommand extends Command
         // --setting name
         $setting_name = $input->getOption('setting-name');
         if (!$setting_name) {
-            $setting_name = $io->ask(
+            $setting_name = $this->getIo()->ask(
                 $this->trans('commands.generate.settings.page.questions.setting-name'),
                 strtolower($class_name).'_name'
             );
@@ -255,7 +250,7 @@ class SettingsPageCommand extends Command
         // --capability
         $capability = $input->getOption('capability');
         if (!$capability) {
-            $capability = $io->choiceNoList(
+            $capability = $this->getIo()->choiceNoList(
                 $this->trans('commands.generate.settings.page.questions.capability'),
                 $this->wordpressApi->getCapabilities(),
                 "manage_options"
@@ -266,7 +261,7 @@ class SettingsPageCommand extends Command
         // --slug
         $slug = $input->getOption('slug');
         if (!$slug) {
-            $slug = $io->ask(
+            $slug = $this->getIo()->ask(
                 $this->trans('commands.generate.settings.page.questions.slug'),
                 $this->stringConverter->createMachineName($menu_title),
                 function ($value) {
@@ -280,7 +275,7 @@ class SettingsPageCommand extends Command
         // --callback function
         $callback_function = $input->getOption('callback-function');
         if (!$callback_function) {
-            $callback_function = $io->ask(
+            $callback_function = $this->getIo()->ask(
                 $this->trans('commands.generate.settings.page.questions.callback-function'),
                 null,
                 function ($function) {
@@ -293,7 +288,7 @@ class SettingsPageCommand extends Command
         // --menu title
         $menu_title = $input->getOption('menu-title');
         if (!$menu_title) {
-            $menu_title = $io->ask(
+            $menu_title = $this->getIo()->ask(
                 $this->trans('commands.generate.settings.page.questions.menu-title'),
                 'Custom Setting Page'
             );
@@ -303,7 +298,7 @@ class SettingsPageCommand extends Command
         // --page title
         $page_title = $input->getOption('page-title');
         if (!$page_title) {
-            $page_title = $io->ask(
+            $page_title = $this->getIo()->ask(
                 $this->trans('commands.generate.settings.page.questions.page-title'),
                 $menu_title
             );
@@ -314,14 +309,14 @@ class SettingsPageCommand extends Command
         $sections = $input->getOption('sections');
         if (!$sections) {
             $sections = [];
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.settings.page.questions.section-add'),
                 true
             )
             ) {
                 $validate_menu = '';
                 while (true) {
-                    $name = $io->ask(
+                    $name = $this->getIo()->ask(
                         $this->trans('commands.generate.settings.page.questions.section-name'),
                         'My custom section settings',
                         function ($value) use ($validate_menu) {
@@ -340,7 +335,7 @@ class SettingsPageCommand extends Command
 
                     $sections[$this->stringConverter->createMachineName($name)] = $name;
 
-                    if (!$io->confirm(
+                    if (!$this->getIo()->confirm(
                         $this->trans('commands.generate.settings.page.questions.section-add-another'),
                         false
                     )
@@ -356,13 +351,13 @@ class SettingsPageCommand extends Command
         $fields = $input->getOption('fields');
         if (!empty($sections)) {
             if (!$fields) {
-                if ($io->confirm(
+                if ($this->getIo()->confirm(
                     $this->trans('commands.generate.settings.page.questions.fields.fields-add'),
                     true
                 )
                 ) {
                     // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                    $fields = $this->fieldsQuestion($io, 'settings.page', 'fields', $sections);
+                    $fields = $this->fieldsQuestion('settings.page', 'fields', $sections);
                     $input->setOption('fields', $fields);
                 }
             }
@@ -371,7 +366,7 @@ class SettingsPageCommand extends Command
         // --text domain
         $text_domain = $input->getOption('text-domain');
         if (!$text_domain) {
-            $text_domain = $io->askEmpty(
+            $text_domain = $this->getIo()->askEmpty(
                 $this->trans('commands.generate.settings.page.questions.text-domain')
             );
         }

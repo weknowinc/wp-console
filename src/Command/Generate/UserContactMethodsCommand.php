@@ -16,7 +16,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Generator\UserContactMethodsGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Utils\Validator;
 
@@ -109,16 +108,12 @@ class UserContactMethodsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getOption('plugin');
         $function_name = $this->validator->validatefunctionName($input->getOption('function-name'));
         $methods_items = $input->getOption('methods-items');
 
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
-
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -135,20 +130,17 @@ class UserContactMethodsCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        $stringUtils = $this->stringConverter;
-
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.user.contact.methods.questions.function-name'),
                 'default_user_contactmethods',
                 function ($function_name) {
@@ -163,8 +155,8 @@ class UserContactMethodsCommand extends Command
         if (!$methods_items) {
             $methods_items = [];
             while (true) {
-                $name = $io->ask($this->trans('commands.generate.user.contact.methods.questions.methods-items.name'));
-                $description = $io->ask($this->trans('commands.generate.user.contact.methods.questions.methods-items.description'));
+                $name = $this->getIo()->ask($this->trans('commands.generate.user.contact.methods.questions.methods-items.name'));
+                $description = $this->getIo()->ask($this->trans('commands.generate.user.contact.methods.questions.methods-items.description'));
 
                 array_push(
                     $methods_items,
@@ -174,9 +166,8 @@ class UserContactMethodsCommand extends Command
                     ]
                 );
 
-                if (!$io->confirm(
+                if (!$this->getIo()->confirm(
                     $this->trans('commands.generate.user.contact.methods.questions.methods-items.methods-add-another'),
-
                     true
                 )
                 ) {

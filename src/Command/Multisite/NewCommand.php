@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
 use WP\Console\Core\Generator\SilentIndexGenerator;
 use WP\Console\Core\Utils\ConfigurationManager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Command\Shared\DatabaseTrait;
 
@@ -100,8 +99,6 @@ class NewCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $subdomains = $this->site->isMulsiteSubdomain();
 
         // --network-url option
@@ -112,7 +109,7 @@ class NewCommand extends Command
             } else {
                 $exampleURL = $this->site->getDomain() ."/" . $this->trans('commands.multisite.new.questions.subdirectory-example-network-url');
             }
-            $networkUrl = $io->ask(
+            $networkUrl = $this->getIo()->ask(
                 $this->trans('commands.multisite.new.questions.network-url'),
                 $exampleURL
             );
@@ -125,7 +122,7 @@ class NewCommand extends Command
         $networkTitle = $input->getOption('network-title');
 
         if (!$networkTitle) {
-            $networkTitle = $io->ask(
+            $networkTitle = $this->getIo()->ask(
                 $this->trans('commands.multisite.install.questions.network-title'),
                 ''
             );
@@ -140,7 +137,7 @@ class NewCommand extends Command
                 ->getConfiguration()
                 ->get('application.language');
 
-            $langcode = $io->choiceNoList(
+            $langcode = $this->getIo()->choiceNoList(
                 $this->trans('commands.site.install.questions.langcode'),
                 array_values($languages),
                 $languages[$defaultLanguage]
@@ -152,7 +149,7 @@ class NewCommand extends Command
         // --network-mail option
         $networkMail = $input->getOption('network-mail');
         if (!$networkMail) {
-            $networkMail = $io->ask(
+            $networkMail = $this->getIo()->ask(
                 $this->trans('commands.multisite.install.questions.network-mail'),
                 $this->site->getEmail()
             );
@@ -168,7 +165,6 @@ class NewCommand extends Command
         global $wpdb;
         $currentUser = $this->site->getCurrentUser();
 
-        $io = new WPStyle($input, $output);
         $subdomains = $this->site->isMulsiteSubdomain();
 
         $networkUrl = $input->getOption('network-url');
@@ -186,7 +182,7 @@ class NewCommand extends Command
 
             // If not a subdomain install, make sure the domain isn't a reserved word
             if (in_array($networkUrl, $subdirectory_reserved_names)) {
-                $io->error(
+                $this->getIo()->error(
                     $this->trans('commands.common.messages.reserved')
                 );
                 return false;
@@ -219,7 +215,7 @@ class NewCommand extends Command
 
             $userID = $this->site->usernameExists($networkUrl);
             if ($userID) {
-                $io->error(
+                $this->getIo()->error(
                     $this->trans('commands.multisite.new.user-conflict')
                 );
                 return false;
@@ -228,7 +224,7 @@ class NewCommand extends Command
             $password = $this->site->generatePassword(12, false);
             $userID = $this->site->createMultisiteUser($networkUrl, $password, $networkEmail);
             if (false === $userID) {
-                $io->error(
+                $this->getIo()->error(
                     $this->trans('commands.common.messages.user-create-error')
                 );
                 return false;
@@ -273,17 +269,17 @@ class NewCommand extends Command
                 $this->generator->generate($this->appRoot, $WP_CONTENT_DIR);
                 $this->generator->generate($this->appRoot, $WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'plugins');
                 $this->generator->generate($this->appRoot, $WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes');
-                $io->info(
+                $this->getIo()->info(
                     $this->trans('commands.multisite.new.messages.content-dir-created')
                 );
             }
 
-            $io->info(
+            $this->getIo()->info(
                 $this->trans('commands.multisite.new.messages.created')
             );
             exit;
         } else {
-            $io->error(
+            $this->getIo()->error(
                 $id->get_error_message()
             );
             return false;

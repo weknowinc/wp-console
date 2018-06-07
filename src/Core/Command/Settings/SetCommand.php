@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Core\Utils\NestedArray;
 
@@ -77,8 +76,6 @@ class SetCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $parser = new Parser();
         $dumper = new Dumper();
 
@@ -103,7 +100,7 @@ class SetCommand extends Command
         );
 
         if (!file_exists($userConfigFile)) {
-            $io->error(
+            $this->getIo()->error(
                 sprintf(
                     $this->trans('commands.settings.set.messages.missing-file'),
                     $userConfigFile
@@ -117,7 +114,7 @@ class SetCommand extends Command
                 file_get_contents($userConfigFile)
             );
         } catch (\Exception $e) {
-            $io->error(
+            $this->getIo()->error(
                 $this->trans(
                     'commands.settings.set.messages.error-parsing'
                 ) . ': ' . $e->getMessage()
@@ -139,7 +136,7 @@ class SetCommand extends Command
         try {
             $userConfigFileDump = $dumper->dump($userConfigFileParsed, 10);
         } catch (\Exception $e) {
-            $io->error(
+            $this->getIo()->error(
                 [
                     $this->trans('commands.settings.set.messages.error-generating'),
                     $e->getMessage()
@@ -156,7 +153,7 @@ class SetCommand extends Command
 
             $translatorLanguage = $this->getApplication()->getTranslator()->getLanguage();
             if ($translatorLanguage != $settingValue) {
-                $io->error(
+                $this->getIo()->error(
                     sprintf(
                         $this->trans('commands.settings.set.messages.missing-language'),
                         $settingValue
@@ -170,7 +167,7 @@ class SetCommand extends Command
         try {
             file_put_contents($userConfigFile, $userConfigFileDump);
         } catch (\Exception $e) {
-            $io->error(
+            $this->getIo()->error(
                 [
                     $this->trans('commands.settings.set.messages.error-writing'),
                     $e->getMessage()
@@ -181,7 +178,7 @@ class SetCommand extends Command
         }
 
         $settingValue = is_bool($settingValue) ? $settingValue ? 'true' : 'false' : $settingValue;
-        $io->success(
+        $this->getIo()->success(
             sprintf(
                 $this->trans('commands.settings.set.messages.success'),
                 $settingName,

@@ -10,7 +10,6 @@ namespace WP\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
 class AboutCommand extends Command
@@ -48,7 +47,6 @@ class AboutCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $application = $this->getApplication();
 
         $aboutTitle = sprintf(
@@ -57,9 +55,9 @@ class AboutCommand extends Command
             $application->getVersion()
         );
 
-        $io->setDecorated(false);
-        $io->title($aboutTitle);
-        $io->setDecorated(true);
+        $this->getIo()->setDecorated(false);
+        $this->getIo()->title($aboutTitle);
+        $this->getIo()->setDecorated(true);
 
         $commands = [
             'init' => [
@@ -87,16 +85,16 @@ class AboutCommand extends Command
         }
 
         foreach ($commands as $command => $commandInfo) {
-            $io->writeln($commandInfo[0]);
-            $io->newLine();
-            $io->comment(sprintf('  %s', $commandInfo[1]));
-            $io->newLine();
+            $this->getIo()->writeln($commandInfo[0]);
+            $this->getIo()->newLine();
+            $this->getIo()->comment(sprintf('  %s', $commandInfo[1]));
+            $this->getIo()->newLine();
         }
 
-        $io->setDecorated(false);
-        $io->section($this->trans('commands.self-update.description'));
-        $io->setDecorated(true);
-        $io->comment('  wp-console self-update');
-        $io->newLine();
+        $this->getIo()->setDecorated(false);
+        $this->getIo()->section($this->trans('commands.self-update.description'));
+        $this->getIo()->setDecorated(true);
+        $this->getIo()->comment('  wp-console self-update');
+        $this->getIo()->newLine();
     }
 }

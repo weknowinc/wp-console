@@ -10,7 +10,6 @@ namespace WP\Console\Command\Debug;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
 /**
@@ -54,8 +53,6 @@ class ShortcodeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $tableHeader = [
             $this->trans('commands.debug.shortcode.messages.tag'),
             $this->trans('commands.debug.shortcode.messages.callback')
@@ -68,7 +65,7 @@ class ShortcodeCommand extends Command
             $rows[] = ['tag' => $tag , 'callback' => $callback];
         }
 
-        $io->table($tableHeader, $rows, 'compact');
+        $this->getIo()->table($tableHeader, $rows, 'compact');
 
         return 0;
     }

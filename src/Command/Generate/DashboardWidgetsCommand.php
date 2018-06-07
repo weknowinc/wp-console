@@ -7,7 +7,6 @@
 
 namespace WP\Console\Command\Generate;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,7 +15,6 @@ use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\DashboardWidgetsGenerator;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 
@@ -131,10 +129,8 @@ class DashboardWidgetsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -146,8 +142,6 @@ class DashboardWidgetsCommand extends Command
         $submission_function = $input->getOption('submission-function');
         $callback_arguments = $input->getOption('callback-arguments');
         $text_domain = $input->getOption('text-domain');
-
-
 
         $this->generator->generate(
             $plugin,
@@ -166,19 +160,17 @@ class DashboardWidgetsCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.dashboard.widgets.questions.class-name'),
                 'CustomDashboardWidgets',
                 function ($value) {
@@ -194,7 +186,7 @@ class DashboardWidgetsCommand extends Command
         // --id
         $id = $input->getOption('id');
         if (!$id) {
-            $id = $io->ask(
+            $id = $this->getIo()->ask(
                 $this->trans('commands.generate.dashboard.widgets.questions.id'),
                 strtolower($class_name),
                 function ($value) {
@@ -207,7 +199,7 @@ class DashboardWidgetsCommand extends Command
         // --title
         $title = $input->getOption('title');
         if (!$title) {
-            $title = $io->ask(
+            $title = $this->getIo()->ask(
                 $this->trans('commands.generate.dashboard.widgets.questions.title'),
                 'Example Dashboard Widget'
             );
@@ -217,7 +209,7 @@ class DashboardWidgetsCommand extends Command
         // --render function
         $render_function = $input->getOption('render-function');
         if (!$render_function) {
-            $render_function = $io->ask(
+            $render_function = $this->getIo()->ask(
                 $this->trans('commands.generate.dashboard.widgets.questions.render-function'),
                 $id.'_callback',
                 function ($value) {
@@ -230,7 +222,7 @@ class DashboardWidgetsCommand extends Command
         // --submission function
         $submission_function = $input->getOption('submission-function');
         if (!$submission_function) {
-            $submission_function = $io->confirm(
+            $submission_function = $this->getIo()->confirm(
                 $this->trans('commands.generate.dashboard.widgets.questions.submission-function'),
                 false
             );
@@ -240,7 +232,7 @@ class DashboardWidgetsCommand extends Command
         // --callback arguments
         $callback_arguments = $input->getOption('callback-arguments');
         if (!$callback_arguments) {
-            $callback_arguments = $io->askEmpty(
+            $callback_arguments = $this->getIo()->askEmpty(
                 $this->trans('commands.generate.dashboard.widgets.questions.callback-arguments'),
                 function ($value) {
                     if (!empty($value)) {
@@ -258,7 +250,7 @@ class DashboardWidgetsCommand extends Command
         // --text domain
         $text_domain = $input->getOption('text-domain');
         if (!$text_domain) {
-            $text_domain = $io->askEmpty(
+            $text_domain = $this->getIo()->askEmpty(
                 $this->trans('commands.generate.dashboard.widgets.questions.text-domain')
             );
         }

@@ -15,7 +15,6 @@ use Symfony\Component\Finder\Finder;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Core\Generator\InitGenerator;
 use WP\Console\Core\Utils\ShowFile;
-use WP\Console\Core\Style\WPStyle;
 
 /**
  * Class InitCommand
@@ -116,7 +115,6 @@ class InitCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $destination = $input->getOption('destination');
         $autocomplete = $input->getOption('autocomplete');
 
@@ -132,7 +130,7 @@ class InitCommand extends Command
 
         if (!$destination) {
             if ($this->appRoot && $this->consoleRoot) {
-                $destination = $io->choice(
+                $destination = $this->getIo()->choice(
                     $this->trans('commands.init.questions.destination'),
                     array_reverse($configurationDirectories)
                 );
@@ -144,40 +142,40 @@ class InitCommand extends Command
             $input->setOption('destination', $destination);
         }
 
-        $this->configParameters['language'] = $io->choiceNoList(
+        $this->configParameters['language'] = $this->getIo()->choiceNoList(
             $this->trans('commands.init.questions.language'),
             $configuration->get('application.languages')
         );
 
-        $this->configParameters['temp'] = $io->ask(
+        $this->configParameters['temp'] = $this->getIo()->ask(
             $this->trans('commands.init.questions.temp'),
             '/tmp'
         );
 
-        $this->configParameters['learning'] = $io->confirm(
+        $this->configParameters['learning'] = $this->getIo()->confirm(
             $this->trans('commands.init.questions.learning'),
             true
         );
 
-        $this->configParameters['generate_inline'] = $io->confirm(
+        $this->configParameters['generate_inline'] = $this->getIo()->confirm(
             $this->trans('commands.init.questions.generate-inline'),
             false
         );
 
-        $this->configParameters['generate_chain'] = $io->confirm(
+        $this->configParameters['generate_chain'] = $this->getIo()->confirm(
             $this->trans('commands.init.questions.generate-chain'),
             false
         );
 
         if (!$autocomplete) {
-            $autocomplete = $io->confirm(
+            $autocomplete = $this->getIo()->confirm(
                 $this->trans('commands.init.questions.autocomplete'),
                 false
             );
             $input->setOption('autocomplete', $autocomplete);
         }
 
-        $io->commentBlock(
+        $this->getIo()->commentBlock(
             sprintf(
                 $this->trans('commands.init.messages.statistics'),
                 sprintf(
@@ -187,13 +185,13 @@ class InitCommand extends Command
             )
         );
 
-        $this->configParameters['statistics'] = $io->confirm(
+        $this->configParameters['statistics'] = $this->getIo()->confirm(
             $this->trans('commands.init.questions.statistics'),
             true
         );
 
         if ($this->configParameters['statistics']) {
-            $io->commentBlock(
+            $this->getIo()->commentBlock(
                 $this->trans('commands.init.messages.statistics-disable')
             );
         }
@@ -204,7 +202,6 @@ class InitCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $copiedFiles = [];
         $destination = $input->getOption('destination');
         $autocomplete = $input->getOption('autocomplete');
@@ -241,8 +238,8 @@ class InitCommand extends Command
         }
 
         if ($copiedFiles) {
-            $this->showFile->copiedFiles($io, $copiedFiles, false);
-            $io->newLine();
+            $this->showFile->copiedFiles($this->getIo(), $copiedFiles, false);
+            $this->getIo()->newLine();
         }
 
         $executableName = null;
@@ -264,7 +261,7 @@ class InitCommand extends Command
             $this->configParameters
         );
 
-        $io->writeln($this->trans('application.messages.autocomplete'));
+        $this->getIo()->writeln($this->trans('application.messages.autocomplete'));
 
         return 0;
     }

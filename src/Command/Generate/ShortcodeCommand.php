@@ -17,7 +17,6 @@ use WP\Console\Generator\ShortcodeGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
 use WP\Console\Utils\Site;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 
 class ShortcodeCommand extends Command
@@ -103,17 +102,13 @@ class ShortcodeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getOption('plugin');
         $tag = $input->getOption('tag');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
-
 
         $className = $this->stringConverter->humanToCamelCase($plugin);
         $pluginPath = $this->extensionManager->getPlugin($plugin)->getPath();
@@ -138,22 +133,21 @@ class ShortcodeCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $shortcodes = $this->site->getShortCodes();
 
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
         // --tag
         $tag = $input->getOption('tag');
         if (!$tag) {
-            $tag = $io->ask(
+            $tag = $this->getIo()->ask(
                 $this->trans('commands.generate.shortcode.questions.tag'),
                 '',
-                function ($tag) use ($shortcodes, $io) {
+                function ($tag) use ($shortcodes) {
                     if (empty($tag)) {
                         throw new \InvalidArgumentException(
                             sprintf(
@@ -173,7 +167,7 @@ class ShortcodeCommand extends Command
                     $tagMachineNameCamelCase = $this->stringConverter->createMachineName($this->stringConverter->humanToCamelCase($tag));
 
                     if ($tag != $tagMachineNameCamelCase) {
-                        $io->warning(
+                        $this->getIo()->warning(
                             sprintf(
                                 $this->trans('commands.generate.shortcode.warnings.tag-transformed'),
                                 $tag,

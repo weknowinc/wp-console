@@ -16,7 +16,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Generator\MenuGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 
 class MenuCommand extends Command
@@ -112,17 +111,14 @@ class MenuCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getOption('plugin');
         $class_name = $this->validator->validateClassName($input->getOption('class-name'));
         $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $menu_items = $input->getOption('menu-items');
         $child_themes = $input->getOption('child-themes');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -140,19 +136,17 @@ class MenuCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.menu.questions.class-name'),
                 'DefaultMenu',
                 function ($class_name) {
@@ -165,7 +159,7 @@ class MenuCommand extends Command
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.menu.questions.function-name'),
                 $this->stringConverter->camelCaseToUnderscore($class_name),
                 function ($function_name) {
@@ -181,7 +175,7 @@ class MenuCommand extends Command
             $array_menu_items = [];
             $stringConverter = $this->stringConverter;
             while (true) {
-                $name = $io->ask(
+                $name = $this->getIo()->ask(
                     $this->trans('commands.generate.menu.questions.menu-items.name'),
                     '',
                     function ($menu) use ($stringConverter) {
@@ -190,7 +184,7 @@ class MenuCommand extends Command
                 );
 
                 if (!empty($menu)) {
-                    $description = $io->ask(
+                    $description = $this->getIo()->ask(
                         $this->trans('commands.generate.menu.questions.menu-items.description'),
                         ''
                     );
@@ -206,7 +200,7 @@ class MenuCommand extends Command
 
 
 
-                if (!$io->confirm(
+                if (!$this->getIo()->confirm(
                     $this->trans('commands.generate.menu.questions.menu-items.menu-add-another'),
                     true
                 )
@@ -220,7 +214,7 @@ class MenuCommand extends Command
         // --child themes
         $child_themes = $input->getOption('child-themes');
         if (!$child_themes) {
-            $child_themes = $io->confirm(
+            $child_themes = $this->getIo()->confirm(
                 $this->trans('commands.generate.menu.questions.child-themes'),
                 false
             );

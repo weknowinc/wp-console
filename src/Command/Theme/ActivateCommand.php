@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Command\Shared\ThemeTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Utils\Site;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Extension\Manager;
 use WP\Console\Core\Utils\ChainQueue;
@@ -97,11 +96,9 @@ class ActivateCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $theme = $input->getArgument('theme');
         if (!$theme) {
-            $theme = $this->themeQuestion($io, false);
+            $theme = $this->themeQuestion(false);
             $input->setArgument('theme', $theme);
         }
     }
@@ -111,8 +108,6 @@ class ActivateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $theme = $input->getArgument('theme');
 
         try {
@@ -122,14 +117,14 @@ class ActivateCommand extends Command
             $themeFile = array_search($theme, $extensions);
             $this->site->activateTheme($themeFile);
 
-            $io->success(
+            $this->getIo()->success(
                 sprintf(
                     $this->trans('commands.theme.activate.messages.success'),
                     $theme
                 )
             );
         } catch (\Exception $e) {
-            $io->error($e->getMessage());
+            $this->getIo()->error($e->getMessage());
 
             return 1;
         }

@@ -7,8 +7,6 @@
 
 namespace WP\Console\Command\Shared;
 
-use WP\Console\Core\Style\WPStyle;
-
 /**
  * Class TaxonomyPostTypeTrait
  *
@@ -16,19 +14,19 @@ use WP\Console\Core\Style\WPStyle;
  */
 trait TaxonomyPostTypeTrait
 {
-    public function labelsQuestion(WPStyle $io, $labels, $translations)
+    public function labelsQuestion($labels, $translations)
     {
         $stringUtils = $this->stringConverter;
         $label_array = [];
         foreach ($labels as $label) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.'.$translations.'.questions.labels-add'). $label,
                 true
             )
             ) {
                 $value = $stringUtils->underscoreToCamelCase($label);
                 $value = $stringUtils->camelCaseToHuman($value);
-                $label_array[$label] = $io->ask(
+                $label_array[$label] = $this->getIo()->ask(
                     $this->trans('commands.generate.'.$translations.'.questions.labels-edit'). $label,
                     $value
                 );
@@ -38,11 +36,11 @@ trait TaxonomyPostTypeTrait
         return $label_array;
     }
 
-    public function visibilityQuestion(WPStyle $io, $labels_visibility, $translations)
+    public function visibilityQuestion($labels_visibility, $translations)
     {
         foreach ($labels_visibility as $index => $value) {
             if ($index != 'menu_position') {
-                $labels_visibility[$index] = ($io->confirm(
+                $labels_visibility[$index] = ($this->getIo()->confirm(
                     $this->trans('commands.generate.'.$translations.'.questions.visibility-options'). str_replace('show_in_', '', $index),
                     true
                 )) ? 'true' : 'false';
@@ -53,7 +51,7 @@ trait TaxonomyPostTypeTrait
                     '25' => 'below Comments', '60' => 'below First separator', '65' => 'below Plugins',
                     '70' => 'below Users', '75' => 'below Tools','80' => 'below Settings', '100' => 'below second separator' ];
 
-                $result = $io->choice(
+                $result = $this->getIo()->choice(
                     $this->trans('commands.generate.'.$translations.'.questions.labels-edit'),
                     $array_menu_position
                 );
@@ -65,18 +63,18 @@ trait TaxonomyPostTypeTrait
         return $labels_visibility;
     }
 
-    public function permalinksQuestion(WPStyle $io, $permalinks, $translations)
+    public function permalinksQuestion($permalinks, $translations)
     {
         $stringUtils = $this->stringConverter;
         $label_array = [];
         foreach ($permalinks as $permalink) {
             if ($permalink != 'slug') {
-                $label_array[$permalink] = ($io->confirm(
+                $label_array[$permalink] = ($this->getIo()->confirm(
                     $this->trans('commands.generate.'.$translations.'.questions.permalinks-options'). $permalink,
                     true
                 )) ? 'true' : 'false';
             } else {
-                $value = $io->ask(
+                $value = $this->getIo()->ask(
                     $this->trans('commands.generate.'.$translations.'.questions.permalinks-slug'),
                     'post_type'
                 );
@@ -88,12 +86,12 @@ trait TaxonomyPostTypeTrait
         return $label_array;
     }
 
-    public function capabilitiesQuestion(WPStyle $io, $capabilities_labels, $translations)
+    public function capabilitiesQuestion($capabilities_labels, $translations)
     {
         $stringUtils = $this->stringConverter;
         $label_array = [];
         foreach ($capabilities_labels as $label) {
-            $value = $io->ask(
+            $value = $this->getIo()->ask(
                 $this->trans('commands.generate.'.$translations.'.questions.capabilities-options').$stringUtils->camelCaseToHuman($stringUtils->underscoreToCamelCase($label)),
                 $label
             );
@@ -103,18 +101,18 @@ trait TaxonomyPostTypeTrait
         return $label_array;
     }
 
-    public function restQuestion(WPStyle $io, $type, $key, $translations)
+    public function restQuestion($type, $key, $translations)
     {
-        $show_rest = $io->confirm(
+        $show_rest = $this->getIo()->confirm(
             $this->trans('commands.generate.'.$translations.'.questions.show-rest')
         );
 
-        $rest_base = $io->ask(
+        $rest_base = $this->getIo()->ask(
             $this->trans('commands.generate.'.$translations.'.questions.rest-base'),
             $key
         );
 
-        $rest_controller_class = $io->ask(
+        $rest_controller_class = $this->getIo()->ask(
             $this->trans('commands.generate.'.$translations.'.questions.rest-controller-class'),
             'WP_REST_'.$type.'_Controller'
         );

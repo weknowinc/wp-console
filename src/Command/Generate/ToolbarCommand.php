@@ -15,7 +15,6 @@ use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Generator\ToolbarGenerator;
 use WP\Console\Utils\Site;
 use WP\Console\Utils\Validator;
@@ -109,15 +108,12 @@ class ToolbarCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getOption('plugin');
         $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $menu_items = $input->getOption('menu-items');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -134,19 +130,17 @@ class ToolbarCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.toolbar.questions.function-name'),
                 'default_toolbar',
                 function ($function_name) {
@@ -161,11 +155,11 @@ class ToolbarCommand extends Command
         if (!$menu_items) {
             $menu_items = [];
             while (true) {
-                $toolbar_id = $io->ask($this->trans('commands.generate.toolbar.questions.menu-items.id'));
-                $parent_id = $io->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.parent'));
-                $title = $io->ask($this->trans('commands.generate.toolbar.questions.menu-items.title'));
-                $href = $io->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.href'));
-                $menu_group = $io->choice($this->trans('commands.generate.toolbar.questions.menu-items.group'), ['No include', 'true', 'false']);
+                $toolbar_id = $this->getIo()->ask($this->trans('commands.generate.toolbar.questions.menu-items.id'));
+                $parent_id = $this->getIo()->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.parent'));
+                $title = $this->getIo()->ask($this->trans('commands.generate.toolbar.questions.menu-items.title'));
+                $href = $this->getIo()->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.href'));
+                $menu_group = $this->getIo()->choice($this->trans('commands.generate.toolbar.questions.menu-items.group'), ['No include', 'true', 'false']);
 
                 $options =
                     [
@@ -177,10 +171,10 @@ class ToolbarCommand extends Command
                     ];
 
                 $meta = [];
-                if ($io->confirm($this->trans('commands.generate.toolbar.questions.menu-items.meta-add'))) {
+                if ($this->getIo()->confirm($this->trans('commands.generate.toolbar.questions.menu-items.meta-add'))) {
                     $meta_options = ['html', 'class', 'target', 'onclick', 'title', 'tabindex'];
                     foreach ($meta_options as $value) {
-                        $ask = $io->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.'.$value));
+                        $ask = $this->getIo()->askEmpty($this->trans('commands.generate.toolbar.questions.menu-items.'.$value));
                         if (!empty($ask)) {
                             $meta[$value] = $ask;
                         }
@@ -205,7 +199,7 @@ class ToolbarCommand extends Command
 
                 array_push($menu_items, $options);
 
-                if (!$io->confirm(
+                if (!$this->getIo()->confirm(
                     $this->trans('commands.generate.toolbar.questions.menu-items.menu-add-another'),
                     true
                 )

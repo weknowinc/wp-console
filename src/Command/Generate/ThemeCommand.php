@@ -15,7 +15,6 @@ use Webmozart\PathUtil\Path;
 use WP\Console\Command\Shared\ConfirmationTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Generator\ThemeGenerator;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\Site;
@@ -154,11 +153,8 @@ class ThemeCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
-        
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
         
@@ -202,8 +198,6 @@ class ThemeCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        
         $validator = $this->validator;
         
         try {
@@ -212,14 +206,14 @@ class ThemeCommand extends Command
                     $input->getOption('theme')
                 ) : null;
         } catch (\Exception $error) {
-            $io->error($error->getMessage());
+            $this->getIo()->error($error->getMessage());
             
             return;
         }
         
         // --theme
         if (!$theme) {
-            $theme = $io->ask(
+            $theme = $this->getIo()->ask(
                 $this->trans('commands.generate.theme.questions.theme'),
                 null,
                 function ($theme) use ($validator) {
@@ -235,12 +229,12 @@ class ThemeCommand extends Command
                     $input->getOption('machine-name')
                 ) : null;
         } catch (\Exception $error) {
-            $io->error($error->getMessage());
+            $this->getIo()->error($error->getMessage());
         }
         
         // --machine name
         if (!$machineName) {
-            $machineName = $io->ask(
+            $machineName = $this->getIo()->ask(
                 $this->trans('commands.generate.theme.questions.machine-name'),
                 $this->stringConverter->createMachineName($theme),
                 function ($machine_name) use ($validator) {
@@ -253,7 +247,7 @@ class ThemeCommand extends Command
         // --theme path
         $themePath = $input->getOption('theme-path');
         if (!$themePath) {
-            $themePath = $io->ask(
+            $themePath = $this->getIo()->ask(
                 $this->trans('commands.generate.theme.questions.theme-path'),
                 basename(WP_CONTENT_DIR) . DIRECTORY_SEPARATOR . 'themes',
                 function ($themePath) use ($machineName) {
@@ -276,7 +270,7 @@ class ThemeCommand extends Command
         // --description
         $description = $input->getOption('description');
         if (!$description) {
-            $description = $io->ask(
+            $description = $this->getIo()->ask(
                 $this->trans('commands.generate.theme.questions.description'),
                 'My Awesome theme'
             );
@@ -286,7 +280,7 @@ class ThemeCommand extends Command
         // --author
         $author = $input->getOption('author');
         if (!$author) {
-            $author = $io->ask(
+            $author = $this->getIo()->ask(
                 $this->trans('commands.generate.theme.questions.author'),
                 ''
             );
@@ -296,7 +290,7 @@ class ThemeCommand extends Command
         // --author url
         $authorUrl = $input->getOption('author-url');
         if (!$authorUrl) {
-            $authorUrl = $io->ask(
+            $authorUrl = $this->getIo()->ask(
                 $this->trans('commands.generate.theme.questions.author-url'),
                 ''
             );
@@ -309,7 +303,7 @@ class ThemeCommand extends Command
             $options_template_files = ['header', 'footer', 'sidebar', 'front-page', 'home', 'single', 'page', 'category',
             'comments', 'search', '404', 'functions'];
             foreach ($options_template_files as $options) {
-                if ($io->confirm(
+                if ($this->getIo()->confirm(
                     $this->trans('commands.generate.theme.questions.template-'.$options),
                     false
                 )
@@ -323,7 +317,7 @@ class ThemeCommand extends Command
         // --screenshot
         $screenshot = $input->getOption('screenshot');
         if (!$screenshot) {
-            $screenshot = $io->askEmpty(
+            $screenshot = $this->getIo()->askEmpty(
                 $this->trans('commands.generate.theme.questions.screenshot')
             );
         }

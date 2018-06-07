@@ -10,7 +10,6 @@ namespace WP\Console\Command\Cache;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Extension\Manager;
 
@@ -50,14 +49,12 @@ class FlushCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $success = $this->site->cacheFlush();
 
         if ($success) {
-            $io->info($this->trans('commands.cache.flush.messages.successful'));
+            $this->getIo()->info($this->trans('commands.cache.flush.messages.successful'));
         } else {
-            $io->error($this->trans('commands.cache.flush.messages.fail'));
+            $this->getIo()->error($this->trans('commands.cache.flush.messages.fail'));
         }
     }
 }

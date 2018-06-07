@@ -15,7 +15,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Core\Generator\SiteInstallGenerator;
 use WP\Console\Core\Utils\ConfigurationManager;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Command\Shared\DatabaseTrait;
 use WP\Console\Core\Utils\ArgvInputReader;
@@ -152,14 +151,13 @@ class InstallCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $argvInputReader = new ArgvInputReader();
 
         // --uri parameter
         $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_HOST);
         $scheme =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_SCHEME);
         if ($uri == 'default') {
-            $siteUri = $io->ask(
+            $siteUri = $this->getIo()->ask(
                 $this->trans('commands.site.install.questions.site-url'),
                 'http://wordpress.local'
             );
@@ -180,7 +178,7 @@ class InstallCommand extends Command
                 ->getConfiguration()
                 ->get('application.language');
 
-            $langcode = $io->choiceNoList(
+            $langcode = $this->getIo()->choiceNoList(
                 $this->trans('commands.site.install.questions.langcode'),
                 array_values($languages),
                 $languages[$defaultLanguage]
@@ -192,42 +190,42 @@ class InstallCommand extends Command
         // --db-host option
         $dbHost = $input->getOption('db-host');
         if (!$dbHost) {
-            $dbHost = $this->dbHostQuestion($io);
+            $dbHost = $this->dbHostQuestion();
             $input->setOption('db-host', $dbHost);
         }
 
         // --db-name option
         $dbName = $input->getOption('db-name');
         if (!$dbName) {
-            $dbName = $this->dbNameQuestion($io);
+            $dbName = $this->dbNameQuestion();
             $input->setOption('db-name', $dbName);
         }
 
         // --db-user option
         $dbUser = $input->getOption('db-user');
         if (!$dbUser) {
-            $dbUser = $this->dbUserQuestion($io);
+            $dbUser = $this->dbUserQuestion();
             $input->setOption('db-user', $dbUser);
         }
 
         // --db-pass option
         $dbPass = $input->getOption('db-pass');
         if (!$dbPass) {
-            $dbPass = $this->dbPassQuestion($io);
+            $dbPass = $this->dbPassQuestion();
             $input->setOption('db-pass', $dbPass);
         }
 
         // --db-prefix option
         $dbPrefix = $input->getOption('db-prefix');
         if (!$dbPrefix) {
-            $dbPrefix = $this->dbPrefixQuestion($io);
+            $dbPrefix = $this->dbPrefixQuestion();
             $input->setOption('db-prefix', $dbPrefix);
         }
 
         // --site-name option
         $siteName = $input->getOption('site-name');
         if (!$siteName) {
-            $siteName = $io->ask(
+            $siteName = $this->getIo()->ask(
                 $this->trans('commands.site.install.questions.site-name'),
                 'Wordpress'
             );
@@ -237,7 +235,7 @@ class InstallCommand extends Command
         // --account-name option
         $accountName = $input->getOption('account-name');
         if (!$accountName) {
-            $accountName = $io->ask(
+            $accountName = $this->getIo()->ask(
                 $this->trans('commands.site.install.questions.account-name'),
                 'admin'
             );
@@ -247,7 +245,7 @@ class InstallCommand extends Command
         // --account-mail option
         $accountMail = $input->getOption('account-mail');
         if (!$accountMail) {
-            $accountMail = $io->ask(
+            $accountMail = $this->getIo()->ask(
                 $this->trans('commands.site.install.questions.account-mail'),
                 'admin@example.com'
             );
@@ -257,7 +255,7 @@ class InstallCommand extends Command
         // --account-pass option
         $accountPass = $input->getOption('account-pass');
         if (!$accountPass) {
-            $accountPass = $io->askHidden(
+            $accountPass = $this->getIo()->askHidden(
                 $this->trans('commands.site.install.questions.account-pass')
             );
             $input->setOption('account-pass', $accountPass);
@@ -269,7 +267,6 @@ class InstallCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $saltGenerator = new SaltGenerator();
 
         $uri =  parse_url($input->getParameterOption(['--uri', '-l'], 'http://default'), PHP_URL_HOST);
@@ -278,7 +275,7 @@ class InstallCommand extends Command
         $this->site->setSiteURL($scheme, $uri);
 
         if ($this->site->getConfig()) {
-            $io->error(
+            $this->getIo()->error(
                 sprintf($this->trans('commands.site.install.messages.already-installed'), $uri, $uri)
             );
             exit(1);
@@ -324,18 +321,18 @@ class InstallCommand extends Command
         );
 
         if ($force && file_exists($this->appRoot . "/wp-config.php.old")) {
-            $io->error(
+            $this->getIo()->error(
                 $this->trans('commands.site.install.messages.config-overwrite')
             );
         }
 
-        $io->info(
+        $this->getIo()->info(
             $this->trans('commands.site.install.messages.installing')
         );
 
         $this->runInstaller($siteName, $accountName, $accountMail, true, $accountPass);
 
-        $io->info(
+        $this->getIo()->info(
             $this->trans('commands.site.install.messages.installed')
         );
     }

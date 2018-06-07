@@ -16,7 +16,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Generator\CronBaseGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 
 class CronBaseCommand extends Command
@@ -123,8 +122,6 @@ class CronBaseCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $plugin = $input->getOption('plugin');
         $class_name = $this->validator->validateClassName($input->getOption('class-name'));
         $timestamp = $input->getOption('timestamp');
@@ -132,10 +129,8 @@ class CronBaseCommand extends Command
         $hook_name = $input->getOption('hook-name');
         $hook_arguments = $input->getOption('hook-arguments');
 
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
-
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -155,19 +150,17 @@ class CronBaseCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
 
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.cron.'.$this->cronType.'.questions.class-name'),
                 'DefaultCron'.ucfirst($this->cronType),
                 function ($class_name) {
@@ -181,7 +174,7 @@ class CronBaseCommand extends Command
         $timestamp = $input->getOption('timestamp');
         if (!$timestamp) {
             if ($this->cronType == 'single') {
-                $timestamp = $io->ask(
+                $timestamp = $this->getIo()->ask(
                     $this->trans('commands.generate.cron.'.$this->cronType.'.questions.timestamp'),
                     null,
                     function ($timestamp) {
@@ -192,7 +185,7 @@ class CronBaseCommand extends Command
                     }
                 );
             } else {
-                $timestamp = $io->choice(
+                $timestamp = $this->getIo()->choice(
                     $this->trans('commands.generate.cron.'.$this->cronType.'.questions.timestamp'),
                     ['GMT Time', 'Local Time']
                 );
@@ -204,19 +197,19 @@ class CronBaseCommand extends Command
             // --recurrence
             $recurrence = $input->getOption('recurrence');
             if (!$recurrence) {
-                $recurrence = $io->choice(
+                $recurrence = $this->getIo()->choice(
                     $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence'),
                     ['Hourly', 'Twice daily', 'Daily' ,'Custom']
                 );
 
                 if ($recurrence == 'Custom') {
-                    $recurrence_name = $io->ask(
+                    $recurrence_name = $this->getIo()->ask(
                         $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence-name')
                     );
-                    $recurrence_label = $io->ask(
+                    $recurrence_label = $this->getIo()->ask(
                         $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence-label')
                     );
-                    $recurrence_interval = $io->ask(
+                    $recurrence_interval = $this->getIo()->ask(
                         $this->trans('commands.generate.cron.'.$this->cronType.'.questions.recurrence-interval'),
                         null,
                         function ($recurrence_interval) {
@@ -240,7 +233,7 @@ class CronBaseCommand extends Command
         // --hook-name
         $hook_name = $input->getOption('hook-name');
         if (!$hook_name) {
-            $hook_name = $io->ask(
+            $hook_name = $this->getIo()->ask(
                 $this->trans('commands.generate.cron.'.$this->cronType.'.questions.hook-name'),
                 strtolower($class_name).'_hook'
             );
@@ -250,7 +243,7 @@ class CronBaseCommand extends Command
         // --hook arguments
         $hook_arguments = $input->getOption('hook-arguments');
         if (!$hook_arguments) {
-            $hook_arguments = $io->askEmpty($this->trans('commands.generate.cron.'.$this->cronType.'.questions.hook-arguments'));
+            $hook_arguments = $this->getIo()->askEmpty($this->trans('commands.generate.cron.'.$this->cronType.'.questions.hook-arguments'));
 
             $hook_arguments =  $hook_arguments == null ? $hook_arguments : explode(",", str_replace(" ", "", $hook_arguments));
 

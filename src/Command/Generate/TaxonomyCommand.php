@@ -17,7 +17,6 @@ use WP\Console\Command\Shared\TaxonomyTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\TaxonomyGenerator;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 
@@ -181,10 +180,8 @@ class TaxonomyCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
         
@@ -228,21 +225,19 @@ class TaxonomyCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        
         $stringUtils = $this->stringConverter;
         
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
         
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.taxonomy.questions.class-name'),
                 $stringUtils->humanToCamelCase($plugin).'Taxonomy',
                 function ($class) {
@@ -255,7 +250,7 @@ class TaxonomyCommand extends Command
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.taxonomy.questions.function-name'),
                 $stringUtils->camelCaseToUnderscore($class_name),
                 function ($function_name) {
@@ -268,7 +263,7 @@ class TaxonomyCommand extends Command
         // --taxonomy key
         $taxonomy_key = $input->getOption('taxonomy-key');
         if (!$taxonomy_key) {
-            $taxonomy_key = $io->ask(
+            $taxonomy_key = $this->getIo()->ask(
                 $this->trans('commands.generate.taxonomy.questions.taxonomy_key')
             );
             $taxonomy_key = $stringUtils->humanToCamelCase($taxonomy_key);
@@ -278,7 +273,7 @@ class TaxonomyCommand extends Command
         // --singular name
         $singular_name = $input->getOption('singular-name');
         if (!$singular_name) {
-            $singular_name = $io->ask(
+            $singular_name = $this->getIo()->ask(
                 $this->trans('commands.generate.taxonomy.questions.singular-name'),
                 'Taxonomy'
             );
@@ -288,7 +283,7 @@ class TaxonomyCommand extends Command
         // --plural name
         $plural_name = $input->getOption('plural-name');
         if (!$plural_name) {
-            $plural_name = $io->ask(
+            $plural_name = $this->getIo()->ask(
                 $this->trans('commands.generate.taxonomy.questions.plural-name'),
                 'Taxonomies'
             );
@@ -298,7 +293,7 @@ class TaxonomyCommand extends Command
         // --post type
         /*       $post_type = $input->getOption('post-type');
             if (!$post_type) {
-                $post_type = $io->ask(
+                $post_type = $this->getIo()->ask(
                     $this->trans('commands.generate.taxonomy.questions.post-type'),
                     ['post', 'page']
                 );
@@ -308,7 +303,7 @@ class TaxonomyCommand extends Command
         // --hierarchical
         $hierarchical = $input->getOption('hierarchical');
         if (!$hierarchical) {
-            $hierarchical = $io->confirm(
+            $hierarchical = $this->getIo()->confirm(
                 $this->trans('commands.generate.taxonomy.questions.hierarchical'),
                 true
             );
@@ -318,7 +313,7 @@ class TaxonomyCommand extends Command
         // --labels
            $labels = $input->getOption('labels');
         if (!$labels) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.taxonomy.questions.labels'),
                 false
             )
@@ -330,7 +325,7 @@ class TaxonomyCommand extends Command
                     'items_list_navigation'
                 );
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::labelsQuestion
-                    $labels = $this->labelsQuestion($io, $labels, 'taxonomy');
+                    $labels = $this->labelsQuestion($labels, 'taxonomy');
                 $input->setOption('labels', $labels);
             }
         }
@@ -338,7 +333,7 @@ class TaxonomyCommand extends Command
         // --visibility
         $visibility = $input->getOption('visibility');
         if (!$visibility) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.taxonomy.questions.visibility'),
                 false
             )
@@ -351,7 +346,7 @@ class TaxonomyCommand extends Command
                     'show_tagcloud' => true
                 ];
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::visiblityQuestion
-                $visibility = $this->visibilityQuestion($io, $visibility_labels, 'taxonomy');
+                $visibility = $this->visibilityQuestion($visibility_labels, 'taxonomy');
             }
             $input->setOption('visibility', $visibility);
         }
@@ -360,7 +355,7 @@ class TaxonomyCommand extends Command
         $options_permalinks= ['default', 'custom', 'no permalinks'];
         $permalinks = $input->getOption('permalinks');
         if (!$permalinks) {
-            if ($io->choice(
+            if ($this->getIo()->choice(
                 $this->trans('commands.generate.taxonomy.questions.permalinks'),
                 $options_permalinks
             ) == 'custom'
@@ -368,7 +363,7 @@ class TaxonomyCommand extends Command
                 $permalinks_labels = [ 'slug', 'with_front', 'hierarchical'];
 
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::permalinksQuestion
-                $permalinks = $this->permalinksQuestion($io, $permalinks_labels, 'taxonomy');
+                $permalinks = $this->permalinksQuestion($permalinks_labels, 'taxonomy');
                 $input->setOption('permalinks', $permalinks);
             }
         }
@@ -376,7 +371,7 @@ class TaxonomyCommand extends Command
         // --capabilities
         $capabilities = $input->getOption('capabilities');
         if (!$capabilities) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.taxonomy.questions.capabilities'),
                 false
             )
@@ -384,7 +379,7 @@ class TaxonomyCommand extends Command
                 $capabilities_labels = ['edit_terms', 'delete_terms', 'manage_terms', 'assign_terms'];
 
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::capabilitiesQuestion
-                $capabilities = $this->capabilitiesQuestion($io, $capabilities_labels, 'taxonomy');
+                $capabilities = $this->capabilitiesQuestion($capabilities_labels, 'taxonomy');
                 $input->setOption('capabilities', $capabilities);
             }
         }
@@ -392,13 +387,13 @@ class TaxonomyCommand extends Command
         // --rest
         $rest = $input->getOption('rest');
         if (!$rest) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.taxonomy.questions.rest'),
                 false
             )
             ) {
                 // @see \WP\Console\Command\Shared\TaxonomyPostTypeTrait::restQuestion
-                $rest = $this->restQuestion($io, 'Taxonomy', $input->getOption('taxonomy-key'), 'taxonomy');
+                $rest = $this->restQuestion('Taxonomy', $input->getOption('taxonomy-key'), 'taxonomy');
                 $input->setOption('rest', $rest);
             }
         }
@@ -406,7 +401,7 @@ class TaxonomyCommand extends Command
         // --child themes
         $child_themes = $input->getOption('child-themes');
         if (!$child_themes) {
-            $child_themes = $io->confirm(
+            $child_themes = $this->getIo()->confirm(
                 $this->trans('commands.generate.taxonomy.questions.child-themes'),
                 false
             );
@@ -416,12 +411,12 @@ class TaxonomyCommand extends Command
         // --update count callback
         $update_count_callback = $input->getOption('update-count-callback');
         if (!$update_count_callback) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.taxonomy.questions.update-count-callback-add'),
                 false
             )
             ) {
-                $update_count_callback = $io->ask($this->trans('commands.generate.taxonomy.questions.update-count-callback'));
+                $update_count_callback = $this->getIo()->ask($this->trans('commands.generate.taxonomy.questions.update-count-callback'));
                 $update_count_callback = $stringUtils->humanToCamelCase($update_count_callback);
                 $input->setOption('update-count-callback', $update_count_callback);
             }

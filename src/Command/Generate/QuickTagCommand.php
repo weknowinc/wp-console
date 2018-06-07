@@ -17,7 +17,6 @@ use WP\Console\Core\Command\Command;
 use WP\Console\Generator\QuickTagGenerator;
 use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 use WP\Console\Utils\Validator;
 
@@ -117,16 +116,13 @@ class QuickTagCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $extension = $input->getOption('extension');
         $extensionType = $input->getOption('extension-type');
         $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $quicktag_items = $input->getOption('quicktag-items');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -144,26 +140,24 @@ class QuickTagCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --extension type
         $extensionType = $input->getOption('extension-type');
         if (!$extensionType) {
-            $extensionType = $this->extensionTypeQuestion($io);
+            $extensionType = $this->extensionTypeQuestion();
             $input->setOption('extension-type', $extensionType);
         }
 
         // --extension
         $extension = $input->getOption('extension');
         if (!$extension) {
-            $extension = $this->extensionQuestion($io, $extensionType);
+            $extension = $this->extensionQuestion($extensionType);
             $input->setOption('extension', $extension);
         }
 
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.quicktag.questions.function-name'),
                 'custom_quicktag',
                 function ($function_name) {
@@ -179,7 +173,7 @@ class QuickTagCommand extends Command
             $array_quicktag_items = [];
             $stringConverter = $this->stringConverter;
             while (true) {
-                $id = $io->ask(
+                $id = $this->getIo()->ask(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.id'),
                     '',
                     function ($id) use ($stringConverter) {
@@ -187,39 +181,39 @@ class QuickTagCommand extends Command
                     }
                 );
 
-                $display = $io->ask(
+                $display = $this->getIo()->ask(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.display'),
                     ''
                 );
 
-                $starting_tag = $io->ask(
+                $starting_tag = $this->getIo()->ask(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.starting-tag'),
                     ''
                 );
 
-                $ending_tag = $io->askEmpty(
+                $ending_tag = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.ending-tag')
                 );
 
-                $key = $io->askEmpty(
+                $key = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.key')
                 );
 
-                $title = $io->askEmpty(
+                $title = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.title')
                 );
 
-                $priority = $io->askEmpty(
+                $priority = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.priority'),
                     function ($priority) {
                         if (!is_numeric(trim($priority))) {
                             throw new \Exception('The Priority only can be a number');
                         }
-                    return $priority;
+                        return $priority;
                     }
                 );
 
-                $instance = $io->askEmpty(
+                $instance = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.instance')
                 );
 
@@ -237,7 +231,7 @@ class QuickTagCommand extends Command
                     ]
                 );
 
-                if (!$io->confirm(
+                if (!$this->getIo()->confirm(
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.quicktag-add-another'),
                     true
                 )

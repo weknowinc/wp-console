@@ -6,17 +6,13 @@
 
 namespace WP\Console\Command\Role;
 
-use Symfony\Component\Console\Input\InputOption;
-use WP\Console\Core\Utils\StringConverter;
 use WP\Console\Utils\Site;
-use WP\Console\Utils\Validator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
 use WP\Console\Utils\WordpressApi;
 use WP\Console\Command\Shared\ConfirmationTrait;
-use WP\Console\Core\Style\WPStyle;
 
 class DeleteCommand extends Command
 {
@@ -68,8 +64,6 @@ class DeleteCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $roles = $input->getArgument('roles');
 
         $role = $this->deleteRole(
@@ -82,19 +76,19 @@ class DeleteCommand extends Command
         ];
 
         if ($role['success']) {
-            $io->success(
+            $this->getIo()->success(
                 sprintf(
                     $this->trans('commands.role.delete.messages.role-created')
                 )
             );
 
-            $io->table($tableHeader, $role['success']);
+            $this->getIo()->table($tableHeader, $role['success']);
 
             return 0;
         }
 
         if ($role['error']) {
-            $io->error($role['error']['error']);
+            $this->getIo()->error($role['error']['error']);
 
             return 1;
         }
@@ -105,15 +99,13 @@ class DeleteCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $rolename = $input->getArgument('roles');
         if (!$rolename) {
             $roles_collection = [];
             $roles = array_keys($this->wordpressApi->getRoles());
-            $io->writeln($this->trans('commands.common.questions.roles.message'));
+            $this->getIo()->writeln($this->trans('commands.common.questions.roles.message'));
             while (true) {
-                $role = $io->choiceNoList(
+                $role = $this->getIo()->choiceNoList(
                     $this->trans('commands.common.questions.roles.name'),
                     $roles,
                     null,

@@ -17,7 +17,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\ContainerAwareCommand;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\StringConverter;
 
 abstract class RegisterBaseCommand extends ContainerAwareCommand
@@ -130,17 +129,14 @@ abstract class RegisterBaseCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $extension = $input->getOption('extension');
         $extensionType = $input->getOption('extension-type');
         $function_name = $this->validator->validateFunctionName($input->getOption('function-name'));
         $hook = $input->getOption('hook');
         $register_items = $input->getOption($this->RegisterType.'-items');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io, $yes)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
 
@@ -160,26 +156,24 @@ abstract class RegisterBaseCommand extends ContainerAwareCommand
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         // --extension type
         $extensionType = $input->getOption('extension-type');
         if (!$extensionType) {
-            $extensionType = $this->extensionTypeQuestion($io);
+            $extensionType = $this->extensionTypeQuestion();
             $input->setOption('extension-type', $extensionType);
         }
 
         // --extension
         $extension = $input->getOption('extension');
         if (!$extension) {
-            $extension = $this->extensionQuestion($io, $extensionType);
+            $extension = $this->extensionQuestion($extensionType);
             $input->setOption('extension', $extension);
         }
 
         // --function name
         $function_name = $input->getOption('function-name');
         if (!$function_name) {
-            $function_name = $io->ask(
+            $function_name = $this->getIo()->ask(
                 $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.function-name'),
                 'custom_register_'.$this->RegisterType.'_'.$extensionType,
                 function ($function_name) {
@@ -192,7 +186,7 @@ abstract class RegisterBaseCommand extends ContainerAwareCommand
         // --hook
         $hook = $input->getOption('hook');
         if (!$hook) {
-            $hook = $io->choice(
+            $hook = $this->getIo()->choice(
                 $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.hook'),
                 ['wp_enqueue_scripts', 'login_enqueue_scripts', 'admin_enqueue_scripts', 'enqueue_embed_scripts' ]
             );
@@ -204,33 +198,33 @@ abstract class RegisterBaseCommand extends ContainerAwareCommand
         if (!$register_items) {
             $register_items = [];
             while (true) {
-                $name = $io->ask(
+                $name = $this->getIo()->ask(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.name')
                 );
 
-                $url = $io->ask(
+                $url = $this->getIo()->ask(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.url')
                 );
 
-                $dependencies = $io->askEmpty(
+                $dependencies = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.dependencies')
                 );
 
-                $version = $io->askEmpty(
+                $version = $this->getIo()->askEmpty(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.version')
                 );
 
-                $media = $io->choiceNoList(
+                $media = $this->getIo()->choiceNoList(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.'.($this->RegisterType == "script" ? "location":"media")),
                     $this->RegisterType == "script" ? ["header", "footer"]:["all", "braille", "embossed", "handheld", "print", "projection", "screen", "speech", "tty", "tv"]
                 );
 
-                $deregister = $io->confirm(
+                $deregister = $this->getIo()->confirm(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.deregister'),
                     false
                 );
 
-                $enqueuer = $io->confirm(
+                $enqueuer = $this->getIo()->confirm(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.enqueue')
                 );
 
@@ -249,7 +243,7 @@ abstract class RegisterBaseCommand extends ContainerAwareCommand
                     ]
                 );
 
-                if (!$io->confirm(
+                if (!$this->getIo()->confirm(
                     $this->trans('commands.generate.register.'.$this->RegisterType.'.questions.'.$this->RegisterType.'-items.'.$this->RegisterType.'-add-another'),
                     false
                 )

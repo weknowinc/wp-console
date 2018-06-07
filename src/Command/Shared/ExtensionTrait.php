@@ -7,8 +7,6 @@
 
 namespace WP\Console\Command\Shared;
 
-use WP\Console\Core\Style\WPStyle;
-
 /**
  * Class ExtensionTrait
  *
@@ -18,16 +16,13 @@ trait ExtensionTrait
 {
 
     /**
-     * @param WPStyle   $io
-     * @param bool|true $plugins
-     * @param bool|true $theme
-     * @param bool|true $profile
+     * @param string $extensionType
      *
      * @return string
      *
      * @throws \Exception
      */
-    public function extensionQuestion(WPStyle $io, $extensionType)
+    public function extensionQuestion($extensionType)
     {
         $plugins = [];
         $themes = [];
@@ -48,7 +43,7 @@ trait ExtensionTrait
             throw new \Exception('No extension available, execute the proper generator command to generate one.');
         }
 
-        $extension = $io->choiceNoList(
+        $extension = $this->getIo()->choiceNoList(
             $this->trans('commands.common.questions.extension'),
             $extensions
         );
@@ -57,15 +52,13 @@ trait ExtensionTrait
     }
 
     /**
-     * @param WPStyle $io
-     *
      * @return string
      *
      * @throws \Exception
      */
-    public function extensionTypeQuestion(WPStyle $io)
+    public function extensionTypeQuestion()
     {
-        $extensionType = $io->choiceNoList(
+        $extensionType = $this->getIo()->choiceNoList(
             $this->trans('commands.common.questions.extension-type'),
             ['plugin', 'theme']
         );

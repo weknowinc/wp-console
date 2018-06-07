@@ -16,7 +16,6 @@ use WP\Console\Command\Shared\PluginTrait;
 use WP\Console\Core\Command\Command;
 use WP\Console\Extension\Manager;
 use WP\Console\Generator\MetaBoxGenerator;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Validator;
 use WP\Console\Core\Utils\StringConverter;
 
@@ -156,10 +155,8 @@ class MetaBoxCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-        
-        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmGeneration
-        if (!$this->confirmGeneration($io)) {
+        // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
+        if (!$this->confirmOperation()) {
             return;
         }
         
@@ -195,22 +192,19 @@ class MetaBoxCommand extends Command
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
         $stringUtils = $this->stringConverter;
         
         // --plugin
         $plugin = $input->getOption('plugin');
         if (!$plugin) {
-            $plugin = $this->pluginQuestion($io);
+            $plugin = $this->pluginQuestion();
             $input->setOption('plugin', $plugin);
         }
-        
-        //Get plugin for options
-        $plugin = $input->getOption('plugin');
+
         // --class name
         $class_name = $input->getOption('class-name');
         if (!$class_name) {
-            $class_name = $io->ask(
+            $class_name = $this->getIo()->ask(
                 $this->trans('commands.generate.metabox.questions.class-name'),
                 'DefaultMetabox',
                 function ($value) use ($stringUtils) {
@@ -226,7 +220,7 @@ class MetaBoxCommand extends Command
         // --metabox id
         $metabox_id = $input->getOption('metabox-id');
         if (!$metabox_id) {
-            $metabox_id = $io->ask(
+            $metabox_id = $this->getIo()->ask(
                 $this->trans('commands.generate.metabox.questions.metabox-id'),
                 $stringUtils->camelCaseToUnderscore($class_name)
             );
@@ -236,7 +230,7 @@ class MetaBoxCommand extends Command
         // --metabox title
         $title = $input->getOption('title');
         if (!$title) {
-            $title = $io->ask(
+            $title = $this->getIo()->ask(
                 $this->trans('commands.generate.metabox.questions.title'),
                 ucwords($stringUtils->camelCaseToHuman($class_name))
             );
@@ -246,7 +240,7 @@ class MetaBoxCommand extends Command
         // --callback_function
         $callback_function = $input->getOption('callback-function');
         if (!$callback_function) {
-            $callback_function = $io->ask(
+            $callback_function = $this->getIo()->ask(
                 $this->trans('commands.generate.metabox.questions.callback-function'),
                 $stringUtils->camelCaseToUnderscore($class_name) . '_callback',
                 function ($function_name) {
@@ -260,7 +254,7 @@ class MetaBoxCommand extends Command
         $screen_options = ['post', 'page', 'custom'];
         $screen = $input->getOption('screen');
         if (!$screen) {
-            $screen = $io->choiceNoList(
+            $screen = $this->getIo()->choiceNoList(
                 $this->trans('commands.generate.metabox.questions.screen'),
                 $screen_options
             );
@@ -271,7 +265,7 @@ class MetaBoxCommand extends Command
         $options_page_location = ['advanced', 'normal', 'side'];
         $page_location = $input->getOption('page-location');
         if (!$page_location) {
-            $page_location = $io->choiceNoList(
+            $page_location = $this->getIo()->choiceNoList(
                 $this->trans('commands.generate.metabox.questions.page-location'),
                 $options_page_location
             );
@@ -282,7 +276,7 @@ class MetaBoxCommand extends Command
         $options_priority = ['default', 'core', 'high', 'low'];
         $priority = $input->getOption('priority');
         if (!$priority) {
-            $priority = $io->choiceNoList(
+            $priority = $this->getIo()->choiceNoList(
                 $this->trans('commands.generate.metabox.questions.priority'),
                 $options_priority
             );
@@ -293,13 +287,13 @@ class MetaBoxCommand extends Command
         // -- metabox items
         $metabox_items = $input->getOption('metabox-items');
         if (!$metabox_items) {
-            if ($io->confirm(
+            if ($this->getIo()->confirm(
                 $this->trans('commands.generate.metabox.questions.metabox-items.metabox-add'),
                 true
             )
             ) {
                 // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                $metabox_items = $this->fieldsQuestion($io, 'metabox', 'metabox-items');
+                $metabox_items = $this->fieldsQuestion($this->getIo(), 'metabox', 'metabox-items');
                 $input->setOption('metabox-items', $metabox_items);
             }
         }
@@ -308,7 +302,7 @@ class MetaBoxCommand extends Command
             // --wp nonce
             $wp_nonce = $input->getOption('wp-nonce');
             if (!$wp_nonce) {
-                $wp_nonce = $io->confirm(
+                $wp_nonce = $this->getIo()->confirm(
                     $this->trans('commands.generate.metabox.questions.wp-nonce'),
                     true
                 );
@@ -318,7 +312,7 @@ class MetaBoxCommand extends Command
             // --auto save
             $auto_save = $input->getOption('auto-save');
             if (!$auto_save) {
-                if ($auto_save = $io->confirm(
+                if ($auto_save = $this->getIo()->confirm(
                     $this->trans('commands.generate.metabox.questions.auto-save'),
                     true
                 )

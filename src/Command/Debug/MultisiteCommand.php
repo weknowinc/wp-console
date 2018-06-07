@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use WP\Console\Core\Command\Command;
-use WP\Console\Core\Style\WPStyle;
 use WP\Console\Utils\Site;
 
 /**
@@ -68,15 +67,13 @@ class MultisiteCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new WPStyle($input, $output);
-
         $userID = $input->getOption('user-id');
 
         $currentUser = $this->site->setCurrentUser($userID);
 
         $sites = $this->site->getUserSites($currentUser->ID);
 
-        $io->info(
+        $this->getIo()->info(
             sprintf(
                 $this->trans('commands.debug.multisite.messages.user-sites'),
                 $currentUser->display_name,
@@ -109,7 +106,7 @@ class MultisiteCommand extends Command
             ];
         }
 
-        $io->table($tableHeader, $tableRows);
+        $this->getIo()->table($tableHeader, $tableRows);
 
         return 0;
     }
