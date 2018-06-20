@@ -80,12 +80,17 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $io = new WPStyle($input, $output);
-        if ($commandName = $this->getCommandName($input)) {
-            $this->commandName = $commandName;
+        $messageManager = $this->container->get('console.message_manager');
+        $this->commandName = $this->getCommandName($input)?:'list';
+
+        $clear = $this->container->get('console.configuration_manager')
+            ->getConfiguration()
+            ->get('application.clear')?:false;
+        if ($clear === true || $clear === 'true') {
+            $output->write(sprintf("\033\143"));
         }
-        $this->registerEvents();
-        $this->registerCommandsFromAutoWireConfiguration();
-        $this->registerChainCommands();
+
+        $this->loadCommands();
 
         /**
          * @var ConfigurationManager $configurationManager
@@ -93,15 +98,49 @@ class Application extends BaseApplication
         $configurationManager = $this->container
             ->get('console.configuration_manager');
 
-        if ($commandName && !$this->has($commandName)) {
-            $io->error(
-                sprintf(
-                    $this->trans('application.errors.invalid-command'),
-                    $this->commandName
-                )
-            );
+        if (!$this->has($this->commandName)) {
+            $isValidCommand = false;
+            $config = $configurationManager->getConfiguration();
+            $mappings = $config->get('application.commands.mappings');
 
-            return 1;
+            if (array_key_exists($this->commandName, $mappings)) {
+                $commandNameMap = $mappings[$this->commandName];
+                $messageManager->warning(
+                    sprintf(
+                        $this->trans('application.errors.renamed-command'),
+                        $this->commandName,
+                        $commandNameMap
+                    )
+                );
+                $this->add(
+                    $this->find($commandNameMap)->setAliases([$this->commandName])
+                );
+                $isValidCommand = true;
+            }
+
+
+            $namespaces = $this->getNamespaces();
+            if (in_array($this->commandName, $namespaces)) {
+                $input = new ArrayInput(
+                    [
+                        'command' => 'list',
+                        'namespace' => $this->commandName
+                    ]
+                );
+                $this->commandName = 'list';
+                $isValidCommand = true;
+            }
+
+            if (!$isValidCommand) {
+                $io->error(
+                    sprintf(
+                        $this->trans('application.errors.invalid-command'),
+                        $this->commandName
+                    )
+                );
+
+                return 1;
+            }
         }
 
         $code = parent::doRun(
@@ -109,15 +148,179 @@ class Application extends BaseApplication
             $output
         );
 
-        //        if ($this->commandName != 'init' && $configurationManager->getMissingConfigurationFiles()) {
-        //            $io->warning($this->trans('application.site.errors.missing-config-file'));
-        //            $io->listing($configurationManager->getMissingConfigurationFiles());
-        //            $io->commentBlock(
-        //                $this->trans('application.site.errors.missing-config-file-command')
-        //            );
-        //        }
+        //        // Propagate Drupal messages.
+        //        $this->addDrupalMessages($messageManager);
+
+        if ($this->showMessages($input)) {
+            $messages = $messageManager->getMessages();
+
+            foreach ($messages as $message) {
+                $showBy = $message['showBy'];
+                if ($showBy!=='all' && $showBy!==$this->commandName) {
+                    continue;
+                }
+                $type = $message['type'];
+                $io->$type($message['message']);
+            }
+        }
+
 
         return $code;
+    }
+
+    public function loadCommands()
+    {
+        $this->registerGenerators();
+        $this->registerCommands();
+        $this->registerEvents();
+        $this->registerExtendCommands();
+
+        /**
+         * @var ConfigurationManager $configurationManager
+         */
+        $configurationManager = $this->container
+            ->get('console.configuration_manager');
+
+        $config = $configurationManager->getConfiguration()
+            ->get('application.extras.config')?:'true';
+        if ($config === 'true') {
+            $this->registerCommandsFromAutoWireConfiguration();
+        }
+
+        $chains = $configurationManager->getConfiguration()
+            ->get('application.extras.chains')?:'true';
+        if ($chains === 'true') {
+            $this->registerChainCommands();
+        }
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return bool
+     */
+    private function showMessages(InputInterface $input)
+    {
+        $format = $input->hasOption('format')?$input->getOption('format'):'txt';
+
+        if ($format !== 'txt') {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * registerCommands
+     */
+    private function registerCommands()
+    {
+        $consoleCommands = $this->container
+            ->findTaggedServiceIds('wordpress.command');
+
+        $aliases = $this->container->get('console.configuration_manager')
+            ->getConfiguration()
+            ->get('application.commands.aliases')?:[];
+
+        $invalidCommands = [];
+        if ($this->container->has('console.key_value_storage')) {
+            $invalidCommands = $this->container
+                ->get('console.key_value_storage')
+                ->get('invalid_commands', []);
+        }
+
+        foreach ($consoleCommands as $name => $tags) {
+            if (in_array($name, $invalidCommands)) {
+                continue;
+            }
+
+            if (!$this->container->has($name)) {
+                continue;
+            }
+
+            try {
+                $command = $this->container->get($name);
+            } catch (\Exception $e) {
+                echo $name . ' - ' . $e->getMessage() . PHP_EOL;
+
+                continue;
+            }
+
+            if (!$command) {
+                continue;
+            }
+
+            if (method_exists($command, 'setTranslator')) {
+                $command->setTranslator(
+                    $this->container->get('console.translator_manager')
+                );
+            }
+
+            if (method_exists($command, 'setContainer')) {
+                $command->setContainer(
+                    $this->container->get('service_container')
+                );
+            }
+
+            if (array_key_exists($command->getName(), $aliases)) {
+                $commandAliases = $aliases[$command->getName()];
+                if (!is_array($commandAliases)) {
+                    $commandAliases = [$commandAliases];
+                }
+                $commandAliases = array_merge(
+                    $command->getAliases(),
+                    $commandAliases
+                );
+                $command->setAliases($commandAliases);
+            }
+
+            $this->add($command);
+        }
+    }
+
+    /**
+     * registerGenerators
+     */
+    private function registerGenerators()
+    {
+        $consoleGenerators = $this->container
+            ->findTaggedServiceIds('wordpress.generator');
+
+        foreach ($consoleGenerators as $name => $tags) {
+            if (!$this->container->has($name)) {
+                continue;
+            }
+
+            try {
+                $generator = $this->container->get($name);
+            } catch (\Exception $e) {
+                echo $name . ' - ' . $e->getMessage() . PHP_EOL;
+
+                continue;
+            }
+
+            if (!$generator) {
+                continue;
+            }
+
+            if (method_exists($generator, 'setRenderer')) {
+                $generator->setRenderer(
+                    $this->container->get('console.renderer')
+                );
+            }
+
+            if (method_exists($generator, 'setFileQueue')) {
+                $generator->setFileQueue(
+                    $this->container->get('console.file_queue')
+                );
+            }
+
+            if (method_exists($generator, 'setCountCodeLines')) {
+                $generator->setCountCodeLines(
+                    $this->container->get('console.count_code_lines')
+                );
+            }
+        }
     }
 
     private function registerEvents()
@@ -381,6 +584,209 @@ class Application extends BaseApplication
                 echo $e->getMessage() . PHP_EOL;
             }
         }
+    }
+
+    /**
+     * registerExtendCommands
+     */
+    private function registerExtendCommands()
+    {
+        $this->container->get('console.configuration_manager')
+            ->loadExtendConfiguration();
+    }
+
+
+    public function getData($filterNamespaces = null, $excludeNamespaces = [], $excludeChainCommands = false)
+    {
+        $singleCommands = [
+            'about',
+            'chain',
+            'check',
+            'exec',
+            'help',
+            'init',
+            'list',
+            'server'
+        ];
+
+        $data = [];
+
+        // Exclude misc if it is inside the $excludeNamespaces array.
+        if (!in_array('misc', $excludeNamespaces)) {
+            foreach ($singleCommands as $singleCommand) {
+                $data['commands']['misc'][] = $this->commandData($singleCommand);
+            }
+        }
+
+
+        $namespaces = array_filter(
+            $this->getNamespaces(), function ($item) {
+                return (strpos($item, ':')<=0);
+            }
+        );
+        sort($namespaces);
+        array_unshift($namespaces, 'misc');
+
+        // Exclude specific namespaces
+        $namespaces = array_diff($namespaces, $excludeNamespaces);
+
+        // filter namespaces if available
+        if ($filterNamespaces) {
+            $namespaces = array_intersect($namespaces, $filterNamespaces);
+        }
+
+        foreach ($namespaces as $namespace) {
+            $commands = $this->all($namespace);
+            usort(
+                $commands, function ($cmd1, $cmd2) {
+                    return strcmp($cmd1->getName(), $cmd2->getName());
+                }
+            );
+
+            foreach ($commands as $command) {
+                // Exclude command if is a chain command and was requested to exclude chain commands
+                if ($excludeChainCommands && $command instanceof ChainCustomCommand) {
+                    continue;
+                }
+
+                if (method_exists($command, 'getModule')) {
+                    if ($command->getModule() == 'Console') {
+                        $data['commands'][$namespace][] = $this->commandData(
+                            $command->getName()
+                        );
+                    }
+                } else {
+                    $data['commands'][$namespace][] = $this->commandData(
+                        $command->getName()
+                    );
+                }
+            }
+        }
+
+        // Remove namepsaces without commands
+        $namespaces = array_filter(
+            $namespaces, function ($namespace) use ($data) {
+                return count($data['commands'][$namespace]) > 0;
+            }
+        );
+
+        $input = $this->getDefinition();
+        $options = [];
+        foreach ($input->getOptions() as $option) {
+            $options[] = [
+                'name' => $option->getName(),
+                'description' => $this->trans('application.options.'.$option->getName())
+            ];
+        }
+        $arguments = [];
+        foreach ($input->getArguments() as $argument) {
+            $arguments[] = [
+                'name' => $argument->getName(),
+                'description' => $this->trans('application.arguments.'.$argument->getName())
+            ];
+        }
+
+        // Exclude misc if it is inside the $excludeNamespaces array.
+        if (!in_array('misc', $excludeNamespaces)) {
+            $data['application'] = [
+                'namespaces' => $namespaces,
+                'options' => $options,
+                'arguments' => $arguments,
+                'messages' => [
+                    'title' =>  $this->trans('commands.generate.doc.gitbook.messages.title'),
+                    'note' =>  $this->trans('commands.generate.doc.gitbook.messages.note'),
+                    'note_description' =>  $this->trans('commands.generate.doc.gitbook.messages.note-description'),
+                    'command' =>  $this->trans('commands.generate.doc.gitbook.messages.command'),
+                    'options' => $this->trans('commands.generate.doc.gitbook.messages.options'),
+                    'option' => $this->trans('commands.generate.doc.gitbook.messages.option'),
+                    'details' => $this->trans('commands.generate.doc.gitbook.messages.details'),
+                    'arguments' => $this->trans('commands.generate.doc.gitbook.messages.arguments'),
+                    'argument' => $this->trans('commands.generate.doc.gitbook.messages.argument'),
+                    'examples' => $this->trans('commands.generate.doc.gitbook.messages.examples')
+                ],
+                'examples' => []
+            ];
+        }
+        return $data;
+    }
+
+    private function commandData($commandName)
+    {
+        if (!$this->has($commandName)) {
+            return [];
+        }
+
+        $command = $this->find($commandName);
+
+        $input = $command->getDefinition();
+        $options = [];
+        foreach ($input->getOptions() as $option) {
+            $options[$option->getName()] = [
+                'name' => $option->getName(),
+                'description' => $this->trans($option->getDescription()),
+            ];
+        }
+
+        $arguments = [];
+        foreach ($input->getArguments() as $argument) {
+            $arguments[$argument->getName()] = [
+                'name' => $argument->getName(),
+                'description' => $this->trans($argument->getDescription()),
+            ];
+        }
+
+        $commandKey = str_replace(':', '.', $command->getName());
+
+        $examples = [];
+        for ($i = 0; $i < 5; $i++) {
+            $description = sprintf(
+                'commands.%s.examples.%s.description',
+                $commandKey,
+                $i
+            );
+            $execution = sprintf(
+                'commands.%s.examples.%s.execution',
+                $commandKey,
+                $i
+            );
+
+            if ($description != $this->trans($description)) {
+                $examples[] = [
+                    'description' => $this->trans($description),
+                    'execution' => $this->trans($execution)
+                ];
+            } else {
+                break;
+            }
+        }
+
+        $data = [
+            'name' => $command->getName(),
+            'description' => $command->getDescription(),
+            'options' => $options,
+            'arguments' => $arguments,
+            'examples' => $examples,
+            'aliases' => $command->getAliases(),
+            'key' => $commandKey,
+            'dashed' => str_replace(':', '-', $command->getName()),
+            'messages' => [
+                'usage' =>  $this->trans('commands.generate.doc.gitbook.messages.usage'),
+                'options' => $this->trans('commands.generate.doc.gitbook.messages.options'),
+                'option' => $this->trans('commands.generate.doc.gitbook.messages.option'),
+                'details' => $this->trans('commands.generate.doc.gitbook.messages.details'),
+                'arguments' => $this->trans('commands.generate.doc.gitbook.messages.arguments'),
+                'argument' => $this->trans('commands.generate.doc.gitbook.messages.argument'),
+                'examples' => $this->trans('commands.generate.doc.gitbook.messages.examples')
+            ],
+        ];
+
+        return $data;
+    }
+
+
+    public function setContainer($container)
+    {
+        $this->container = $container;
     }
 
     /**

@@ -108,11 +108,11 @@ class WordpressConsoleCore
         }
 
         $configurationManager
-            ->loadConfiguration($this->root)
+            ->loadConfiguration($this->root . '/')
             ->getConfiguration();
 
         // Register extend commands
-        $directory = $configurationManager->getConsoleDirectory() . 'extend/';
+        $directory = $configurationManager->getConsoleConfigGlobalDirectory() . 'extend/';
         $autoloadFile = $directory . 'vendor/autoload.php';
         if (is_file($autoloadFile)) {
             include_once $autoloadFile;
@@ -186,7 +186,7 @@ class WordpressConsoleCore
                 if (file_exists($pluginPath . '/src/Command')) {
                     $finder->files()->in($pluginPath . '/src/Command');
                     foreach ($finder as $command) {
-                        require_once $command->getRealPath();
+                        include_once $command->getRealPath();
                     }
 
                     $consoleServicesExtensionFile = $pluginPath . '/console.services.yml';
@@ -195,7 +195,6 @@ class WordpressConsoleCore
                         $loader->load($consoleServicesExtensionFile);
                     }
                 }
-
             }
         }
 
