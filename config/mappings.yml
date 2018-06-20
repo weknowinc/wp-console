@@ -1,0 +1,11 @@
+mappings:
+  chain:debug: debug:chain
+  config:debug: debug:config
+  container:debug: debug:container
+  plugin:debug: debug:module
+  multisite:debug: debug:multisite
+  router:debug: debug:router
+  settings:debug: debug:settings
+  site:debug: debug:site
+  theme:debug: debug:theme
+  user:debug: debug:user

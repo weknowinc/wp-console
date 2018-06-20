@@ -62,6 +62,10 @@ services:
     arguments: ['@console.annotation_command_reader', '@console.extension_manager']
   console.count_code_lines:
     class: WP\Console\Core\Utils\CountCodeLines
+  console.message_manager:
+    class: WP\Console\Core\Utils\MessageManager
+  console.key_value_storage:
+    class: WP\Console\Core\Utils\KeyValueStorage
   # WodpressConsole Services
   http_client:
     class: GuzzleHttp\Client

@@ -97,6 +97,12 @@ class InitCommand extends Command
                 $this->trans('commands.init.options.destination')
             )
             ->addOption(
+                'site',
+                null,
+                InputOption::VALUE_NONE,
+                $this->trans('commands.init.options.site')
+            )
+            ->addOption(
                 'override',
                 null,
                 InputOption::VALUE_NONE,
@@ -116,9 +122,15 @@ class InitCommand extends Command
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $destination = $input->getOption('destination');
+        $site = $input->getOption('site');
         $autocomplete = $input->getOption('autocomplete');
 
         $configuration = $this->configurationManager->getConfiguration();
+
+        if ($site && $this->appRoot && $this->consoleRoot) {
+            $destination = $this->consoleRoot . '/wp-console/';
+        }
+
         $configurationDirectories = $this->configurationManager->getConfigurationDirectories();
         $applicationDirectory = $this->configurationManager->getApplicationDirectory();
         $configurationDirectories = array_filter(
@@ -127,16 +139,15 @@ class InitCommand extends Command
             }
         );
 
-
         if (!$destination) {
             if ($this->appRoot && $this->consoleRoot) {
                 $destination = $this->getIo()->choice(
                     $this->trans('commands.init.questions.destination'),
-                    array_reverse($configurationDirectories)
+                    $configurationDirectories
                 );
             } else {
                 $destination = $this->configurationManager
-                    ->getConsoleDirectory();
+                    ->getConsoleConfigGlobalDirectory();
             }
 
             $input->setOption('destination', $destination);
@@ -180,7 +191,7 @@ class InitCommand extends Command
                 $this->trans('commands.init.messages.statistics'),
                 sprintf(
                     '%sconfig.yml',
-                    $this->configurationManager->getConsoleDirectory()
+                    $this->configurationManager->getConsoleConfigGlobalDirectory()
                 )
             )
         );
@@ -207,7 +218,7 @@ class InitCommand extends Command
         $autocomplete = $input->getOption('autocomplete');
         $override = $input->getOption('override');
         if (!$destination) {
-            $destination = $this->configurationManager->getConsoleDirectory();
+            $destination = $this->configurationManager->getConsoleConfigGlobalDirectory();
         }
 
         $finder = new Finder();
@@ -254,7 +265,7 @@ class InitCommand extends Command
         }
 
         $this->generator->generate(
-            $this->configurationManager->getConsoleDirectory(),
+            $this->configurationManager->getConsoleConfigGlobalDirectory(),
             $executableName,
             $override,
             $destination,

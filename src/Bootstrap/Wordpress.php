@@ -36,6 +36,7 @@ class Wordpress
     {
         $wordpress = new WordpressConsoleCore($this->root, $this->appRoot, $this->site);
         $container = $wordpress->boot();
+        $container->set('class_loader', $this->autoload);
 
         AnnotationRegistry::registerLoader([$this->autoload, "loadClass"]);
 

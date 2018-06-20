@@ -37,51 +37,48 @@ class ConfigurationManager
     private $configurationDirectories = [];
 
     /**
-     * @param $applicationDirectory
+     * @param $directory
      * @return $this
      */
-    public function loadConfiguration($applicationDirectory)
+    public function loadConfiguration($directory)
     {
-        $this->applicationDirectory = $applicationDirectory . "/";
+        $this->locateConfigurationFiles();
+
+        $this->applicationDirectory = $directory;
+        if ($directory && is_dir($directory) && strpos($directory, 'phar:')!==0) {
+            $this->addConfigurationFilesByDirectory(
+                $directory,
+                true
+            );
+        }
         $input = new ArgvInput();
-        $root = $input->getParameterOption(['--root'], null);
+        $root = $input->getParameterOption(['--root']);
 
-        $configurationDirectories[] = $this->applicationDirectory;
-        $configurationDirectories[] = '/etc/wp-console/';
-        $configurationDirectories[] = $this->getHomeDirectory() . '/.wp-console/';
-        $configurationDirectories[] = getcwd().'/wp-console/';
-
-        if ($root and !in_array($root . 'wp-console/', $configurationDirectories)) {
-            $configurationDirectories[] = $root . 'wp-console/';
+        if ($root && is_dir($root)) {
+            $this->addConfigurationFilesByDirectory(
+                $root. '/wp-console/',
+                true
+            );
         }
 
-        $configurationDirectories = array_unique($configurationDirectories);
+        $builder = new YamlFileConfigurationBuilder(
+            $this->configurationFiles['config']
+        );
 
-        $configurationFiles = [];
-        foreach ($configurationDirectories as $configurationDirectory) {
-            $file = $configurationDirectory . 'config.yml';
-            $this->configurationDirectories
-            [] = str_replace('//', '/', $configurationDirectory);
-
-
-            if (!file_exists($file)) {
-                $this->missingConfigurationFiles[] = $file;
-                continue;
-            }
-            if (file_get_contents($file)==='') {
-                $this->missingConfigurationFiles[] = $file;
-                continue;
-            }
-
-            $configurationFiles[] = $configurationDirectory . 'config.yml';
-        }
-
-        $builder = new YamlFileConfigurationBuilder($configurationFiles);
         $this->configuration = $builder->build();
-        $this->appendCommandAliases();
 
-        if ($configurationFiles) {
-            $this->missingConfigurationFiles = [];
+        $extras = [
+            'aliases',
+            'mappings',
+            'defaults'
+        ];
+
+        foreach ($extras as $extra) {
+            $extraKey = 'application.extras.'.$extra;
+            $extraFlag = $this->configuration->get($extraKey)?:'true';
+            if ($extraFlag === 'true') {
+                $this->appendExtraConfiguration($extra);
+            }
         }
 
         return $this;
@@ -118,40 +115,31 @@ class ConfigurationManager
      */
     public function readTarget($target)
     {
-        if (!$target || !strpos($target, '.')) {
+        $site = $target;
+        $environment = null;
+        $exploded = explode('.', $target, 2);
+
+        if (count($exploded)>1) {
+            $site = $exploded[0];
+            $environment = $exploded[1];
+        }
+
+        $sites = $this->getSites();
+        if (!array_key_exists($site, $sites)) {
             return [];
         }
 
-        $site = explode('.', $target)[0];
-        $env = explode('.', $target)[1];
+        $targetInformation = $sites[$site];
 
-        $siteFile = sprintf(
-            '%s%s%s.yml',
-            $this->getSitesDirectory(),
-            DIRECTORY_SEPARATOR,
-            $site
-        );
+        if ($environment) {
+            if (!array_key_exists($environment, $sites[$site])) {
+                return [];
+            }
 
-        if (!file_exists($siteFile)) {
-            return [];
+            $targetInformation = $sites[$site][$environment];
         }
 
-        $targetInformation = Yaml::parse(file_get_contents($siteFile));
-
-        if (!array_key_exists($env, $targetInformation)) {
-            return [];
-        }
-
-        $targetInformation = $targetInformation[$env];
-
-        if (array_key_exists('host', $targetInformation) && $targetInformation['host'] != 'local') {
-            $targetInformation['remote'] = true;
-        }
-
-        return array_merge(
-            $this->configuration->get('application.remote'),
-            $targetInformation
-        );
+        return $targetInformation;
     }
 
     /**
@@ -173,41 +161,11 @@ class ConfigurationManager
     }
 
     /**
-     * Return the site config directory.
-     *
-     * @return string
-     */
-    public function getSitesDirectory()
-    {
-        return null;
-        //        return sprintf(
-        //            '%s/sites',
-        //            $this->getConsoleDirectory()
-        //        );
-    }
-
-    /**
-     * @return string
-     */
-    public function getConsoleDirectory()
-    {
-        return sprintf('%s/.wp-console/', $this->getHomeDirectory());
-    }
-
-    /**
      * @return array
      */
     public function getMissingConfigurationFiles()
     {
         return $this->missingConfigurationFiles;
-    }
-
-    /**
-     * @return array
-     */
-    public function getConfigurationDirectories()
-    {
-        return $this->configurationDirectories;
     }
 
     /**
@@ -235,10 +193,58 @@ class ConfigurationManager
         }
     }
 
+    /**
+     * @return void
+     */
+    private function appendExtraConfiguration($type)
+    {
+        if (!array_key_exists($type, $this->configurationFiles)) {
+            return;
+        }
+
+        $configData = [];
+        foreach ($this->configurationFiles[$type] as $configFile) {
+            if (file_get_contents($configFile)==='') {
+                continue;
+            }
+            $parsed = Yaml::parse(file_get_contents($configFile));
+            $configData = array_merge(
+                $configData,
+                is_array($parsed)?$parsed:[]
+            );
+        }
+
+        if ($configData && array_key_exists($type, $configData)) {
+            $this->configuration->set(
+                'application.commands.'.$type,
+                $configData[$type]
+            );
+        }
+    }
+
+    private function addConfigurationFilesByDirectory(
+        $directory,
+        $addDirectory = false
+    ) {
+        if ($addDirectory) {
+            $this->configurationDirectories[] = $directory;
+        }
+        $configurationFiles = [
+            'config' => 'config/config.yml',
+            'mappings' => 'config/mappings.yml'
+        ];
+
+        foreach ($configurationFiles as $key => $file) {
+            $configFile = $directory.$file;
+            if (is_file($configFile)) {
+                $this->configurationFiles[$key][] = $configFile;
+            }
+        }
+    }
+
     public function loadExtendConfiguration()
     {
-        $directory = $this->getHomeDirectory() . '/.wp-console/extend/';
-
+        $directory = $this->getConsoleConfigGlobalDirectory() . 'extend/';
         if (!is_dir($directory)) {
             return null;
         }
@@ -250,10 +256,7 @@ class ConfigurationManager
         include_once $autoloadFile;
         $extendFile = $directory . 'extend.console.config.yml';
 
-        if (is_file($extendFile) && file_get_contents($extendFile)!='') {
-            $builder = new YamlFileConfigurationBuilder([$extendFile]);
-            $this->configuration->import($builder->build());
-        }
+        $this->importConfigurationFromFile($extendFile);
     }
 
     /**
@@ -329,5 +332,223 @@ class ConfigurationManager
             file_put_contents($userConfigFile, $userConfigFileDump);
         } catch (\Exception $e) {
         }
+    }
+
+    /**
+     * Return the sites config directory.
+     *
+     * @return array
+     */
+    private function getSitesDirectories()
+    {
+        $sitesDirectories = array_map(
+            function ($directory) {
+                return $directory . 'sites';
+            },
+            $this->getConfigurationDirectories()
+        );
+
+        $sitesDirectories = array_filter(
+            $sitesDirectories,
+            function ($directory) {
+                return is_dir($directory);
+            }
+        );
+
+        $sitesDirectories = array_unique($sitesDirectories);
+
+        return $sitesDirectories;
+    }
+
+    public function getConsoleRoot()
+    {
+        $consoleCoreDirectory = dirname(dirname(dirname(__FILE__))) . '/';
+
+        if (is_dir($consoleCoreDirectory)) {
+            return $consoleCoreDirectory;
+        }
+
+        return null;
+    }
+
+    public function getConsoleCoreDirectory()
+    {
+        $consoleCoreDirectory = dirname(dirname(dirname(__FILE__))) . '/src/Core';
+
+        if (is_dir($consoleCoreDirectory)) {
+            return $consoleCoreDirectory;
+        }
+
+        return null;
+    }
+
+    public function getConsoleConfigProjectDirectory()
+    {
+        return $this->getProjectDirectory().'/wp-console/';
+    }
+
+    public function getProjectDirectory()
+    {
+        return getcwd();
+    }
+
+    public function getSystemDirectory()
+    {
+        $systemDirectory = '/etc/wp-console/';
+
+        if (is_dir($systemDirectory)) {
+            return $systemDirectory;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConsoleConfigGlobalDirectory()
+    {
+        $consoleDirectory = sprintf(
+            '%s/.wp-console/',
+            $this->getHomeDirectory()
+        );
+
+        if (is_dir($consoleDirectory)) {
+            return $consoleDirectory;
+        }
+
+        try {
+            mkdir($consoleDirectory, 0777, true);
+        } catch (\Exception $exception) {
+            return null;
+        }
+
+        return $consoleDirectory;
+    }
+
+    /**
+     * @param $includeConsoleCore
+     *
+     * @return array
+     */
+    public function getConfigurationDirectories($includeConsoleCore = false)
+    {
+        if ($this->configurationDirectories) {
+            if ($includeConsoleCore) {
+                return array_merge(
+                    [$this->getConsoleRoot()],
+                    $this->configurationDirectories
+                );
+            }
+
+            return $this->configurationDirectories;
+        }
+
+        return [];
+    }
+
+    private function locateConfigurationFiles()
+    {
+        if ($this->getConsoleCoreDirectory()) {
+            $this->addConfigurationFilesByDirectory(
+                $this->getConsoleCoreDirectory()
+            );
+        }
+        if ($this->getSystemDirectory()) {
+            $this->addConfigurationFilesByDirectory(
+                $this->getSystemDirectory(),
+                true
+            );
+        }
+        if ($this->getConsoleConfigGlobalDirectory()) {
+            $this->addConfigurationFilesByDirectory(
+                $this->getConsoleConfigGlobalDirectory(),
+                true
+            );
+        }
+        if ($this->getConsoleConfigProjectDirectory()) {
+            $this->addConfigurationFilesByDirectory(
+                $this->getConsoleConfigProjectDirectory(),
+                true
+            );
+        }
+    }
+
+
+    private function importConfigurationFromFile($configFile)
+    {
+        if (is_file($configFile) && file_get_contents($configFile)!='') {
+            $builder = new YamlFileConfigurationBuilder([$configFile]);
+            if ($this->configuration) {
+                $this->configuration->import($builder->build());
+            } else {
+                $this->configuration = $builder->build();
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getSites()
+    {
+        if ($this->sites) {
+            return $this->sites;
+        }
+
+        $sitesDirectories = $this->getSitesDirectories();
+
+        if (!$sitesDirectories) {
+            return [];
+        }
+
+        $finder = new Finder();
+        $finder->in($sitesDirectories);
+        $finder->name("*.yml");
+
+        foreach ($finder as $site) {
+            $siteName = $site->getBasename('.yml');
+            $environments = $this->readSite($site->getRealPath());
+
+            if (!$environments || !is_array($environments)) {
+                continue;
+            }
+
+            $this->sites[$siteName] = [
+                'file' => $site->getRealPath()
+            ];
+
+            foreach ($environments as $environment => $config) {
+                if (!array_key_exists('type', $config)) {
+                    throw new \UnexpectedValueException(
+                        sprintf(
+                            "The 'type' parameter is required in sites configuration:\n %s.", $site->getPathname()
+                        )
+                    );
+                }
+                if ($config['type'] !== 'local') {
+                    if (array_key_exists('host', $config)) {
+                        $targetInformation['remote'] = true;
+                    }
+
+                    $config = array_merge(
+                        $this->configuration->get('application.remote')?:[],
+                        $config
+                    );
+                }
+
+                $this->sites[$siteName][$environment] = $config;
+            }
+        }
+
+        return $this->sites;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfigurationFiles()
+    {
+        return $this->configurationFiles;
     }
 }
