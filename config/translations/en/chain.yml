@@ -4,17 +4,24 @@ options:
 questions:
     chain-file: 'Select chain file to execute'
 messages:
-    missing_file: 'You must provide a valid file path and name.'
-    invalid_file: 'The file "%s" does not exist.'
-    module_install: 'module:install command is not runnable inside a chain queue and must be run independently.'
+    missing-file: 'You must provide a valid file path and name.'
+    invalid-file: 'The file "%s" does not exist.'
+    module-install: 'module:install command is not runnable inside a chain queue and must be run independently.'
     missing-environment-placeholders: 'Missing environment placeholder(s) "%s"'
     set-environment-placeholders: 'Set environment placeholders as:'
     missing-inline-placeholders: 'Missing inline placeholder(s) "%s"'
     set-inline-placeholders: 'Pass inline placeholders as:'
-    select-value-for-placeholder: 'Select value for %s placeholder'
-    enter-value-for-placeholder: 'Enter value for %s placeholder'
+    select-value-for-placeholder: 'Select value for "%s" placeholder'
+    enter-value-for-placeholder: 'Enter value for "%s" placeholder'
+    legacy-inline: 'Update inline legacy placeholders from %{{name}} to {{name}}.'
+    legacy-environment: 'Update environment legacy placeholders from ${{(NAME}} or %env(NAME)% to {{env("NAME")}}.'
+    metadata-registration: |
+      You should register your chain file as command by providing metadata, more info at:
+         https://docs.wordpressconsole.com/en/chains/registering.html
 examples:
-    - description: 'Providing a file option using full path.'
+    - description: 'Providing a file option using full path. (DEPRECATED)'
       execution: |
-        wordpress chain \
+        wp-console chain \
           --file="/path/to/file/chain-file.yml"
+
+

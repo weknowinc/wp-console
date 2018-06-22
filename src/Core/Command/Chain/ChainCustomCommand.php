@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use WP\Console\Core\Command\Command;
 use WP\Console\Core\Command\Shared\InputTrait;
 
 /**
@@ -19,7 +18,7 @@ use WP\Console\Core\Command\Shared\InputTrait;
  *
  * @package WP\Console\Core\Command\ChainRegister
  */
-class ChainCustomCommand extends Command
+class ChainCustomCommand extends BaseCommand
 {
     use InputTrait;
 
@@ -34,11 +33,6 @@ class ChainCustomCommand extends Command
     protected $description;
 
     /**
-     * @var array
-     */
-    protected $placeHolders;
-
-    /**
      * @var string
      */
     protected $file;
@@ -48,31 +42,29 @@ class ChainCustomCommand extends Command
      *
      * @param $name
      * @param $description
-     * @param $placeHolders
      * @param $file
+     * @param $chainDiscovery
      */
     public function __construct(
         $name,
         $description,
-        $placeHolders,
-        $file
+        $file,
+        $chainDiscovery
     ) {
         $this->name = $name;
         $this->description = $description;
-        $this->placeHolders = $placeHolders;
         $this->file = $file;
 
-        parent::__construct();
+        parent::__construct($chainDiscovery);
+        $this->ignoreValidationErrors();
 
-        foreach ($placeHolders['inline'] as $placeHolderName => $placeHolderValue) {
-            $this->addOption(
-                $placeHolderName,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                $placeHolderName,
-                null
-            );
-        }
+        $this->addOption(
+            'file',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            null,
+            $file
+        );
     }
 
     /**
@@ -97,28 +89,14 @@ class ChainCustomCommand extends Command
             '--file'  => $this->file,
         ];
 
-        $placeholder = [];
         foreach ($input->getOptions() as $option => $value) {
             if ($value) {
-                if (is_bool($value)) {
-                    $value = true;
-                }
-                if (array_key_exists($option, $this->placeHolders['inline'])) {
-                    $placeholder[] = $option.':'.$value;
-                } else {
-                    $arguments['--' . $option] = $value;
-                }
+                $arguments['--' . $option] = $value;
             }
         }
 
-        if ($placeholder) {
-            $arguments['--placeholder'] = $placeholder;
-        }
-
         $commandInput = new ArrayInput($arguments);
-        if (array_key_exists('--no-interaction', $arguments)) {
-            $commandInput->setInteractive(false);
-        }
+        $commandInput->setInteractive(true);
 
         return $command->run($commandInput, $output);
     }

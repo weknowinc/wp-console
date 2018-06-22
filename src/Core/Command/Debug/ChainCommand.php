@@ -54,19 +54,34 @@ class ChainCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $files = $this->chainDiscovery->getChainFiles();
+        $files = $this->chainDiscovery->getFiles();
+        $filesPerDirectory = $this->chainDiscovery->getFilesPerDirectory();
 
-        foreach ($files as $directory => $chainFiles) {
-            $this->getIo()->info($this->trans('commands.debug.chain.messages.directory'), false);
+        if (!$files || !$filesPerDirectory) {
+            $this->getIo()->warning($this->trans('commands.debug.chain.messages.no-files'));
+
+            return 0;
+        }
+
+        foreach ($filesPerDirectory as $directory => $fileNames) {
+            $this->getIo()->info(' ' . $this->trans('commands.debug.chain.messages.directory'), false);
             $this->getIo()->comment($directory);
 
             $tableHeader = [
-                $this->trans('commands.debug.chain.messages.file')
+                $this->trans('commands.debug.chain.messages.file'),
+                $this->trans('commands.debug.chain.messages.command')
             ];
 
             $tableRows = [];
-            foreach ($chainFiles as $file) {
-                $tableRows[] = $file;
+            foreach ($fileNames as $file) {
+                $commandName = '';
+                if (array_key_exists('command', $files[$directory.$file])) {
+                    $commandName = $files[$directory.$file]['command'];
+                }
+                $tableRows[] = [
+                    'file'  => $file,
+                    'command' => $commandName
+                ];
             }
 
             $this->getIo()->table($tableHeader, $tableRows);

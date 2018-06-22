@@ -34,7 +34,6 @@ class ShowGenerateChainListener implements EventSubscriberInterface
         'self-update',
         'list',
         'help',
-        'drush'
     ];
 
     /**
