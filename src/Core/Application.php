@@ -38,6 +38,11 @@ class Application extends BaseApplication
     protected $commandName;
 
     /**
+     * @var bool
+     */
+    protected $eventRegistered;
+
+    /**
      * ConsoleApplication constructor.
      *
      * @param ContainerInterface $container
@@ -50,6 +55,7 @@ class Application extends BaseApplication
         $version
     ) {
         $this->container = $container;
+        $this->eventRegistered = false;
         parent::__construct($name, $version);
         $this->addOptions();
     }
@@ -325,66 +331,69 @@ class Application extends BaseApplication
 
     private function registerEvents()
     {
-        $dispatcher = new EventDispatcher();
-        /* @todo Register listeners as services */
-        /*$dispatcher->addSubscriber(
-            new ValidateExecutionListener(
-                $this->container->get('console.translator_manager'),
-                $this->container->get('console.configuration_manager')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new ShowWelcomeMessageListener(
-                $this->container->get('console.translator_manager')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new DefaultValueEventListener(
-                $this->container->get('console.configuration_manager')
-            )
-        );*/
-        $dispatcher->addSubscriber(
-            new CallCommandListener(
-                $this->container->get('console.chain_queue')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new ShowGeneratedFilesListener(
-                $this->container->get('console.file_queue'),
-                $this->container->get('console.show_file')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new ShowGenerateInlineListener(
-                $this->container->get('console.translator_manager')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new ShowGenerateChainListener(
-                $this->container->get('console.translator_manager')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new ShowGenerateCountCodeLinesListener(
-                $this->container->get('console.translator_manager'),
-                $this->container->get('console.count_code_lines')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new SaveStatisticsListener(
-                $this->container->get('console.count_code_lines'),
-                $this->container->get('console.configuration_manager'),
-                $this->container->get('console.translator_manager')
-            )
-        );
-        $dispatcher->addSubscriber(
-            new SendStatisticsListener(
-                $this->container->get('console.configuration_manager'),
-                $this->container->get('console.translator_manager')
-            )
-        );
+        if (!$this->eventRegistered) {
+            $dispatcher = new EventDispatcher();
+            /* @todo Register listeners as services */
+            /*$dispatcher->addSubscriber(
+                new ValidateExecutionListener(
+                    $this->container->get('console.translator_manager'),
+                    $this->container->get('console.configuration_manager')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new ShowWelcomeMessageListener(
+                    $this->container->get('console.translator_manager')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new DefaultValueEventListener(
+                    $this->container->get('console.configuration_manager')
+                )
+            );*/
+            $dispatcher->addSubscriber(
+                new CallCommandListener(
+                    $this->container->get('console.chain_queue')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new ShowGeneratedFilesListener(
+                    $this->container->get('console.file_queue'),
+                    $this->container->get('console.show_file')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new ShowGenerateInlineListener(
+                    $this->container->get('console.translator_manager')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new ShowGenerateChainListener(
+                    $this->container->get('console.translator_manager')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new ShowGenerateCountCodeLinesListener(
+                    $this->container->get('console.translator_manager'),
+                    $this->container->get('console.count_code_lines')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new SaveStatisticsListener(
+                    $this->container->get('console.count_code_lines'),
+                    $this->container->get('console.configuration_manager'),
+                    $this->container->get('console.translator_manager')
+                )
+            );
+            $dispatcher->addSubscriber(
+                new SendStatisticsListener(
+                    $this->container->get('console.configuration_manager'),
+                    $this->container->get('console.translator_manager')
+                )
+            );
 
-        $this->setDispatcher($dispatcher);
+            $this->setDispatcher($dispatcher);
+            $this->eventRegistered = true;
+        }
     }
 
     private function addOptions()
@@ -577,8 +586,12 @@ class Application extends BaseApplication
             try {
                 $file = $chainCommand['file'];
                 $description = $chainCommand['description'];
-                $placeHolders = $chainCommand['placeholders'];
-                $command = new ChainCustomCommand($name, $description, $placeHolders, $file);
+                $command = new ChainCustomCommand(
+                    $name,
+                    $description,
+                    $file,
+                    $chainDiscovery
+                );
                 $this->add($command);
             } catch (\Exception $e) {
                 echo $e->getMessage() . PHP_EOL;

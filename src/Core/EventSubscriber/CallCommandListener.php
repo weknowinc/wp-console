@@ -55,7 +55,7 @@ class CallCommandListener implements EventSubscriberInterface
         $commands = $this->chainQueue->getCommands();
 
         if (!$commands) {
-            return;
+            return 0;
         }
 
         foreach ($commands as $chainedCommand) {
@@ -71,7 +71,15 @@ class CallCommandListener implements EventSubscriberInterface
             }
 
             $io->text($chainedCommand['name']);
-            $callCommand->run($input, $io);
+            $allowFailure = array_key_exists('allow_failure', $chainedCommand) ? $chainedCommand['allow_failure'] : false;
+            try {
+                $callCommand->run($input, $io);
+            } catch (\Exception $e) {
+                if (!$allowFailure) {
+                    $io->error($e->getMessage());
+                    return 1;
+                }
+            }
         }
     }
 
