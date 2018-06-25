@@ -114,15 +114,19 @@ class UserContactMethodsCommand extends Command
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $this->generator->generate(
-            $plugin,
-            $function_name,
-            $methods_items,
+            [
+                "plugin" => $plugin,
+                "function_name" => $function_name,
+                "methods_items" => $methods_items,
+            ],
             $this->site
         );
+
+        return 0;
     }
 
     /**

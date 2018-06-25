@@ -8,8 +8,8 @@
 namespace WP\Console\Generator;
 
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Utils\TranslatorManager;
 use WP\Console\Core\Generator\Generator;
+use WP\Console\Utils\Site;
 
 /**
  * Class ToolbarGenerator
@@ -24,11 +24,6 @@ class ToolbarGenerator extends Generator
     protected $extensionManager;
 
     /**
-     * @var TranslatorManager
-     */
-    protected $translatorManager;
-
-    /**
      * ToolbarGenerator constructor.
      *
      * @param Manager $extensionManager
@@ -40,31 +35,23 @@ class ToolbarGenerator extends Generator
     }
 
     /**
-     * Generate.
-     *
-     * @param string $plugin
-     * @param string $function_name
-     * @param string $menu
-     * @param Site   $site
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $function_name,
-        $menu_items,
-        $site
-    ) {
+    public function generate(array $parameters, Site $site)
+    {
+        $plugin = $parameters['plugin'];
+
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
 
-        $parameters = [
-            "plugin" => $plugin,
-            "function_name" => $function_name,
-            "menu_items" => $menu_items,
+        $parameters = array_merge(
+            $parameters, [
             "admin_toolbar_path" => 'admin/partials/toolbars-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'toolbar'
-        ];
+            ]
+        );
 
         $file_path_admin = $dir.'/'.$parameters['admin_toolbar_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
@@ -79,7 +66,7 @@ class ToolbarGenerator extends Generator
         } else {
             $site->loadLegacyFile($file_path_admin);
 
-            if (function_exists($function_name)) {
+            if (function_exists($parameters['function_name'])) {
                 throw new \RuntimeException(
                     sprintf(
                         'Unable to generate the sidebar , The function name already exist at "%s"',

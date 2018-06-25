@@ -17,7 +17,6 @@ use WP\Console\Extension\Manager;
  */
 class TaxonomyGenerator extends Generator
 {
-
     /**
      * @var Manager
      */
@@ -30,73 +29,29 @@ class TaxonomyGenerator extends Generator
      */
     public function __construct(
         Manager $extensionManager
-    )
-    {
+    ) {
         $this->extensionManager = $extensionManager;
     }
 
-
     /**
-     * Generator MetaBox
-     *
-     * @param string $plugin
-     * @param string $class_name
-     * @param string $function_name
-     * @param string $taxonomy_key
-     * @param string $name_singular
-     * @param string $name_plural
-     * @param array $post_type
-     * @param boolean $hierarchical
-     * @param array $labels
-     * @param array $visibility
-     * @param array $permalinks
-     * @param array $capabilities
-     * @param array $rest
-     * @param boolean $child_themes
-     * @param string $update_count_callback
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $class_name,
-        $function_name,
-        $taxonomy_key,
-        $name_singular,
-        $name_plural,
-        $post_type,
-        $hierarchical,
-        $labels,
-        $visibility,
-        $permalinks,
-        $capabilities,
-        $rest,
-        $child_themes,
-        $update_count_callback
-    )
+    public function generate(array $parameters)
     {
+        $plugin = $parameters['plugin'];
+        $class = $parameters['class_name'];
+
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-        $parameters = [
-            "plugin" => $plugin,
-            "class_name" => $class_name,
-            "function_name" => $function_name,
-            "taxonomy_key" => $taxonomy_key,
-            "name_singular" => $name_singular,
-            "name_plural" => $name_plural,
-            "post_type" => $post_type,
-            "hierarchical" => $hierarchical,
-            "labels" => $labels,
-            "visibility" => $visibility,
-            "permalinks" => $permalinks,
-            "capabilities" => $capabilities,
-            "rest" => $rest,
-            "child_theme" => $child_themes,
-            "update_count_callback" => $update_count_callback,
-            "class_name_path" => 'Taxonomy/' . lcfirst($class_name) . '.php',
+        $parameters = array_merge(
+            $parameters, [
+            "class_name_path" => 'Taxonomy/' . lcfirst($class) . '.php',
             "admin_taxonomy_path" => 'admin/partials/taxonomies-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'taxonomy'
-        ];
+            ]
+        );
 
         $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
         $file_path_admin = $dir.'/'.$parameters['admin_taxonomy_path'];

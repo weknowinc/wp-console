@@ -18,31 +18,15 @@ use WP\Console\Utils\Site;
 class ThemeGenerator extends Generator
 {
     /**
-     * @param Site    $site
-     * @param string  $Theme
-     * @param string  $machineName
-     * @param string  $dir
-     * @param string  $description
-     * @param string  $author
-     * @param string  $authorUrl
-     * @param array   $template_files
-     * @param string  $screenshot
-     * @param boolean $test
+     * {@inheritdoc}
      */
-    public function generate(
-        $site,
-        $theme,
-        $machineName,
-        $dir,
-        $description,
-        $author,
-        $authorUrl,
-        $template_files,
-        $screenshot,
-        $package,
-        $test
-    ) {
-        $dir = ($dir == "/" ? '': $dir).'/'.$machineName;
+    public function generate(array $parameters, $templateFiles, $screenshot)
+    {
+        $machineName = $parameters['machine_name'];
+        $themePath = $parameters['themePath'];
+
+        $dir = ($themePath == "/" ? '': $themePath).'/'.$machineName;
+
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
                 throw new \RuntimeException(
@@ -71,25 +55,14 @@ class ThemeGenerator extends Generator
             }
         }
 
-        $parameters = [
-            'theme' => $theme,
-            'theme_uri' => '',
-            'machine_name' => $machineName,
-            'type' => 'module',
-            'version' => $site->getBlogInfo('version'),
-            'description' => $description,
-            'author' => $author,
-            'author_uri' => $authorUrl,
-            'package' => $package,
-            'test' => $test
-        ];
+        unset($parameters['themePath']);
 
-        if (!empty($template_files)) {
-            foreach ($template_files as $template) {
+        if (!empty($templateFiles)) {
+            foreach ($templateFiles as $template) {
                 $this->renderFile(
                     'theme/template.php.twig',
                     $dir.'/'.$template.'.php',
-                    ['template' => $template, 'theme' => $theme, 'package' => $package]
+                    ['template' => $template, 'theme' => $parameters['theme'], 'package' => $parameters['package']]
                 );
             }
         }

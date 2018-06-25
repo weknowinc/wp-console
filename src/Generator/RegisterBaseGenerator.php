@@ -9,6 +9,7 @@ namespace WP\Console\Generator;
 
 use WP\Console\Core\Generator\Generator;
 use WP\Console\Extension\Manager;
+use WP\Console\Utils\Site;
 
 /**
  * Class RegisterStyleGenerator
@@ -34,57 +35,45 @@ class RegisterBaseGenerator extends Generator
         $this->extensionManager = $extensionManager;
     }
 
-
     /**
-     * Generator RegisterStyle
-     *
-     * @param string $extension_type
-     * @param string $extension
-     * @param string $type
-     * @param string $function_name
-     * @param string $hook
-     * @param array  $register_items
-     * @param Site   $site
+     * {@inheritdoc}
      */
-    public function generate(
-        $extension_type,
-        $extension,
-        $type,
-        $function_name,
-        $hook,
-        $register_items,
-        $site
-    ) {
-        $extensionObject = $this->extensionManager->getWPExtension($extension_type, $extension);
+    public function generate(array $parameters, Site $site)
+    {
+        $extensionType = $parameters['extension_type'];
+        $extension = $parameters['extension'];
 
-        $parameters = [
-            $extension_type => $extension,
-            "type" => $type,
-            "function_name" => $function_name,
-            "hook" => $hook,
-            "register_items" => $register_items,
-            "admin_registers_path" => 'admin/partials/register-'.$type.'-admin.php',
-            "file_exists" => file_exists($extensionObject->getPathName().($extension_type == "theme" ? '/functions.php':'')),
+        unset($parameters['extension_type']);
+        unset($parameters['extension']);
+
+        $extensionObject = $this->extensionManager->getWPExtension($extensionType, $extension);
+
+        $parameters = array_merge(
+            $parameters, [
+            $extensionType => $extension,
+            "admin_registers_path" => 'admin/partials/register-'.$parameters['type'].'-admin.php',
+            "file_exists" => file_exists($extensionObject->getPathName().($extensionType == "theme" ? '/functions.php':'')),
             "command_name" => 'registers'
-        ];
+            ]
+        );
 
         $file_path_admin = $extensionObject->getPath().'/'.$parameters['admin_registers_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
 
         if (!file_exists($file_path_admin)) {
             $this->renderFile(
-                $extension_type == "theme" ? 'theme/functions.php.twig': 'plugin/plugin.php.twig',
-                $extensionObject->getPathname() . ($extension_type == "theme" ? '/functions.php':''),
+                $extensionType == "theme" ? 'theme/functions.php.twig': 'plugin/plugin.php.twig',
+                $extensionObject->getPathname() . ($extensionType == "theme" ? '/functions.php':''),
                 $parameters,
                 FILE_APPEND
             );
         } else {
             $site->loadLegacyFile($file_path_admin);
 
-            if (function_exists($function_name)) {
+            if (function_exists($parameters['function_name'])) {
                 throw new \RuntimeException(
                     sprintf(
-                        'Unable to generate the register '.$type.' , The function name already exist at "%s"',
+                        'Unable to generate the register '.$parameters['type'].' , The function name already exist at "%s"',
                         realpath($file_path_admin)
                     )
                 );

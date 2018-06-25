@@ -119,16 +119,20 @@ class MenuCommand extends Command
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $function_name,
-            $menu_items,
-            $child_themes
+            [
+            'plugin' => $plugin,
+            'class_name' => $class_name,
+            'function_name' => $function_name,
+            'menu_items' => $menu_items,
+            'child_theme' => $child_themes
+            ]
         );
+
+        return 0;
     }
 
     /**
@@ -183,22 +187,22 @@ class MenuCommand extends Command
                     }
                 );
 
-                if (!empty($menu)) {
-                    $description = $this->getIo()->ask(
-                        $this->trans('commands.generate.menu.questions.menu-items.description'),
-                        ''
-                    );
-
-                    array_push(
-                        $array_menu_items,
-                        [
-                            'name' => $stringConverter->camelCaseToUnderscore($name),
-                            'description' => $description,
-                        ]
-                    );
+                if (empty($name)) {
+                    break;
                 }
 
+                $description = $this->getIo()->ask(
+                    $this->trans('commands.generate.menu.questions.menu-items.description'),
+                    ''
+                );
 
+                array_push(
+                    $array_menu_items,
+                    [
+                        'name' => $stringConverter->camelCaseToUnderscore($name),
+                        'description' => $description,
+                    ]
+                );
 
                 if (!$this->getIo()->confirm(
                     $this->trans('commands.generate.menu.questions.menu-items.menu-add-another'),

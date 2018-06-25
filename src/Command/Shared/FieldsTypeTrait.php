@@ -26,7 +26,7 @@ trait FieldsTypeTrait
             $type = $this->getIo()->choiceNoList(
                 $this->trans('commands.generate.'.$command.'.questions.'.$optionName.'.type'),
                 $fields_options,
-                null,
+                '',
                 true
             );
 

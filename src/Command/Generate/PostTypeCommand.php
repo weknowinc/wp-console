@@ -204,7 +204,7 @@ class PostTypeCommand extends Command
     {
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
@@ -228,26 +228,30 @@ class PostTypeCommand extends Command
         $child_themes = $input->getOption('child-themes');
 
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $function_name,
-            $post_type_key,
-            $description,
-            $singular_name,
-            $plural_name,
-            $post_type,
-            $hierarchical,
-            $exclude_from_search,
-            $enable_export,
-            $enable_archives,
-            $labels,
-            $supports,
-            $visibility,
-            $permalinks,
-            $capabilities,
-            $rest,
-            $child_themes
+            [
+            "plugin" => $plugin,
+            "class_name" => $class_name,
+            "function_name" => $function_name,
+            "post_type_key" => $post_type_key,
+            "description" => $description,
+            "name_singular" => $singular_name,
+            "name_plural" => $plural_name,
+            "taxonomy" => $post_type,
+            "hierarchical" => $hierarchical,
+            "exclude_from_search" => $exclude_from_search,
+            "enable_export" => $enable_export,
+            "enable_archives" => $enable_archives,
+            "labels" => $labels,
+            "supports" => $supports,
+            "visibility" => $visibility,
+            "permalinks" => $permalinks,
+            "capabilities" => $capabilities,
+            "rest" => $rest,
+            "child_theme" => $child_themes,
+            ]
         );
+
+        return 0;
     }
 
     /**

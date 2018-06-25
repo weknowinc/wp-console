@@ -135,18 +135,22 @@ class WidgetCommand extends Command
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $widget_id,
-            $title,
-            $description,
-            $widget_class_name,
-            $widget_items
+            [
+            "plugin" => $plugin,
+            "class_name" => $class_name,
+            "widget_id" => $widget_id,
+            "title" => $title,
+            "description" => $description,
+            "widget_class_name" => $widget_class_name,
+            "widget_items" => $widget_items,
+            ]
         );
+
+        return 0;
     }
 
     /**

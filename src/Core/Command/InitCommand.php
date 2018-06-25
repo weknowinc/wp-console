@@ -265,11 +265,13 @@ class InitCommand extends Command
         }
 
         $this->generator->generate(
-            $this->configurationManager->getConsoleConfigGlobalDirectory(),
-            $executableName,
-            $override,
-            $destination,
-            $this->configParameters
+            [
+                'user_home' => $this->configurationManager->getConsoleConfigGlobalDirectory(),
+                'executable_name' => $executableName,
+                'override' => $override,
+                'destination' => $destination,
+                'config_parameters' => $this->configParameters,
+            ]
         );
 
         $this->getIo()->writeln($this->trans('application.messages.autocomplete'));

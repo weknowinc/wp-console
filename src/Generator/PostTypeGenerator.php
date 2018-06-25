@@ -30,85 +30,29 @@ class PostTypeGenerator extends Generator
      */
     public function __construct(
         Manager $extensionManager
-    )
-    {
+    ) {
         $this->extensionManager = $extensionManager;
     }
 
-
     /**
-     * Generator MetaBox
-     *
-     * @param string $plugin
-     * @param string $class_name
-     * @param string $function_name
-     * @param string $post_type_key
-     * @param string $description
-     * @param string $name_singular
-     * @param string $name_plural
-     * @param string $taxonomy
-     * @param boolean $hierarchical
-     * @param boolean $exclude_from_search
-     * @param boolean $enable_export
-     * @param boolean $enable_archives
-     * @param array $labels
-     * @param array $supports
-     * @param array $visibility
-     * @param boolean $permalinks
-     * @param array $capabilities
-     * @param array $rest
-     * @param boolean $child_themes
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $class_name,
-        $function_name,
-        $post_type_key,
-        $description,
-        $name_singular,
-        $name_plural,
-        $taxonomy,
-        $hierarchical,
-        $exclude_from_search,
-        $enable_export,
-        $enable_archives,
-        $labels,
-        $supports,
-        $visibility,
-        $permalinks,
-        $capabilities,
-        $rest,
-        $child_themes
-    )
+    public function generate(array $parameters)
     {
+        $plugin = $parameters['plugin'];
+        $class = $parameters['class_name'];
+
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-        $parameters = [
-            "plugin" => $plugin,
-            "class_name" => $class_name,
-            "function_name" => $function_name,
-            "post_type_key" => $post_type_key,
-            "description" => $description,
-            "name_singular" => $name_singular,
-            "name_plural" => $name_plural,
-            "taxonomy" => $taxonomy,
-            "hierarchical" => $hierarchical,
-            "exclude_from_search" => $exclude_from_search,
-            "enable_export" => $enable_export,
-            "enable_archives" => $enable_archives,
-            "labels" => $labels,
-            "supports" => $supports,
-            "visibility" => $visibility,
-            "permalinks" => $permalinks,
-            "capabilities" => $capabilities,
-            "rest" => $rest,
-            "child_theme" => $child_themes,
-            "class_name_path" => 'PostType/' . lcfirst($class_name) . '.php',
+        $parameters = array_merge(
+            $parameters, [
+            "class_name_path" => 'PostType/' . lcfirst($class) . '.php',
             "admin_post_type_path" => 'admin/partials/post-types-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'post_type'
-        ];
+            ]
+        );
 
         $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
         $file_path_admin = $dir.'/'.$parameters['admin_post_type_path'];

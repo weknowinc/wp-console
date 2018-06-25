@@ -33,47 +33,26 @@ class DashboardWidgetsGenerator extends Generator
     ) {
         $this->extensionManager = $extensionManager;
     }
-    
-    
+
     /**
-     * Generator Dashboard Widgets
-     *
-     * @param string $plugin,
-     * @param string $class_name
-     * @param string $id
-     * @param string $title
-     * @param string $render_function
-     * @param string $submission_function
-     * @param array  $callback_arguments
-     * @param string $text_domain
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $class_name,
-        $id,
-        $title,
-        $render_function,
-        $submission_function,
-        $callback_arguments,
-        $text_domain
-    ) {
+    public function generate(array $parameters)
+    {
+        $plugin = $parameters['plugin'];
+        $class = $parameters['class_name'];
+
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-        $parameters = [
-            "plugin" => $plugin,
-            "class_name" => $class_name,
-            "id" => $id,
-            "title" => $title,
-            "render_function" => $render_function,
-            "submission_function" => $submission_function,
-            "callback_arguments" => $callback_arguments,
-            "text_domain" => $text_domain,
-            "class_name_path" => 'DashboardWidgets/' . lcfirst($class_name) . '.php',
+        $parameters = array_merge(
+            $parameters, [
+            "class_name_path" => 'DashboardWidgets/' . lcfirst($class) . '.php',
             "admin_dashboard_widgets_path" => 'admin/partials/dashboard-widgets-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'dashboard_widgets'
-        ];
+            ]
+        );
 
         $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
         $file_path_admin = $dir.'/'.$parameters['admin_dashboard_widgets_path'];

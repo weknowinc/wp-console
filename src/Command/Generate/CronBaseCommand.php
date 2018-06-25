@@ -131,18 +131,22 @@ class CronBaseCommand extends Command
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $timestamp,
-            $recurrence,
-            $hook_name,
-            $hook_arguments,
-            $this->cronType
+            [
+                'plugin' => $plugin,
+                'class_name' => $class_name,
+                'timestamp' => $timestamp,
+                'recurrence' => $recurrence,
+                'hook_name' => $hook_name,
+                'hook_arguments' => $hook_arguments,
+                'type' => $this->cronType,
+            ]
         );
+
+        return 0;
     }
 
     /**

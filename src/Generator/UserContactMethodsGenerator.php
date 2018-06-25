@@ -9,6 +9,7 @@ namespace WP\Console\Generator;
 
 use WP\Console\Core\Generator\Generator;
 use WP\Console\Extension\Manager;
+use WP\Console\Utils\Site;
 
 /**
  * Class UserContactMethodsGenerator
@@ -17,7 +18,6 @@ use WP\Console\Extension\Manager;
  */
 class UserContactMethodsGenerator extends Generator
 {
-
     /**
      * @var Manager
      */
@@ -34,32 +34,23 @@ class UserContactMethodsGenerator extends Generator
         $this->extensionManager = $extensionManager;
     }
 
-
     /**
-     * Generator UserContactMethods
-     *
-     * @param string $plugin
-     * @param string $function_name
-     * @param array $methods_items
-     * @param Site $site
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $function_name,
-        $methods_items,
-        $site
-    ) {
+    public function generate(array $parameters, Site $site)
+    {
+        $plugin = $parameters['plugin'];
+
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-        $parameters = [
-            "plugin" => $plugin,
-            "function_name" => $function_name,
-            "methods_items" => $methods_items,
+        $parameters = array_merge(
+            $parameters, [
             "admin_user_contact_methods_path" => 'admin/partials/userContactMethods-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'userContactMethods'
-        ];
+            ]
+        );
 
         $file_path_admin = $dir.'/'.$parameters['admin_user_contact_methods_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
@@ -74,7 +65,7 @@ class UserContactMethodsGenerator extends Generator
         } else {
             $site->loadLegacyFile($file_path_admin);
 
-            if (function_exists($function_name)) {
+            if (function_exists($parameters['function_name'])) {
                 throw new \RuntimeException(
                     sprintf(
                         'Unable to generate the user_contactmethods , The function name already exist at "%s"',

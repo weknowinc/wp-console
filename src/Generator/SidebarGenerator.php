@@ -8,8 +8,8 @@
 namespace WP\Console\Generator;
 
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Utils\TranslatorManager;
 use WP\Console\Core\Generator\Generator;
+use WP\Console\Utils\Site;
 
 /**
  * Class SidebarGenerator
@@ -24,11 +24,6 @@ class SidebarGenerator extends Generator
     protected $extensionManager;
 
     /**
-     * @var TranslatorManager
-     */
-    protected $translatorManager;
-
-    /**
      * SidebarGenerator constructor.
      *
      * @param Manager $extensionManager
@@ -40,21 +35,12 @@ class SidebarGenerator extends Generator
     }
 
     /**
-     * Generate.
-     *
-     * @param string  $theme
-     * @param string  $function_name
-     * @param string  $sidebar_items
-     * @param boolean $child_themes
-     * @param Site    $site
+     * {@inheritdoc}
      */
-    public function generate(
-        $theme,
-        $function_name,
-        $sidebar_items,
-        $child_themes,
-        $site
-    ) {
+    public function generate(array $parameters, Site $site)
+    {
+        $theme = $parameters['theme'];
+
         $discoverThemes = $this->extensionManager->discoverThemes()->showActivated()->showDeactivated()->getList();
         $extensions = array_combine(array_keys($discoverThemes), array_column($discoverThemes, 'Name'));
         $themeName = array_search($theme, $extensions);
@@ -63,19 +49,17 @@ class SidebarGenerator extends Generator
         $themeFile = $this->extensionManager->getTheme($theme)->getPathname();
         $dir = $this->extensionManager->getTheme($theme)->getPath().'/'.$class_name_sidebar;
 
-        $parameters = [
-            "theme" => $theme,
-            "function_name" => $function_name,
-            "sidebar_items" => $sidebar_items,
-            "child_theme" => $child_themes,
+        $parameters = array_merge(
+            $parameters, [
             "class_name_sidebar_path" => $class_name_sidebar,
             "file_exists" => file_exists($themeFile.'/functions.php'),
             "admin_file_exists" => file_exists($dir)
-        ];
+            ]
+        );
 
         $site->loadLegacyFile($dir);
 
-        if (function_exists($function_name)) {
+        if (function_exists($parameters['function_name'])) {
             throw new \RuntimeException(
                 sprintf(
                     'Unable to generate the sidebar , The function name already exist at "%s"',

@@ -16,31 +16,20 @@ use WP\Console\Core\Generator\Generator;
  */
 class PluginGenerator extends Generator
 {
+
     /**
-     * @param Site    $site
-     * @param string  $plugin
-     * @param string  $machineName
-     * @param string  $dir
-     * @param string  $description
-     * @param string  $author
-     * @param string  $authorUrl
-     * @param boolean $test
+     * {@inheritdoc}
      */
-    public function generate(
-        $site,
-        $plugin,
-        $machineName,
-        $dir,
-        $description,
-        $author,
-        $authorUrl,
-        $package,
-        $className,
-        $activate,
-        $deactivate,
-        $uninstall
-    ) {
-        $dir = ($dir == "/" ? '': $dir).'/'.$machineName;
+    public function generate(array $parameters)
+    {
+        $machineName = $parameters['machine_name'];
+        $class = $parameters['class_name_base'];
+        $activate = $parameters['activate'];
+        $deactivate = $parameters['deactivate'];
+        $uninstall = $parameters['uninstall'];
+        $pluginPath = $parameters['plugin_path'];
+
+        $dir = ($pluginPath == "/" ? '': $pluginPath).'/'.$machineName;
         if (file_exists($dir)) {
             if (!is_dir($dir)) {
                 throw new \RuntimeException(
@@ -69,25 +58,17 @@ class PluginGenerator extends Generator
             }
         }
 
-        $parameters = [
-            'plugin' => $plugin,
-            'plugin_uri' => '',
-            'machine_name' => $machineName,
-            'type' => 'module',
-            'version' => $site->getBlogInfo('version'),
-            'description' => $description,
-            'author' => $author,
-            'author_uri' => $authorUrl,
-            'package' => $package,
-            'class_name_base' => $className,
-            'class_name_activator' => $className . 'Activator',
+        $parameters = array_merge(
+            $parameters, [
+            'class_name_activator' => $class . 'Activator',
             'class_name_activator_path' => 'includes/' . $machineName . '-activator.php',
-            'class_name_deactivator' => $className . 'Deactivator',
+            'class_name_deactivator' => $class . 'Deactivator',
             'class_name_deactivator_path' => 'includes/' . $machineName . '-deactivator.php',
-            'activate' => $activate,
-            'deactivate' => $deactivate,
             'file_exists' => false
-        ];
+            ]
+        );
+
+        unset($parameters['uninstall']);
 
         $this->renderFile(
             'plugin/plugin.php.twig',
