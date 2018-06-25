@@ -131,7 +131,7 @@ class DashboardWidgetsCommand extends Command
     {
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
@@ -144,15 +144,19 @@ class DashboardWidgetsCommand extends Command
         $text_domain = $input->getOption('text-domain');
 
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $id,
-            $title,
-            $render_function,
-            $submission_function,
-            $callback_arguments,
-            $text_domain
+            [
+                'plugin' => $plugin,
+                'class_name' => $class_name,
+                'id' => $id,
+                "title" => $title,
+                "render_function" => $render_function,
+                "submission_function" => $submission_function,
+                "callback_arguments" => $callback_arguments,
+                "text_domain" => $text_domain
+            ]
         );
+
+        return 0;
     }
 
     /**

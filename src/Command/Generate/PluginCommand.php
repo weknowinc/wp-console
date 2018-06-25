@@ -161,7 +161,7 @@ class PluginCommand extends Command
     {
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
@@ -186,19 +186,25 @@ class PluginCommand extends Command
         $className = $this->stringConverter->humanToCamelCase($plugin);
 
         $this->generator->generate(
-            $this->site,
-            $plugin,
-            $machineName,
-            $pluginPath,
-            $description,
-            $author,
-            $authorURL,
-            $package,
-            $className,
-            $activate,
-            $deactivate,
-            $uninstall
+            [
+            'plugin' => $plugin,
+            'plugin_uri' => '',
+            'machine_name' => $machineName,
+            'type' => 'module',
+            'version' => $this->site->getBlogInfo('version'),
+            'description' => $description,
+            'author' => $author,
+            'author_uri' => $authorURL,
+            'package' => $package,
+            'class_name_base' => $className,
+            'activate' => $activate,
+            'deactivate' => $deactivate,
+            'uninstall' => $uninstall,
+            'plugin_path' => $pluginPath
+            ]
         );
+
+        return 0;
     }
 
     /**

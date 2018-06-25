@@ -137,18 +137,22 @@ abstract class RegisterBaseCommand extends ContainerAwareCommand
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $this->generator->generate(
-            $extensionType,
-            $extension,
-            $this->RegisterType,
-            $function_name,
-            $hook,
-            $register_items,
+            [
+                "extension_type" => $extensionType,
+                "extension" => $extension,
+                "function_name" => $function_name,
+                "hook" => $hook,
+                "register_items" => $register_items,
+                "type" => $this->RegisterType
+            ],
             $this->site
         );
+
+        return 0;
     }
 
     /**

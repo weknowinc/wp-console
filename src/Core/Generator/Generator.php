@@ -7,6 +7,7 @@
 
 namespace WP\Console\Core\Generator;
 
+use WP\Console\Core\Style\WPStyle;
 use WP\Console\Core\Utils\CountCodeLines;
 use WP\Console\Core\Utils\TwigRenderer;
 use WP\Console\Core\Utils\FileQueue;
@@ -34,6 +35,11 @@ abstract class Generator
     protected $countCodeLines;
 
     /**
+     * @var WPStyle
+     */
+    protected $io;
+
+    /**
      * @param $renderer
      */
     public function setRenderer(TwigRenderer $renderer)
@@ -55,6 +61,23 @@ abstract class Generator
     public function setCountCodeLines(CountCodeLines $countCodeLines)
     {
         $this->countCodeLines = $countCodeLines;
+    }
+
+
+    /**
+     * @return \WP\Console\Core\Style\WPStyle
+     */
+    public function getIo()
+    {
+        return $this->io;
+    }
+
+    /**
+     * @param \WP\Console\Core\Style\WPStyle $io
+     */
+    public function setIo($io)
+    {
+        $this->io = $io;
     }
 
     /**
@@ -104,5 +127,10 @@ abstract class Generator
         }
 
         return false;
+    }
+
+    public function addSkeletonDir($skeletonDir)
+    {
+        $this->renderer->addSkeletonDir($skeletonDir);
     }
 }

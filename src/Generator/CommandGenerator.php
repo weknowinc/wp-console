@@ -8,7 +8,6 @@
 namespace WP\Console\Generator;
 
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Utils\TranslatorManager;
 use WP\Console\Core\Generator\Generator;
 
 /**
@@ -24,47 +23,37 @@ class CommandGenerator extends Generator
     protected $extensionManager;
 
     /**
-     * @var TranslatorManager
-     */
-    protected $translatorManager;
-
-    /**
      * CommandGenerator constructor.
      *
-     * @param Manager                    $extensionManager
-     * @param TranslatorManager $translatorManager
+     * @param Manager $extensionManager
      */
-    public function __construct(
-        Manager $extensionManager,
-        TranslatorManager $translatorManager
-    ) {
+    public function __construct(Manager $extensionManager)
+    {
         $this->extensionManager = $extensionManager;
-        $this->translatorManager = $translatorManager;
     }
 
     /**
-     * Generate.
-     *
-     * @param string  $extension      Extension name
-     * @param string  $name           Command name
-     * @param string  $class          Class name
-     * @param array   $services       Services array
+     * {@inheritdoc}
      */
-    public function generate($plugin, $pluginNameSpace, $pluginCamelCaseMachineName, $name, $class, $services)
+    public function generate(array $parameters)
     {
+        $plugin = $parameters['plugin'];
+        $class = $parameters['class_name'];
+        $name = $parameters['name'];
+
+        //$pluginCamelCaseMachineName
         $command_key = str_replace(':', '.', $name);
-        
-        $parameters = [
-            'plugin' => $plugin,
-            'pluginNameSpace' => $pluginNameSpace,
-            'name' => $name,
-            'class_name' => $class,
+
+
+        $parameters = array_merge(
+            $parameters, [
             'command_key' => $command_key,
-            'services' => $services,
             'tags' => ['name' => 'wordpress.command'],
-            'class_path' => sprintf('WP\%s\Command\%s', $pluginNameSpace, $class),
+            'class_path' => sprintf('WP\%s\Command\%s', $parameters['pluginNameSpace'], $class),
             'file_exists' => file_exists($this->extensionManager->getPlugin($plugin)->getPath() .'/console.services.yml'),
-        ];
+            ]
+        );
+
 
         $this->renderFile(
             'plugin/src/Command/command.php.twig',
@@ -72,7 +61,8 @@ class CommandGenerator extends Generator
             $parameters
         );
 
-        $parameters['name'] = $pluginCamelCaseMachineName.'.'.str_replace(':', '_', $name);
+        $parameters['name'] = $parameters['pluginCamelCaseMachineName'].'.'.str_replace(':', '_', $name);
+        unset($parameters['pluginCamelCaseMachineName']);
 
         $this->renderFile(
             'plugin/services.yml.twig',

@@ -123,16 +123,20 @@ class QuickTagCommand extends Command
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $this->generator->generate(
-            $extensionType,
-            $extension,
-            $function_name,
-            $quicktag_items,
+            [
+            "extension_type" => $extensionType,
+            "extension" => $extension,
+            "function_name" => $function_name,
+            "quicktag_items" => $quicktag_items,
+            ],
             $this->site
         );
+
+        return 0;
     }
 
     /**
@@ -177,6 +181,9 @@ class QuickTagCommand extends Command
                     $this->trans('commands.generate.quicktag.questions.quicktag-items.id'),
                     '',
                     function ($id) use ($stringConverter) {
+                        if (empty($id)) {
+                            throw new \Exception('You must entry a value');
+                        }
                         return $stringConverter->humanToCamelCase($id);
                     }
                 );

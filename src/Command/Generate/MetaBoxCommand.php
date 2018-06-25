@@ -157,7 +157,7 @@ class MetaBoxCommand extends Command
     {
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
         
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
@@ -173,18 +173,23 @@ class MetaBoxCommand extends Command
         $auto_save = $input->getOption('auto-save');
 
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $metabox_id,
-            $title,
-            $callback_function,
-            $screen,
-            $page_location,
-            $priority,
-            $metabox_fields,
-            $wp_nonce,
-            $auto_save
+            [
+            "plugin" => $plugin,
+            "class_name" => $class_name,
+            "metabox_id" => $metabox_id,
+            "title" => $title,
+            "callback_function" => $callback_function,
+            "screen" => $screen,
+            "page_location" => $page_location,
+            "priority" => $priority,
+            "metabox_items" => $metabox_fields,
+            "wp_nonce" => $wp_nonce,
+            "auto_save" => $auto_save,
+
+            ]
         );
+
+        return 0;
     }
     
     /**
@@ -293,7 +298,7 @@ class MetaBoxCommand extends Command
             )
             ) {
                 // @see \WP\Console\Command\Shared\FieldsTypeTrait::fieldsQuestion
-                $metabox_items = $this->fieldsQuestion($this->getIo(), 'metabox', 'metabox-items');
+                $metabox_items = $this->fieldsQuestion('metabox', 'metabox-items');
                 $input->setOption('metabox-items', $metabox_items);
             }
         }

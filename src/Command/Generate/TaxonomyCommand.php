@@ -182,7 +182,7 @@ class TaxonomyCommand extends Command
     {
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
         
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
@@ -202,22 +202,26 @@ class TaxonomyCommand extends Command
         $update_count_callback = $input->getOption('update-count-callback');
         
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $function_name,
-            $taxonomy_key,
-            $singular_name,
-            $plural_name,
-            $post_type,
-            $hierarchical,
-            $labels,
-            $visibility,
-            $permalinks,
-            $capabilities,
-            $rest,
-            $child_themes,
-            $update_count_callback
+            [
+            "plugin" => $plugin,
+            "class_name" => $class_name,
+            "function_name" => $function_name,
+            "taxonomy_key" => $taxonomy_key,
+            "name_singular" => $singular_name,
+            "name_plural" => $plural_name,
+            "post_type" => $post_type,
+            "hierarchical" => $hierarchical,
+            "labels" => $labels,
+            "visibility" => $visibility,
+            "permalinks" => $permalinks,
+            "capabilities" => $capabilities,
+            "rest" => $rest,
+            "child_theme" => $child_themes,
+            "update_count_callback" => $update_count_callback,
+            ]
         );
+
+        return 0;
     }
     
     /**

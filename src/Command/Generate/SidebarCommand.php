@@ -122,16 +122,20 @@ class SidebarCommand extends Command
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $this->generator->generate(
-            $theme,
-            $function_name,
-            $sidebar_items,
-            $child_themes,
+            [
+                "theme" => $theme,
+                "function_name" => $function_name,
+                "sidebar_items" => $sidebar_items,
+                "child_theme" => $child_themes
+            ],
             $this->site
         );
+
+        return 0;
     }
 
     /**

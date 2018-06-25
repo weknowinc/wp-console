@@ -114,24 +114,27 @@ class CommandCommand extends ContainerAwareCommand
         $class = $this->validator->validateCommandName($input->getOption('class'));
         $name = $input->getOption('name');
         $services = $input->getOption('services');
-        $yes = $input->hasOption('yes')?$input->getOption('yes'):false;
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         // @see use WP\Console\Command\Shared\ServicesTrait::buildServices
         $build_services = $this->buildServices($services);
 
         $this->generator->generate(
-            $plugin,
-            $pluginNameSpace,
-            $pluginCamelCaseMachineName,
-            $name,
-            $class,
-            $build_services
+            [
+                'plugin' => $plugin,
+                'class_name' => $class,
+                'pluginNameSpace' => $pluginNameSpace,
+                'pluginCamelCaseMachineName' => $pluginCamelCaseMachineName,
+                'name' => $name,
+                'services' => $build_services,
+            ]
         );
+
+        return 0;
     }
 
     /**

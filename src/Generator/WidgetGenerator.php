@@ -34,44 +34,25 @@ class WidgetGenerator extends Generator
         $this->extensionManager = $extensionManager;
     }
 
-
     /**
-     * Generator Widget
-     *
-     * @param string $plugin
-     * @param string $class_name
-     * @param string $widget_id
-     * @param string $title
-     * @param string $description
-     * @param string $widget_class_name
-     * @param array $widget_items
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $class_name,
-        $widget_id,
-        $title,
-        $description,
-        $widget_class_name,
-        $widget_items
+    public function generate(array $parameters)
+    {
+        $plugin = $parameters['plugin'];
+        $class = $parameters['class_name'];
 
-    ) {
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-        $parameters = [
-            "plugin" => $plugin,
-            "class_name" => $class_name,
-            "widget_id" => $widget_id,
-            "title" => $title,
-            "description" => $description,
-            "widget_class_name" => $widget_class_name,
-            "widget_items" => $widget_items,
-            "class_name_path" => 'Widget/' . lcfirst($class_name) . '.php',
+        $parameters = array_merge(
+            $parameters, [
+            "class_name_path" => 'Widget/' . lcfirst($class) . '.php',
             "admin_widget_path" => 'admin/partials/widgets-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'widget'
-        ];
+            ]
+        );
 
         $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
         $file_path_admin = $dir.'/'.$parameters['admin_widget_path'];

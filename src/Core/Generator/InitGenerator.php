@@ -31,19 +31,17 @@ class InitGenerator extends Generator
     }
 
     /**
-     * @param string  $userHome
-     * @param string  $executableName
-     * @param boolean $override
-     * @param string  $destination
-     * @param array   $configParameters
+     * {@inheritdoc}
      */
-    public function generate(
-        $userHome,
-        $executableName,
-        $override,
-        $destination,
-        $configParameters
-    ) {
+    public function generate(array $parameters)
+    {
+        $userHome = $parameters['user_home'];
+        $executableName = $parameters['executable_name'];
+        $override = $parameters['override'];
+        $destination = $parameters['destination'];
+        $configParameters = $parameters['config_parameters'];
+
+
         $configFile = $userHome . 'config.yml';
         if ($destination) {
             $configFile = $destination.'config.yml';
@@ -59,7 +57,7 @@ class InitGenerator extends Generator
         // If configFile is an override, we only change the value of statistics in the global config.
         $consoleDestination = $userHome . 'config.yml';
         if ($configFile !== $consoleDestination) {
-            if($configParameters['statistics'] || file_exists($consoleDestination)) {
+            if ($configParameters['statistics'] || file_exists($consoleDestination)) {
                 $configParameters['statistics'] = $configParameters['statistics'] ? 'true' : 'false';
                 $this->renderFile(
                     'core/init/statistics.config.yml.twig',
@@ -100,9 +98,25 @@ class InitGenerator extends Generator
 
             $this->renderFile(
                 'core/autocomplete/console.fish.twig',
-                $userHome . 'drupal.fish',
+                $userHome . 'wordpress.fish',
                 $parameters
             );
         }
+    }
+}
+
+
+/**
+ * Class InitGenerator
+ *
+ * @package Drupal\Console\Core\Generator
+ */
+class InitGenerators extends Generator
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function generate(array $parameters)
+    {
     }
 }

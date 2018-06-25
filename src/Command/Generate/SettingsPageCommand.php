@@ -167,7 +167,7 @@ class SettingsPageCommand extends Command
     {
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $plugin = $plugin = $this->validator->validatePluginName($input->getOption('plugin'));
@@ -184,19 +184,23 @@ class SettingsPageCommand extends Command
         $text_domain = $input->getOption('text-domain');
 
         $this->generator->generate(
-            $plugin,
-            $class_name,
-            $setting_group,
-            $setting_name,
-            $page_title,
-            $menu_title,
-            $capability,
-            $slug,
-            $callback_function,
-            $sections,
-            $fields,
-            $text_domain
+            [
+            "plugin" => $plugin,
+            "class_name" => $class_name,
+            "setting_group" => $setting_group,
+            "setting_name" => $setting_name,
+            "page_title" => $page_title,
+            "menu_title" => $menu_title,
+            "capability" => $capability,
+            "slug" => $slug,
+            "callback_function" => $callback_function,
+            "sections" => $sections,
+            "fields" => $fields,
+            "text_domain" => $text_domain,
+            ]
         );
+
+        return 0;
     }
 
     /**

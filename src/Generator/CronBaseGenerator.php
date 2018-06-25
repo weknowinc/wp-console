@@ -34,43 +34,26 @@ class CronBaseGenerator extends Generator
         $this->extensionManager = $extensionManager;
     }
 
-
     /**
-     * Generator CronBase
-     *
-     * @param string $plugin
-     * @param string $class_name
-     * @param string $timestamp,
-     * @pqram string $recurrence,
-     * @param string $hook_name,
-     * @param string $hook_arguments,
-     * @param string $type
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $class_name,
-        $timestamp,
-        $recurrence,
-        $hook_name,
-        $hook_arguments,
-        $type
-    ) {
+    public function generate(array $parameters)
+    {
+        $plugin = $parameters['plugin'];
+        $class = $parameters['class_name'];
+        $type = $parameters['type'];
+
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-        $parameters = [
-            "plugin" => $plugin,
-            "class_name" => $class_name,
-            "timestamp" => $timestamp,
-            "recurrence" => $recurrence,
-            "hook_name" => $hook_name,
-            "hook_arguments" => $hook_arguments,
-            "class_name_path" => 'Cron'.ucfirst($type).'/' . lcfirst($class_name) . '.php',
+        $parameters = array_merge(
+            $parameters, [
+            "class_name_path" => 'Cron'.ucfirst($type).'/' . lcfirst($class) . '.php',
             "admin_cron_path" => 'admin/partials/cron-'.$type.'-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'cron'.$type,
-            "type" => $type
-        ];
+            ]
+        );
 
         $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
         $file_path_admin = $dir.'/'.$parameters['admin_cron_path'];

@@ -25,7 +25,7 @@ questions:
         placeholder: 'Enter field placeholder'
         default-value: 'Enter field default value'
         src_image: 'Enter the image path'
-        widget-add-another: 'Do you want to add another widget item'
+        widget-items-add-another: 'Do you want to add another widget item'
         multiple-label: 'Enter the label for option for '
         multiple-value: 'Enter the value for option for '
         multiple-options-add: 'Do you want to add another option for %option%'

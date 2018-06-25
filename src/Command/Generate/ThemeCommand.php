@@ -155,7 +155,7 @@ class ThemeCommand extends Command
     {
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
         
         $theme = $this->validator->validatePluginName($input->getOption('theme'));
@@ -173,24 +173,28 @@ class ThemeCommand extends Command
         $authorURL = $input->getOption('author-url');
         $template_files = $input->getOption('template-files');
         $screenshot = $input->getOption('screenshot');
-        // $test = $input->getOption('test');
-        
+
         $package = str_replace(' ', '_', $theme);
-        
-        
+
         $this->generator->generate(
-            $this->site,
-            $theme,
-            $machineName,
-            $themePath,
-            $description,
-            $author,
-            $authorURL,
+            [
+                'theme' => $theme,
+                'theme_uri' => '',
+                'machine_name' => $machineName,
+                'type' => 'module',
+                'version' => $this->site->getBlogInfo('version'),
+                'description' => $description,
+                'author' => $author,
+                'author_uri' => $authorURL,
+                'package' => $package,
+                'test' => '',
+                'themePath' => $themePath
+            ],
             $template_files,
-            $screenshot,
-            $package,
-            $test
+            $screenshot
         );
+
+        return 0;
     }
     
     /**

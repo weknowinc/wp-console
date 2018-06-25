@@ -107,7 +107,7 @@ class ShortcodeCommand extends Command
 
         // @see use WP\Console\Command\Shared\ConfirmationTrait::confirmOperation
         if (!$this->confirmOperation()) {
-            return;
+            return 1;
         }
 
         $className = $this->stringConverter->humanToCamelCase($plugin);
@@ -118,14 +118,18 @@ class ShortcodeCommand extends Command
 
 
         $this->generator->generate(
-            $tag,
-            $plugin,
-            $pluginPath,
-            $pluginNameSpace,
-            $pluginCamelCaseMachineName,
-            $className,
-            $pluginFile
+            [
+            'tag' => $tag,
+            'plugin' => $plugin,
+            'pluginNameSpace' => $pluginNameSpace,
+            'pluginCamelCaseMachineName' => $pluginCamelCaseMachineName,
+            'pluginPath' => $pluginPath,
+            'class_name' => $className,
+            'pluginFile' => $pluginFile
+            ]
         );
+
+        return 0;
     }
 
     /**

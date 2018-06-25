@@ -33,59 +33,26 @@ class SettingsPageGenerator extends Generator
     ) {
         $this->extensionManager = $extensionManager;
     }
-    
-    
+
     /**
-     * Generator SettingsPage
-     *
-     * @param string $plugin,
-     * @param string $class_name
-     * @param string $setting_group
-     * @param string $setting_name
-     * @param string $page_title
-     * @param string $menu_title
-     * @param string $capability
-     * @param string $slug
-     * @param string $callback_function
-     * @param array  $sections
-     * @param array  $fields
-     * @param string $text_domain
+     * {@inheritdoc}
      */
-    public function generate(
-        $plugin,
-        $class_name,
-        $setting_group,
-        $setting_name,
-        $page_title,
-        $menu_title,
-        $capability,
-        $slug,
-        $callback_function,
-        $sections,
-        $fields,
-        $text_domain
-    ) {
+    public function generate(array $parameters)
+    {
+        $plugin = $parameters['plugin'];
+        $class = $parameters['class_name'];
+
         $pluginFile = $this->extensionManager->getPlugin($plugin)->getPathname();
         $dir = $this->extensionManager->getPlugin($plugin)->getPath();
 
-        $parameters = [
-            "plugin" => $plugin,
-            "class_name" => $class_name,
-            "setting_group" => $setting_group,
-            "setting_name" => $setting_name,
-            "page_title" => $page_title,
-            "menu_title" => $menu_title,
-            "capability" => $capability,
-            "slug" => $slug,
-            "callback_function" => $callback_function,
-            "sections" => $sections,
-            "fields" => $fields,
-            "text_domain" => $text_domain,
-            "class_name_path" => 'SettingsPage/' . lcfirst($class_name) . '.php',
+        $parameters = array_merge(
+            $parameters, [
+            "class_name_path" => 'SettingsPage/' . lcfirst($class) . '.php',
             "admin_settings_page_path" => 'admin/partials/settings-page-admin.php',
             "file_exists" => file_exists($pluginFile),
             "command_name" => 'settingspage'
-        ];
+            ]
+        );
 
         $file_path = $dir.'/admin/partials/'.$parameters['class_name_path'];
         $file_path_admin = $dir.'/'.$parameters['admin_settings_page_path'];

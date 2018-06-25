@@ -8,8 +8,8 @@
 namespace WP\Console\Generator;
 
 use WP\Console\Extension\Manager;
-use WP\Console\Core\Utils\TranslatorManager;
 use WP\Console\Core\Generator\Generator;
+use WP\Console\Utils\Site;
 
 /**
  * Class QuickTagGenerator
@@ -24,11 +24,6 @@ class QuickTagGenerator extends Generator
     protected $extensionManager;
 
     /**
-     * @var TranslatorManager
-     */
-    protected $translatorManager;
-
-    /**
      * QuickTagGenerator constructor.
      *
      * @param Manager $extensionManager
@@ -40,38 +35,33 @@ class QuickTagGenerator extends Generator
     }
 
     /**
-     * Generate.
-     *
-     * @param string $extension_type
-     * @param string $extension
-     * @param string $function_name
-     * @param array  $quicktag_items
-     * @param Site   $site
+     * {@inheritdoc}
      */
-    public function generate(
-        $extension_type,
-        $extension,
-        $function_name,
-        $quicktag_items,
-        $site
-    ) {
-        $extensionObject = $this->extensionManager->getWPExtension($extension_type, $extension);
+    public function generate(array $parameters, Site $site)
+    {
+        $extensionType = $parameters['extension_type'];
+        $extension = $parameters['extension'];
+
+        unset($parameters['extension_type']);
+        unset($parameters['extension']);
+
+        $extensionObject = $this->extensionManager->getWPExtension($extensionType, $extension);
 
 
-        $parameters = [
-            $extension_type => $extension,
-            "function_name" => $function_name,
-            "quicktag_items" => $quicktag_items,
-            "class_name_quicktag_path" => $extension_type == "theme" ? 'src/QuickTag/quicktags.php':'admin/js/QuickTag/quicktags.js',
-            "file_exists" => file_exists($extensionObject->getPathName().($extension_type == "theme" ? '/functions.php':'')),
-        ];
+        $parameters = array_merge(
+            $parameters, [
+            $extensionType => $extension,
+            "class_name_quicktag_path" => $extensionType == "theme" ? 'src/QuickTag/quicktags.php':'admin/js/QuickTag/quicktags.js',
+            "file_exists" => file_exists($extensionObject->getPathName().($extensionType == "theme" ? '/functions.php':'')),
+            ]
+        );
 
         $file_path_admin = $extensionObject->getPath().'/'.$parameters['class_name_quicktag_path'];
         $parameters['admin_file_exists'] = file_exists($file_path_admin);
 
         $site->loadLegacyFile($file_path_admin);
 
-        if (function_exists($function_name) && $extension_type == "theme") {
+        if (function_exists($parameters['function_name']) && $extensionType == "theme") {
             throw new \RuntimeException(
                 sprintf(
                     'Unable to generate the quicktag , The function name already exist at "%s"',
@@ -83,15 +73,15 @@ class QuickTagGenerator extends Generator
 
         if (!file_exists($file_path_admin)) {
             $this->renderFile(
-                $extension_type.($extension_type == "theme" ? '/functions.php':'/plugin.php').'.twig',
-                $extensionObject->getPathname() . ($extension_type == "theme" ? '/functions.php':''),
+                $extensionType.($extensionType == "theme" ? '/functions.php':'/plugin.php').'.twig',
+                $extensionObject->getPathname() . ($extensionType == "theme" ? '/functions.php':''),
                 $parameters,
                 FILE_APPEND
             );
         }
 
         $this->renderFile(
-            $extension_type . ($extension_type == "theme" ? '/src/QuickTag/quicktag.php':'/src/QuickTag/quicktag.js').'.twig',
+            $extensionType . ($extensionType == "theme" ? '/src/QuickTag/quicktag.php':'/src/QuickTag/quicktag.js').'.twig',
             $file_path_admin,
             $parameters,
             FILE_APPEND
