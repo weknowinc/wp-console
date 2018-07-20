@@ -84,6 +84,12 @@ class InstallCommand extends Command
                 $this->trans('commands.site.install.options.langcode')
             )
             ->addOption(
+                'db-url',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                $this->trans('commands.site.install.options.db-url')
+            )
+            ->addOption(
                 'db-host',
                 '',
                 InputOption::VALUE_OPTIONAL,
@@ -187,40 +193,46 @@ class InstallCommand extends Command
             $input->setOption('langcode', $langcode);
         }
 
+        // --db-url option
+        $db_url = $input->getOption('db-url');
+        $valuesFromUrl = parse_url($db_url);
+        var_dump($valuesFromUrl);
+
         // --db-host option
-        $dbHost = $input->getOption('db-host');
+        $dbHost = $db_url?$valuesFromUrl['host']:$input->getOption('db-host');
+        var_dump($dbHost);
         if (!$dbHost) {
             $dbHost = $this->dbHostQuestion();
-            $input->setOption('db-host', $dbHost);
         }
+        $input->setOption('db-host', $dbHost);
 
         // --db-name option
-        $dbName = $input->getOption('db-name');
+        $dbName = $db_url?ltrim($valuesFromUrl['path'], "/"):$input->getOption('db-name');
         if (!$dbName) {
             $dbName = $this->dbNameQuestion();
-            $input->setOption('db-name', $dbName);
         }
+        $input->setOption('db-name', $dbName);
 
         // --db-user option
-        $dbUser = $input->getOption('db-user');
+        $dbUser = $db_url?$valuesFromUrl['user']:$input->getOption('db-user');
         if (!$dbUser) {
             $dbUser = $this->dbUserQuestion();
-            $input->setOption('db-user', $dbUser);
         }
+        $input->setOption('db-user', $dbUser);
 
         // --db-pass option
-        $dbPass = $input->getOption('db-pass');
+        $dbPass = $db_url?$valuesFromUrl['pass']:$input->getOption('db-pass');
         if (!$dbPass) {
             $dbPass = $this->dbPassQuestion();
-            $input->setOption('db-pass', $dbPass);
         }
+        $input->setOption('db-pass', $dbPass);
 
         // --db-prefix option
         $dbPrefix = $input->getOption('db-prefix');
         if (!$dbPrefix) {
             $dbPrefix = $this->dbPrefixQuestion();
-            $input->setOption('db-prefix', $dbPrefix);
         }
+        $input->setOption('db-prefix', $dbPrefix);
 
         // --site-name option
         $siteName = $input->getOption('site-name');

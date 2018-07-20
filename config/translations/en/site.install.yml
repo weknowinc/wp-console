@@ -9,6 +9,7 @@ arguments:
     account-mail: 'Wordpress administrator account mail'
     account-pass: 'Wordpress administrator account password'
 options:
+    db-url: 'Wordpress Database url'
     db-type: 'Wordpress Database type'
     db-host: 'Database Host'
     db-name: 'Database Name'
