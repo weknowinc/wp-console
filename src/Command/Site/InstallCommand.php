@@ -196,11 +196,9 @@ class InstallCommand extends Command
         // --db-url option
         $db_url = $input->getOption('db-url');
         $valuesFromUrl = parse_url($db_url);
-        var_dump($valuesFromUrl);
 
         // --db-host option
         $dbHost = $db_url?$valuesFromUrl['host']:$input->getOption('db-host');
-        var_dump($dbHost);
         if (!$dbHost) {
             $dbHost = $this->dbHostQuestion();
         }
@@ -305,6 +303,16 @@ class InstallCommand extends Command
         $dbPrefix = $input->getOption('db-prefix');
         $force = $input->getOption('force');
 
+        //Check if there is a url to db connection
+        $db_url = $input->getOption('db-url');
+        if ($db_url) {
+            $valuesFromUrl = parse_url($db_url);
+            $dbHost = $valuesFromUrl['host'];
+            $dbName = ltrim($valuesFromUrl['path'], "/");
+            $dbUser = $valuesFromUrl['user'];
+            $dbPass = $valuesFromUrl['pass'];
+        }
+
         $configParameters = array(
             'dbhost' => $dbHost,
             'dbname' => $dbName,
@@ -325,6 +333,8 @@ class InstallCommand extends Command
             'multisite' => '',
 
         );
+
+
 
         $this->generator->generate(
             $this->appRoot,
