@@ -619,11 +619,11 @@ class Application extends BaseApplication
             'help',
             'init',
             'list',
-            'server'
+            'server',
+            'snippet'
         ];
 
         $data = [];
-
         // Exclude misc if it is inside the $excludeNamespaces array.
         if (!in_array('misc', $excludeNamespaces)) {
             foreach ($singleCommands as $singleCommand) {

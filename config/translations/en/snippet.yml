@@ -1,0 +1,12 @@
+description: 'Snippet command'
+options:
+    file: 'User defined file containing code to get executed.'
+    code: 'Code to get executed.'
+    show-code: 'Show code to get executed.'
+examples:
+    - description: 'Providing a file option using full path. (DEPRECATED)'
+      execution: |
+        wp-console snippet \
+          --file="/path/to/file/chain-file.yml"
+
+
