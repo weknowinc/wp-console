@@ -45,12 +45,15 @@ class ConfigurationManager
         $this->locateConfigurationFiles();
 
         $this->applicationDirectory = $directory;
-        if ($directory && is_dir($directory) && strpos($directory, 'phar:')!==0) {
+
+        // We need to load all time the config because the config is in the same project.
+        if ($directory && is_dir($directory)) {
             $this->addConfigurationFilesByDirectory(
                 $directory,
                 true
             );
         }
+
         $input = new ArgvInput();
         $root = $input->getParameterOption(['--root']);
 
