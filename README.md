@@ -26,17 +26,19 @@ chmod +x /usr/local/bin/wordpress
   * help                              Displays help for a command
   * init                              Copy configuration files.
   * list                              Lists all available commands
+  * snippet                           Execute a php code inside wordpress
 
  **cache**
   * cache:flush (cf)                  Flush the Wordpress object cache
-
- **container**
-   * container:debug (cod)            Displays current services for an application..
 
  **create**
   * create:users (cu)                 Create dummy users for your WordPress application.
   * create:roles (crr)                Create dummy roles for your Wordpress application.
 
+ **database**
+  * database:create (dbc)             Create a new database.
+  * database:drop (dbd)               Drop all tables in current or a given database and remove wp-config.php if current database.
+  
  **debug**
   * debug:chain (dc)                  List available chain files.
   * debug:container (dco)             Displays current services for an application.
@@ -51,6 +53,7 @@ chmod +x /usr/local/bin/wordpress
   * generate:command (gc)                  Generate commands for the console.
   * generate:cron:schedule (gcsh)          Generate a schedule cron.
   * generate:cron:single (gcs)             Generate a single cron.
+  * generate:dashboard:widgets (gdw)       Generate a new custom dashboard widgets.
   * generate:menu (gm)                     Generate a menu.
   * generate:metabox (gm)                  Generate a meta box.
   * generate:plugin (gp)                   Generate a plugin.
@@ -82,6 +85,9 @@ chmod +x /usr/local/bin/wordpress
  **role**
   * role:delete (rd)                  Delete roles for the application
   * role:new (rn)                     Create roles for the application
+ 
+ **settings**
+  * settings:set                      Change a specific setting value in WordpressConsole config file
  
  **theme**
   * theme:activate (ta)               Activate theme in the application
