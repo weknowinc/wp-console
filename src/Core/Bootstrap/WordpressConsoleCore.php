@@ -129,15 +129,17 @@ class WordpressConsoleCore
             $appRoot
         );
 
+        $consoleRoot = $appRoot;
+        if (stripos($this->root, '/bin/') <= 0) {
+            $consoleRoot = $this->root;
+        }
+        $container->set(
+            'console.root',
+            $consoleRoot
+        );
+
         $container->get('console.translator_manager')
             ->loadCoreLanguage('en', $this->root . '/config/translations/');
-
-        if (stripos($this->root, '/bin/') <= 0) {
-            $container->set(
-                'console.root',
-                $this->root
-            );
-        }
 
         $container->get('console.renderer')
             ->setSkeletonDirs(
